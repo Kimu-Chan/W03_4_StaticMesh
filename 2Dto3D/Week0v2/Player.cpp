@@ -8,6 +8,7 @@
 #include "JungleMath.h"
 #include <DirectXMath.h>
 #include "ArrowComp.h"
+#include "CameraComponent.h"
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -202,7 +203,7 @@ bool UPlayer::RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDi
 }
 
 //OBB로 수정
-bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, UObject* obj, float& hitDistance)
+bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance)
 {
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전 적용)
 	FMatrix rotationMatrix = FMatrix::CreateRotation(
@@ -278,7 +279,7 @@ void UPlayer::PickedObjControl()
 		int32 deltaX = currentMousePos.x - m_LastMousePos.x;
 		int32 deltaY = currentMousePos.y - m_LastMousePos.y;
 
-		UObject* pObj = GetWorld()->GetPickingObj();
+		USceneComponent* pObj = GetWorld()->GetPickingObj();
 		UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->GetPickingGizmo());
 		switch (cMode)
 		{
@@ -298,7 +299,7 @@ void UPlayer::PickedObjControl()
 	}
 }
 
-void UPlayer::ControlRoation(UArrowComp* Arrow, UObject* pObj, int32 deltaX, int32 deltaY)
+void UPlayer::ControlRoation(UArrowComp* Arrow, USceneComponent* pObj, int32 deltaX, int32 deltaY)
 {
 	switch (Arrow->GetDir())
 	{
@@ -340,7 +341,7 @@ void UPlayer::ControlRoation(UArrowComp* Arrow, UObject* pObj, int32 deltaX, int
 	}
 }
 
-void UPlayer::ControlTranslation(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
+void UPlayer::ControlTranslation(USceneComponent* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
 {
 	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
 	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
@@ -370,7 +371,7 @@ void UPlayer::ControlTranslation(UObject* pObj, UArrowComp* Arrow, int32 deltaX,
 	}
 }
 
-void UPlayer::ControlScale(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
+void UPlayer::ControlScale(USceneComponent* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
 {
 	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
 	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;

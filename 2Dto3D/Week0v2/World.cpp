@@ -26,36 +26,36 @@ void UWorld::CreateBaseObject()
 {
 	UObject* player = FObjectFactory::ConstructObject<UPlayer>();
 	GUObjectArray.push_back(player);
-	localPlayer = player;
+	localPlayer = static_cast<UPlayer*>(player);
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>();
-	Camera->SetLocation(FVector(0, 0, -10.f));
-	GUObjectArray.push_back(Camera);
-	camera = Camera;
+	camera = static_cast<UCameraComponent*>(Camera);
+	camera->SetLocation(FVector(0, 0, -10.f));
+	GUObjectArray.push_back(camera);
 
 	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>();
-	gizmo->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
+	static_cast<UGizmoComponent*>(gizmo)->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
 	GUObjectArray.push_back(gizmo);
 
 	UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	localGizmo->SetScale(FVector(2.0f, 1.0f, 1.0f));
+	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
-	LocalGizmo[0] = localGizmo;
+	LocalGizmo[0] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 
 	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	localGizmo->SetScale(FVector(1.0f, 2.0f, 1.0f));
+	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
-	LocalGizmo[1] = localGizmo;
+	LocalGizmo[1] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 
 	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	localGizmo->SetScale(FVector(1.0f, 1.0f, 2.0f));
+	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
 
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
-	LocalGizmo[2] = localGizmo;
+	LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 }
 
@@ -72,28 +72,25 @@ void UWorld::Tick(double deltaTime)
 
 void UWorld::Release()
 {
-	//for (int32 i = 0;i < m_pObjectList.size();i++)
-	//{
-	//	for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
-	//	{
-	//		delete (*iter);
-	//	}
-	//	m_pObjectList[i].clear();
-	//}
-	//delete worldGizmo;
+
 	for (auto iter : GUObjectArray)
 	{
 		delete iter;
 	}
 	GUObjectArray.clear();
+	pickingObj = nullptr;
+	pickingGizmo = nullptr;
+	worldGizmo = nullptr;
+	camera = nullptr;
+	localPlayer = nullptr;
 }
 void UWorld::UpdateLocalGizmo()
 {
 	if (pickingObj)
 	{
+		
 		FVector temp = FVector(pickingObj->GetScale().x, 0.0f, 0.0f);
 		LocalGizmo[0]->SetLocation(pickingObj->GetLocation());
-		//LocalGizmo[0]->SetLocation(pickingObj->GetRightVector() + pickingObj->GetLocation());
 
 		LocalGizmo[0]->SetRotation(pickingObj->GetRotation());
 		LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
@@ -124,7 +121,6 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	{
 	case OBJ_SPHERE:
 		pObj = FObjectFactory::ConstructObject<USphereComp>();
-		//m_pObjectList[OBJ_SPHERE].push_back(pObj);
 		GUObjectArray.push_back(pObj);
 		break;
 	case OBJ_TRIANGLE:
@@ -137,7 +133,7 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	default:
 		break;
 	}
-	pickingObj = pObj;
+	pickingObj = static_cast<USceneComponent*>(pObj);
 }
 
 void UWorld::LoadData(SceneData& _Data)
@@ -177,4 +173,9 @@ void UWorld::NewScene()
 {
 	Release();
 	Initialize();
+}
+
+void UWorld::SetPickingObj(UObject* _Obj)
+{
+	 pickingObj = static_cast<USceneComponent*>(_Obj); 
 }

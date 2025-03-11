@@ -18,25 +18,25 @@ public:
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
 	virtual void		Render();
-	FVector				GetForwardVector();
-	FVector				GetRightVector();
-	FVector				GetUpVector();
-	FVector				GetLocation();
-	void				SetLocation(FVector _newLoc);
-	void				AddLocation(FVector _added);
-	void				AddRotation(FVector _added);
-	void				AddScale(FVector _added);
 
-protected:
-	FVector				m_Location;
-	FVector				m_Rotation;
-	FVector				m_Scale;
-	UWorld*				m_World;
-public:
-	inline FVector				GetRotation() { return m_Rotation; }
-	inline FVector				GetScale()    {	return m_Scale;    }
-	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
-	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
+//	FVector				GetForwardVector();
+//	FVector				GetRightVector();
+//	FVector				GetUpVector();
+//	FVector				GetLocation();
+//	void				SetLocation(FVector _newLoc);
+//	void				AddLocation(FVector _added);
+//	void				AddRotation(FVector _added);
+//	void				AddScale(FVector _added);
+//
+//protected:
+//	FVector				RelativeLocation;
+//	FVector				RelativeRotation;
+//	FVector				RelativeScale3D;
+//public:
+//	inline FVector				GetRotation() { return RelativeRotation; }
+//	inline FVector				GetScale()    {	return RelativeScale3D;    }
+//	inline void					SetRotation(FVector _newRot) { RelativeRotation = _newRot; }
+//	inline void					SetScale(FVector _newScale) { RelativeScale3D = _newScale; }
 	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
 	inline FEngineLoop&			GetEngine() { return GEngineLoop; }
 

@@ -2,7 +2,10 @@
 #include "Define.h"
 #include "SceneMgr.h"
 class UObject;
-
+class UArrowComp;
+class UCameraComponent;
+class UPlayer;
+class USceneComponent;
 class UWorld
 {
 public:
@@ -21,24 +24,24 @@ public:
 	void LoadData(SceneData& _Data);
 	SceneData SaveData();
 	void NewScene();
+	void	SetPickingObj(UObject* _Obj); 
 private:
 	//TArray<TDoubleLinkedList<UObject*>> m_pObjectList;
 
 	TArray<UObject*> GUObjectArray;
-	UObject* pickingObj = nullptr;
+	USceneComponent* pickingObj = nullptr;
 	UObject* pickingGizmo = nullptr;
 	UObject* worldGizmo = nullptr;
-	UObject* camera = nullptr;
-	UObject* localPlayer = nullptr;
+	UCameraComponent* camera = nullptr;
+	UPlayer* localPlayer = nullptr;
 public:
 	TArray<UObject*> GetObjectArr() { return GUObjectArray; }
 
-	UObject* LocalGizmo[3] = { nullptr, nullptr, nullptr };
-	UObject* GetCamera() { return camera; }
-	UObject* GetPlayer() { return localPlayer; }
+	UArrowComp* LocalGizmo[3] = { nullptr, nullptr, nullptr };
+	UCameraComponent* GetCamera() { return camera; }
+	UPlayer* GetPlayer() { return localPlayer; }
 
-	UObject* GetPickingObj() { return pickingObj; }
-	void	SetPickingObj(UObject* _Obj) { pickingObj = _Obj; };
+	USceneComponent* GetPickingObj() { return pickingObj; }
 	UObject* GetWorldGizmo() { return worldGizmo; }
 	UObject* GetPickingGizmo() { return pickingGizmo; }
 	void	SetPickingGizmo(UObject* _Obj) { pickingGizmo = _Obj; };

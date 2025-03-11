@@ -24,35 +24,35 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
         for (auto it = primitives.begin(); it != primitives.end(); ++it) {
             int id = std::stoi(it.key());  // Key는 문자열, 숫자로 변환
             const json& value = it.value();
-            UObject* primitive = nullptr;
+            UObject* obj = nullptr;
             if (value.contains("Type"))
             {
                 if (value["Type"].get<FString>() == "Sphere")
                 {
-                    primitive = FObjectFactory::ConstructObject<USphereComp>();
+                    obj = FObjectFactory::ConstructObject<USphereComp>();
                 }
                 else if (value["Type"].get<FString>() == "Cube")
                 {
-                    primitive = FObjectFactory::ConstructObject<UCubeComp>();
+                    obj = FObjectFactory::ConstructObject<UCubeComp>();
                 }
                 else if (value["Type"].get<FString>() == "Arrow")
                 {
-                    primitive = FObjectFactory::ConstructObject<UArrowComp>();
+                    obj = FObjectFactory::ConstructObject<UArrowComp>();
                 }
             }
-
-            if (value.contains("Location")) primitive->SetLocation(FVector(value["Location"].get<TArray<float>>()[0],
+            USceneComponent* sceneComp = static_cast<USceneComponent*>(obj);
+            if (value.contains("Location")) sceneComp->SetLocation(FVector(value["Location"].get<TArray<float>>()[0],
                 value["Location"].get<TArray<float>>()[1],
                 value["Location"].get<TArray<float>>()[2]));
-            if (value.contains("Rotation")) primitive->SetRotation(FVector(value["Rotation"].get<TArray<float>>()[0],
+            if (value.contains("Rotation")) sceneComp->SetRotation(FVector(value["Rotation"].get<TArray<float>>()[0],
                 value["Rotation"].get<TArray<float>>()[1],
                 value["Rotation"].get<TArray<float>>()[2]));
-            if (value.contains("Scale")) primitive->SetScale(FVector(value["Scale"].get<TArray<float>>()[0],
+            if (value.contains("Scale")) sceneComp->SetScale(FVector(value["Scale"].get<TArray<float>>()[0],
                 value["Scale"].get<TArray<float>>()[1],
                 value["Scale"].get<TArray<float>>()[2]));
-            if (value.contains("Type")) static_cast<UPrimitiveComponent*>(primitive)->SetType(value["Type"].get<FString>());
+            if (value.contains("Type")) static_cast<UPrimitiveComponent*>(sceneComp)->SetType(value["Type"].get<FString>());
 
-            sceneData.Primitives[id] = primitive;
+            sceneData.Primitives[id] = sceneComp;
         }
     }
     catch (const std::exception& e) {
@@ -96,9 +96,10 @@ std::string FSceneMgr::SerializeSceneData(const SceneData& sceneData)
     j["NextUUID"] = sceneData.NextUUID;
 
     // Primitives 처리 (C++14 스타일)
+    
     for (auto it = sceneData.Primitives.begin(); it != sceneData.Primitives.end(); ++it) {
         int id = it->first;
-        UObject* primitive = it->second;
+        USceneComponent* primitive = static_cast<USceneComponent*>(it->second);
         TArray<float> Location = { primitive->GetLocation().x,primitive->GetLocation().y,primitive->GetLocation().z };
         TArray<float> Rotation = { primitive->GetRotation().x,primitive->GetRotation().y,primitive->GetRotation().z };
         TArray<float> Scale = { primitive->GetScale().x,primitive->GetScale().y,primitive->GetScale().z };

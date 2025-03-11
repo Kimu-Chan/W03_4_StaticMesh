@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 class UArrowComp;
+class USceneComponent;
 class UPlayer : public UObject
 {
 	DECLARE_CLASS(LocalGizmoComponent, UObject)
@@ -23,11 +24,11 @@ private:
 		FVector& rayOrigin, FVector& rayDir);
 	bool RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDir,
 		const FVector& sphereCenter, float sphereRadius);
-	bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, UObject* obj, float& hitDistance);
+	bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance);
 	void PickedObjControl();
-	void ControlRoation(UArrowComp* Arrow, UObject* pObj, int32 deltaX, int32 deltaY);
-	void ControlTranslation(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY);
-	void ControlScale(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY);
+	void ControlRoation(UArrowComp* Arrow, USceneComponent* pObj, int32 deltaX, int32 deltaY);
+	void ControlTranslation(USceneComponent* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY);
+	void ControlScale(USceneComponent* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY);
 	bool bLeftMouseDown = false;
 	bool bSpaceDown = false;
 

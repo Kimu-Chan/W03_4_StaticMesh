@@ -3,6 +3,7 @@
 #include "ImGuiManager.h"
 #include "Object.h"
 #include "Player.h"
+#include "SceneComponent.h"
 PropertyPanel::PropertyPanel()
 {
 }
@@ -26,7 +27,7 @@ void PropertyPanel::Draw(UWorld* world)
 	if (ImGui::Button(buttonLabel.c_str())) {
 		player->AddMode();
 	}
-	UObject* PickObj = world->GetPickingObj();
+	USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
 	if (PickObj) {
 		float pickObjLoc[3] = { PickObj->GetLocation().x,PickObj->GetLocation().y ,PickObj->GetLocation().z };
 		float pickObjRot[3] = { PickObj->GetRotation().x,PickObj->GetRotation().y ,PickObj->GetRotation().z };
