@@ -17,13 +17,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
 	case WM_SIZE:
+
 		if (wParam != SIZE_MINIMIZED) {
 			//UGraphicsDevice 객체의 OnResize 함수 호출
 			if (FEngineLoop::graphicDevice.SwapChain) {
 				FEngineLoop::graphicDevice.OnResize(hWnd);
 			}
 		}
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -97,7 +100,7 @@ void FEngineLoop::Tick()
 		View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
 		Projection = JungleMath::CreateProjectionMatrix(
 			Camera->GetFov() * (3.141592f / 180.0f),
-			1.0f,  // 1:1 비율로 변경
+			GetAspectRatio(graphicDevice.SwapChain), 
 			0.1f,
 			1000.0f
 		);
@@ -132,6 +135,13 @@ void FEngineLoop::Render()
 	{
 		iter->Render();
 	}
+}
+
+float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)
+{
+	DXGI_SWAP_CHAIN_DESC desc;
+	swapChain->GetDesc(&desc);
+	return static_cast<float>(desc.BufferDesc.Width) / static_cast<float>(desc.BufferDesc.Height);
 }
 
 void FEngineLoop::Exit()

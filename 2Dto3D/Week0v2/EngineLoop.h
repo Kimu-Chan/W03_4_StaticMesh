@@ -21,6 +21,7 @@ public:
 private:
 	void WindowInit(HINSTANCE hInstance);
 	void Render();
+	float GetAspectRatio(IDXGISwapChain* swapChain);
 public:
 	static FGraphicsDevice graphicDevice;
 	static FRenderer renderer;
