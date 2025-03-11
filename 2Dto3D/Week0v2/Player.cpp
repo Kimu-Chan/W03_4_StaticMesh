@@ -52,7 +52,7 @@ void UPlayer::Input()
 
 			ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
 			PickObj(rayOrigin, rayDir);
-			PickGzimo(rayOrigin, rayDir);
+			PickGizmo(rayOrigin, rayDir);
 		}
 		else
 		{
@@ -82,7 +82,7 @@ void UPlayer::Input()
 	}
 }
 
-void UPlayer::PickGzimo(FVector& rayOrigin, FVector& rayDir)
+void UPlayer::PickGizmo(FVector& rayOrigin, FVector& rayDir)
 {
 	if (GetWorld()->GetPickingObj()) {
 		for (int i = 0;i < 3;++i)

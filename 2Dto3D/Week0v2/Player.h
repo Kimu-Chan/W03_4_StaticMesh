@@ -14,7 +14,7 @@ public:
 	virtual void		Release();
 
 	void				Input();
-	void PickGzimo(FVector& rayOrigin, FVector& rayDir);
+	void PickGizmo(FVector& rayOrigin, FVector& rayDir);
 	void PickObj(FVector& rayOrigin, FVector& rayDir);
 	void				AddMode();
 

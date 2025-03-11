@@ -1,11 +1,12 @@
 #pragma once
+#include "Define.h"
 class UClass
 {
 public:
-    const char* Name;
+    FString Name;
     UClass* ParentClass;
 
-    UClass(const char* InName, UClass* InParent)
+    UClass(FString InName, UClass* InParent)
         : Name(InName), ParentClass(InParent) {
     }
 };

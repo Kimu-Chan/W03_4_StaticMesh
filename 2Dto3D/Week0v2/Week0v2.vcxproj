@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActorComponent.cpp" />
     <ClCompile Include="ArrowComp.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -172,6 +173,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="ArrowComp.h" />
     <ClInclude Include="CameraComponent.h" />
