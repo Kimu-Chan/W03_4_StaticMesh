@@ -38,7 +38,11 @@ void UArrowComp::Render()
 	switch (Dir)
 	{
 	case AD_X:
-		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowX, FEngineLoop::resourceMgr.numVerticesArrowX);
+		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowX, 
+			FEngineLoop::resourceMgr.numVerticesArrowX,
+			FEngineLoop::resourceMgr.indiceBufferArrowX,
+			FEngineLoop::resourceMgr.numIndicesArrowX
+		);
 		break;
 	case AD_Y:
 		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowY, FEngineLoop::resourceMgr.numVerticesArrowY);

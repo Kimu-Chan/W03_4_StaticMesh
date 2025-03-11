@@ -36,7 +36,10 @@ public:
     void SetVertexShader(const FWString filename, FString funcname, FString version);
     void SetPixelShader(const FWString filename, FString funcname, FString version);
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
+    ID3D11Buffer* CreateVertexBuffer(const TArray<FVertexSimple>& vertices, UINT byteWidth);
     ID3D11Buffer* CreateIndexBuffer(uint32* indices, UINT byteWidth);
+    ID3D11Buffer* CreateIndexBuffer(const TArray<uint32>& indices, UINT byteWidth);
+
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
     void UpdateConstant(FMatrix _MVP, float _Flag);

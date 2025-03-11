@@ -141,8 +141,31 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 
     ID3D11Buffer* vertexBuffer;
 
-    Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
+    return vertexBuffer;
+}
 
+ID3D11Buffer* FRenderer::CreateVertexBuffer(const TArray<FVertexSimple>& vertices, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD;
+    vertexbufferSRD.pSysMem = vertices.data();
+
+    ID3D11Buffer* vertexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
     return vertexBuffer;
 }
 
@@ -158,6 +181,30 @@ ID3D11Buffer* FRenderer::CreateIndexBuffer(uint32* indices, UINT byteWidth)
     ID3D11Buffer* indexBuffer;
 
     HRESULT hr = Graphics->Device->CreateBuffer(&indexbufferdesc, &indexbufferSRD, &indexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "IndexBuffer Creation faild");
+    }
+    return indexBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateIndexBuffer(const TArray<uint32>& indices, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC indexbufferdesc = {};						// buffer의 종류, 용도 등을 지정
+    indexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;			        // immutable: gpu가 읽기 전용으로 접근할 수 있다.
+    indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;	        // index buffer로 사용하겠다.
+    indexbufferdesc.ByteWidth = byteWidth;	// buffer 크기 지정
+
+    D3D11_SUBRESOURCE_DATA indexbufferSRD;
+    indexbufferSRD.pSysMem = indices.data();
+
+    ID3D11Buffer* indexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&indexbufferdesc, &indexbufferSRD, &indexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "IndexBuffer Creation faild");
+    }
     return indexBuffer;
 }
 
