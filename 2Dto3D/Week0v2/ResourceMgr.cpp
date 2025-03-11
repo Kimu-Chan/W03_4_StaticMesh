@@ -13,6 +13,9 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 	numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
 	vertexBufferCube = renderer->CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
+	numIndicesCube = sizeof(cube_indices) / sizeof(uint32);
+	indiceBufferCube = renderer->CreateIndexBuffer(cube_indices, sizeof(cube_indices));
+
 
 	numVerticesGizmo = sizeof(gizmoVertices) / sizeof(FVertexSimple);
 	vertexBufferGizmo = renderer->CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
@@ -36,4 +39,5 @@ void FResourceMgr::Release(FRenderer* renderer)
 	renderer->ReleaseVertexBuffer(vertexBufferArrowX);
 	renderer->ReleaseVertexBuffer(vertexBufferArrowY);
 	renderer->ReleaseVertexBuffer(vertexBufferArrowZ);
+
 }

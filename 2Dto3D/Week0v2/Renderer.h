@@ -19,17 +19,24 @@ public:
 
 
 
-    unsigned int Stride;
+    uint32 Stride;
 
     void Initialize(FGraphicsDevice* graphics);
     void Release();
     void Prepare();
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
+    void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
+
     void CreateShader();
     void CreateConstantBuffer();
     void ReleaseShader();
     void PrepareShader();
+    void ResetVertexShader();
+    void ResetPixelShader();
+    void SetVertexShader(const FWString filename, FString funcname, FString version);
+    void SetPixelShader(const FWString filename, FString funcname, FString version);
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
+    ID3D11Buffer* CreateIndexBuffer(uint32* indices, UINT byteWidth);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
     void UpdateConstant(FMatrix _MVP, float _Flag);

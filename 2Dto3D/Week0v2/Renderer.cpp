@@ -76,10 +76,57 @@ void FRenderer::PrepareShader()
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
 }
+void FRenderer::ResetVertexShader()
+{
+    Graphics->DeviceContext->VSSetShader(nullptr, nullptr, 0);
+    VertexShader->Release();
+}
+void FRenderer::ResetPixelShader()
+{
+    Graphics->DeviceContext->PSSetShader(nullptr, nullptr, 0);
+    PixelShader->Release();
+}
+void FRenderer::SetVertexShader(const FWString filename, FString funcname, FString version)
+{
+    // 에러 발생의 가능성이 있음
+    if (Graphics == nullptr)
+        assert(0);
+    if (VertexShader != nullptr)
+        ResetVertexShader();
+    if (InputLayout != nullptr)
+        InputLayout->Release();
+    ID3DBlob* vertexshaderCSO;
+
+    D3DCompileFromFile(filename.c_str(), nullptr, nullptr, funcname.c_str(), version.c_str(), 0, 0, &vertexshaderCSO, nullptr);
+    Graphics->Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &VertexShader);
+    vertexshaderCSO->Release();
+}
+void FRenderer::SetPixelShader(const FWString filename, FString funcname, FString version)
+{
+    // 에러 발생의 가능성이 있음
+    if (Graphics == nullptr)
+        assert(0);
+    if (VertexShader != nullptr)
+        ResetVertexShader();
+    ID3DBlob* pixelshaderCSO;
+    D3DCompileFromFile(filename.c_str(), nullptr, nullptr, funcname.c_str(), version.c_str(), 0, 0, &pixelshaderCSO, nullptr);
+    Graphics->Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &PixelShader);
+
+    pixelshaderCSO->Release();
+}
 void FRenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
     UINT offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
     Graphics->DeviceContext->Draw(numVertices, 0);
+}
+
+void FRenderer::RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer,  UINT numIndices)
+{
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVectexBuffer, &Stride, &offset);
+    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT,0);
+
+    Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
@@ -97,6 +144,21 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
     Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
 
     return vertexBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateIndexBuffer(uint32* indices, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC indexbufferdesc = {};						// buffer의 종류, 용도 등을 지정
+    indexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;			        // immutable: gpu가 읽기 전용으로 접근할 수 있다.
+    indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;	        // index buffer로 사용하겠다.
+    indexbufferdesc.ByteWidth = byteWidth;	// buffer 크기 지정
+
+    D3D11_SUBRESOURCE_DATA indexbufferSRD = { indices };
+
+    ID3D11Buffer* indexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&indexbufferdesc, &indexbufferSRD, &indexBuffer);
+    return indexBuffer;
 }
 
 void FRenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)

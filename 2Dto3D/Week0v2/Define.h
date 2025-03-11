@@ -11,7 +11,6 @@
 
 #define TArray std::vector
 #define TDoubleLinkedList std::list
-#define FString std::string
 #define UE_LOG Console::GetInstance().AddLog
 #define Super __super
 #define TMap std::unordered_map
@@ -26,6 +25,9 @@ public: \
 
 using int32 = int;
 using uint32 = unsigned int;
+using FString = std::string;
+using FWString = std::wstring;
+
 #include "Console.h"
 
 struct FVertexSimple
@@ -33,7 +35,6 @@ struct FVertexSimple
 	float x, y, z;    // Position
 	float r, g, b, a; // Color
 };
-
 struct FVector
 {
 	float x, y, z;
@@ -88,7 +89,6 @@ struct FVector
 	}
 
 };
-
 struct FVector4 {
 	float x, y, z, a;
 	FVector4(float _x = 0, float _y = 0, float _z = 0, float _a = 0) : x(_x), y(_y), z(_z), a(_a) {}
@@ -104,7 +104,6 @@ struct FVector4 {
 		return FVector4{ x / scalar, y / scalar, z / scalar, a / scalar };
 	}
 };
-
 struct FMatrix
 {
 	float M[4][4];
@@ -154,7 +153,6 @@ struct FMatrix
 		return w != 0.0f ? FVector{ x / w, y / w, z / w } : FVector{ x, y, z };
 	}
 };
-
 enum OBJECTS
 {
 	OBJ_SPHERE,
@@ -164,7 +162,6 @@ enum OBJECTS
 	OBJ_PLAYER,
 	OBJ_END
 };
-
 enum ARROW_DIR
 {
 	AD_X,
@@ -179,7 +176,6 @@ enum ControlMode
 	CM_ROTATION,
 	CM_END
 };
-
 struct FQuat
 {
 	float w, x, y, z;

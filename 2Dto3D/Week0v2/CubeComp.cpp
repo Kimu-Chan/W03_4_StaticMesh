@@ -34,5 +34,8 @@ void UCubeComp::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferCube, FEngineLoop::resourceMgr.numVerticesCube);
+	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferCube,
+		FEngineLoop::resourceMgr.numVerticesCube, 
+		FEngineLoop::resourceMgr.indiceBufferCube,
+		FEngineLoop::resourceMgr.numIndicesCube);
 }
