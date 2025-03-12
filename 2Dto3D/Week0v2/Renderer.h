@@ -40,7 +40,7 @@ public:
     ID3D11Buffer* CreateIndexBuffer(uint32* indices, UINT byteWidth);
     ID3D11Buffer* CreateIndexBuffer(const TArray<uint32>& indices, UINT byteWidth);
 
-    void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
+    void ReleaseBuffer(ID3D11Buffer*& Buffer);
     void ReleaseConstantBuffer();
     void UpdateConstant(FMatrix _MVP, float _Flag);
 
