@@ -131,9 +131,16 @@ void FEngineLoop::Tick()
 
 void FEngineLoop::Render()
 {
+	/*
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
 		iter->Render();
+	}
+	*/
+
+	for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
+	{
+		GetWorld()->GetObjectArr()[i]->Render();
 	}
 }
 
