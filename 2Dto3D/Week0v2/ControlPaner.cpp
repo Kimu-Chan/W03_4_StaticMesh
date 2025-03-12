@@ -22,7 +22,6 @@ ControlPanel::~ControlPanel()
 
 void ControlPanel::Draw(UWorld* world, double elapsedTime )
 {	
-	UCameraComponent* Camera = static_cast<UCameraComponent*>(world->GetCamera());
 
 	ImGui::Begin("Jungle Control Panel");
 	ImGui::Text("Hello Jungle World!");
@@ -120,6 +119,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->NewScene();
 	}
 	if (ImGui::Button("Save scene")) {
+
 		FString SceneName(sceneName);
 		SceneData SaveData = world->SaveData();
 		FSceneMgr::SaveSceneToFile(SceneName, SaveData);
@@ -134,16 +134,16 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Separator();
 
 	ImGui::Text("Orthogonal");
-	ImGui::SliderFloat("FOV", &Camera->GetFov(), 30.0f, 120.0f);
+	ImGui::SliderFloat("FOV", &world->GetCamera()->GetFov(), 30.0f, 120.0f);
 
-	float cameraLocation[3] = { Camera->GetWorldLocation().x, Camera->GetWorldLocation().y, Camera->GetWorldLocation().z };
+	float cameraLocation[3] = { world->GetCamera()->GetWorldLocation().x, world->GetCamera()->GetWorldLocation().y, world->GetCamera()->GetWorldLocation().z };
 	ImGui::InputFloat3("Camera Location", cameraLocation);
 
-	float cameraRotation[3] = { Camera->GetWorldRotation().x, Camera->GetWorldRotation().y, Camera->GetWorldRotation().z };
+	float cameraRotation[3] = { world->GetCamera()->GetWorldRotation().x, world->GetCamera()->GetWorldRotation().y, world->GetCamera()->GetWorldRotation().z };
 	ImGui::InputFloat3("Camera Rotation", cameraRotation);
 
-	Camera->SetLocation(FVector(cameraLocation[0], cameraLocation[1], cameraLocation[2]));
-	Camera->SetRotation(FVector(cameraRotation[0], cameraRotation[1], cameraRotation[2]));
+	world->GetCamera()->SetLocation(FVector(cameraLocation[0], cameraLocation[1], cameraLocation[2]));
+	world->GetCamera()->SetRotation(FVector(cameraRotation[0], cameraRotation[1], cameraRotation[2]));
 
 	ImGui::End();
 }
