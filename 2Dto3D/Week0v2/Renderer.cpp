@@ -210,7 +210,9 @@ ID3D11Buffer* FRenderer::CreateIndexBuffer(const TArray<uint32>& indices, UINT b
 
 void FRenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
-    vertexBuffer->Release();
+    if (vertexBuffer) {
+        vertexBuffer->Release();             
+    }
 }
 
 void FRenderer::CreateConstantBuffer()
