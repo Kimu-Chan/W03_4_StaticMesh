@@ -1,47 +1,24 @@
 #pragma once
 #include <Windows.h>
-#include "GraphicDevice.h"
+#include <unordered_map>
+#include <memory>
+#include "StaticMesh.h"
 #include "Define.h"
 
 class FRenderer;
 class FResourceMgr
 {
+
 public:
 	void Initialize(FRenderer* renderer);
 	void Release(FRenderer* renderer);
-	void LoadObjAsset(FRenderer* renderer, FWString filepath, ID3D11Buffer** vertexBuffer, UINT& numVertices, ID3D11Buffer** indexBuffer, UINT& numIndices);
-public:
-	ID3D11Buffer* vertexBufferSphere = nullptr;
-	
-	ID3D11Buffer* vertexBufferCube = nullptr;
-	ID3D11Buffer* indiceBufferCube = nullptr;
+	void LoadObjAsset(FRenderer* renderer, const FString& meshName, const FWString& filepath);
 
-	ID3D11Buffer* vertexBufferGizmo = nullptr;
-	
-	ID3D11Buffer* vertexBufferArrowX = nullptr;
-	ID3D11Buffer* indiceBufferArrowX = nullptr;
+	void RegisterMesh(FRenderer* renderer, const std::string& name, FVertexSimple* vertices, uint32 vCount, uint32* indices, uint32 iCount);
+	std::shared_ptr<FStaticMesh> GetMesh(const FString& name) const;
 
-	ID3D11Buffer* vertexBufferArrowY = nullptr;
-	ID3D11Buffer* indiceBufferArrowY = nullptr;
+private:
+	std::unordered_map<std::string, std::shared_ptr<FStaticMesh>> meshMap;
 
-	ID3D11Buffer* vertexBufferArrowZ = nullptr;
-	ID3D11Buffer* indiceBufferArrowZ = nullptr;
-
-
-	UINT numVerticesSphere;
-	
-	UINT numVerticesCube;
-	UINT numIndicesCube;
-
-	UINT numVerticesGizmo;
-	
-	UINT numVerticesArrowX;
-	UINT numIndicesArrowX;
-
-	UINT numVerticesArrowY;
-	UINT numIndicesArrowY;
-
-	UINT numVerticesArrowZ;
-	UINT numIndicesArrowZ;
 };
 

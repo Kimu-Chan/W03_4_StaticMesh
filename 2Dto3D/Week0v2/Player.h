@@ -2,6 +2,7 @@
 #include "Object.h"
 class UArrowComp;
 class USceneComponent;
+class UPrimitiveComponent;
 class UPlayer : public UObject
 {
 	DECLARE_CLASS(ULocalGizmoComponent, UObject)
@@ -15,16 +16,13 @@ public:
 	virtual void		Release();
 
 	void				Input();
-	void PickGizmo(FVector& rayOrigin, FVector& rayDir);
-	void PickObj(FVector& rayOrigin, FVector& rayDir);
+	void PickGizmo(FVector& rayOrigin);
+	void PickObj(FVector& pickPosition);
 	void				AddMode();
 
 private:
-	void ScreenToRay(float screenX, float screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix,
-		FVector& rayOrigin, FVector& rayDir);
-	bool RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDir,
-		const FVector& sphereCenter, float sphereRadius);
-	bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance);
+	void ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin);
+	int RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount);
 	void PickedObjControl();
 	void ControlRoation(UArrowComp* Arrow, USceneComponent* pObj, int32 deltaX, int32 deltaY);
 	void ControlTranslation(USceneComponent* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY);

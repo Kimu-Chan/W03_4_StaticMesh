@@ -49,12 +49,11 @@ void UPlayer::Input()
 
 			ScreenToClient(GEngineLoop.hWnd, &mousePos);
 
-			FVector rayOrigin;
-			FVector rayDir;
-
-			ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
-			PickObj(rayOrigin, rayDir);
-			PickGizmo(rayOrigin, rayDir);
+			FVector pickPosition;
+		
+			ScreenToNDC(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, pickPosition);
+			PickObj(pickPosition);
+			PickGizmo(pickPosition);
 		}
 		else
 		{
@@ -84,7 +83,7 @@ void UPlayer::Input()
 	}
 }
 
-void UPlayer::PickGizmo(FVector& rayOrigin, FVector& rayDir)
+void UPlayer::PickGizmo(FVector& pickPosition)
 {
 	if (GetWorld()->GetPickingObj()) {
 		for (auto i : GetWorld()->TestLocalGizmo->GetArrowArr())
@@ -106,22 +105,23 @@ void UPlayer::PickGizmo(FVector& rayOrigin, FVector& rayDir)
 			//}
 			float minDistance = 1000000.0f;
 			float Distance = 0.0f;
-			if (RayIntersectsObject(rayOrigin, rayDir, i, Distance))
+			if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
 			{
-				if (minDistance > Distance)
+				if (currentIntersectCount > maxIntersect && minDistance > Distance)
 				{
 					GetWorld()->SetPickingGizmo(i);
 					minDistance = Distance;
+					maxIntersect = currentIntersectCount;
 				}
 			}
 		}
 	}
 }
 
-void UPlayer::PickObj(FVector& rayOrigin, FVector& rayDir)
+void UPlayer::PickObj(FVector& pickPosition)
 {
 	UObject* Possible = nullptr;
-
+	int maxIntersect = 0;
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
 		UPrimitiveComponent* pObj = nullptr;
@@ -130,20 +130,23 @@ void UPlayer::PickObj(FVector& rayOrigin, FVector& rayDir)
 		}
 		if (pObj && pObj->GetType() != "Arrow")
 		{
-			float minDistance = 10000000.0f;
+			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
-			if (RayIntersectsObject(rayOrigin, rayDir, pObj, Distance))
+			int currentIntersectCount = 0;
+			if (RayIntersectsObject(pickPosition, pObj, Distance, currentIntersectCount))
 			{
-
-				if (minDistance > Distance) {
+				if (currentIntersectCount > maxIntersect && minDistance > Distance) {
 					Possible = pObj;
 					minDistance = Distance;
+					maxIntersect = currentIntersectCount;
 				}
 			}
 		}
 	}
-	if (Possible)
+	if (Possible) {
+		UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(Possible)->GetType().c_str());
 		GetWorld()->SetPickingObj(Possible);
+	}
 }
 
 void UPlayer::AddMode()
@@ -151,60 +154,26 @@ void UPlayer::AddMode()
 	cMode = static_cast<ControlMode>(((cMode + 1) % ControlMode::CM_END));
 }
 
-void UPlayer::ScreenToRay(float screenX, float screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin, FVector& rayDir)
+void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& pickPosition)
 {
 	D3D11_VIEWPORT viewport;
 	UINT numViewports = 1;
 	FEngineLoop::graphicDevice.DeviceContext->RSGetViewports(&numViewports, &viewport);
 	float screenWidth = viewport.Width;
 	float screenHeight = viewport.Height;
-	float x = (2.0f * screenX) / screenWidth - 1.0f;
-	float y = 1.0f - (2.0f * screenY) / screenHeight;
 
-	// 프로젝션 역행렬 계산
-	FMatrix inverseProj = FMatrix::Inverse(projectionMatrix);
+	pickPosition.x = ((2.0f * screenX / viewport.Width) - 1) / projectionMatrix[0][0];
+	pickPosition.y = -((2.0f * screenY / viewport.Height) - 1) / projectionMatrix[1][1];
+	pickPosition.z = 1.0f; // Near Plane
 
-	// NDC에서 뷰 공간으로 변환
-	FVector4 nearPoint = inverseProj.TransformFVector4(FVector4(x, y, 0.0f, 1.0f));
-	FVector4 farPoint = inverseProj.TransformFVector4(FVector4(x, y, 1.0f, 1.0f));
-
-	// W를 1로 정규화
-	nearPoint = nearPoint / nearPoint.a;
-	farPoint = farPoint / farPoint.a;
-
-	// 뷰 행렬을 반영하여 월드 공간으로 변환
-	FMatrix inverseView = FMatrix::Inverse(viewMatrix);
-	FVector nearWorld = inverseView.TransformPosition(FVector(nearPoint.x, nearPoint.y, nearPoint.z));
-	FVector farWorld = inverseView.TransformPosition(FVector(farPoint.x, farPoint.y, farPoint.z));
-
-	// 레이의 시작점과 방향 계산
-	rayOrigin = nearWorld;
-	rayDir = farWorld - nearWorld;
-	rayDir = rayDir.Normalize();
-
-	char message[256];
-	sprintf_s(message, "Ray Origin: (%.2f, %.2f, %.2f)\nRay Direction: (%.2f, %.2f, %.2f)",
-		rayOrigin.x, rayOrigin.y, rayOrigin.z, rayDir.x, rayDir.y, rayDir.z);
-	//MessageBoxA(nullptr, message, "ScreenToRay Output", MB_OK);
+	std::wstring ws = L"pickPosition:" + std::to_wstring(pickPosition.x) + 
+					  L", " + std::to_wstring(pickPosition.y) + 
+					  L", " + std::to_wstring(pickPosition.z) + L"\n";
+	
+	
+	OutputDebugString(ws.c_str());
 }
-
-bool UPlayer::RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDir, const FVector& sphereCenter, float sphereRadius)
-{
-	// 레이와 구체의 교차 여부 계산
-	FVector oc;
-	oc.x = rayOrigin.x - sphereCenter.x;
-	oc.y = rayOrigin.y - sphereCenter.y;
-	oc.z = rayOrigin.z - sphereCenter.z;
-
-	float b = 2.0f * (rayDir.x * oc.x + rayDir.y * oc.y + rayDir.z * oc.z);
-	float c = (oc.x * oc.x + oc.y * oc.y + oc.z * oc.z) - sphereRadius * sphereRadius;
-
-	float discriminant = b * b - 4.0f * c;
-	return discriminant > 0;
-}
-
-//OBB로 수정
-bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance)
+int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount)
 {
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전 적용)
 	FMatrix rotationMatrix = FMatrix::CreateRotation(
@@ -217,57 +186,14 @@ bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDi
 
 	// 최종 변환 행렬
 	FMatrix worldMatrix = rotationMatrix * translationMatrix;
+	FMatrix inverseMatrix = FMatrix::Inverse(worldMatrix * GEngineLoop.View);
+	FVector cameraOrigin = { 0,0,0 };
 
-	// OBB의 로컬 X, Y, Z 축 가져오기
-	FVector axisX(worldMatrix.M[0][0], worldMatrix.M[0][1], worldMatrix.M[0][2]);
-	FVector axisY(worldMatrix.M[1][0], worldMatrix.M[1][1], worldMatrix.M[1][2]);
-	FVector axisZ(worldMatrix.M[2][0], worldMatrix.M[2][1], worldMatrix.M[2][2]);
-
-	// 기즈모인지 확인
-	//bool isGizmo = (dynamic_cast<UGizmoComp*>(obj) != nullptr);
-
-	// OBB의 반 크기 적용 (기즈모의 경우 Y,Z 스케일을 0.2로 조정)
-	FVector halfSize = obj->GetWorldScale();
-	//if (isGizmo)
-	//{
-	//	halfSize.y = 0.2f;
-	//	halfSize.z = 0.2f;
-	//}
-
-	FVector p = obj->GetWorldLocation() - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
-	FVector d = rayDir.Normalize(); // 레이 방향 정규화
-
-	float tMin = -FLT_MAX, tMax = FLT_MAX;
-
-	// 각 축(X, Y, Z)에 대해 레이와의 충돌 검사 수행
-	FVector axes[3] = { axisX, axisY, axisZ };
-	float halfSizes[3] = { halfSize.x, halfSize.y, halfSize.z };
-
-	for (int i = 0; i < 3; i++)
-	{
-		float e = axes[i].Dot(p);  // 원점에서 타겟까지의 거리를 해당 축으로 투영
-		float f = axes[i].Dot(d);  // 레이를 투영
-
-		if (fabs(f) > 1e-6)  // 방향 벡터가 0이면 큰일남
-		{
-			float t1 = (e - halfSizes[i]) / f;
-			float t2 = (e + halfSizes[i]) / f;
-
-			if (t1 > t2) std::swap(t1, t2); // t1이 항상 작은 값이 되도록 설정
-
-			tMin = max(tMin, t1);  // 범위를 계속 줄여나감
-			tMax = min(tMax, t2);
-
-			if (tMin > tMax) return false; // 충돌 없음
-		}
-		else if (-e - halfSizes[i] > 0 || -e + halfSizes[i] < 0)
-		{
-			return false; // 레이가 OBB 내부에 없고, 지나가지도 않음
-		}
-	}
-
-	hitDistance = tMin;
-	return true;
+	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
+	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
+	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local 좌표축의 ray
+	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
+	return intersectCount;
 }
 
 void UPlayer::PickedObjControl()

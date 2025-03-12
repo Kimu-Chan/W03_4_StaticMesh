@@ -210,6 +210,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SphereComp.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="UClass.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

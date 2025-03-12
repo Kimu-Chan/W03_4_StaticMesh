@@ -33,6 +33,5 @@ void USphereComp::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-
-	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferSphere, FEngineLoop::resourceMgr.numVerticesSphere);
+	Super::Render();
 }
