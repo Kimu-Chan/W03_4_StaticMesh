@@ -108,8 +108,8 @@ void FEngineLoop::Tick()
 		graphicDevice.Prepare();
 		renderer.PrepareShader();
 
-		GWorld->Render();
-
+		//GWorld->Render();
+		Render();
 
 		UIMgr->BeginFrame();
 
