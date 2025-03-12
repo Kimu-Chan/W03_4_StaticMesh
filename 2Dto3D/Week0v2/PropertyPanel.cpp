@@ -19,19 +19,30 @@ void PropertyPanel::Draw(UWorld* world)
 	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());	
 	std::string buttonLabel;
 
-	if(player->GetMode() == ControlMode::CM_TRANSLATION)
+	if(player->GetControlMode() == ControlMode::CM_TRANSLATION)
 	  buttonLabel = "Translation";
-	else if (player->GetMode() == ControlMode::CM_ROTATION)
+	else if (player->GetControlMode() == ControlMode::CM_ROTATION)
 		buttonLabel = "Rotation";
-	else if (player->GetMode() == ControlMode::CM_SCALE)
+	else if (player->GetControlMode() == ControlMode::CM_SCALE)
 		buttonLabel = "Scale";
 
+	std::string coordiButtonLabel;
+
+	if (player->GetCoordiMode() == CoordiMode::CDM_WORLD)
+		coordiButtonLabel = "World";
+	else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+		coordiButtonLabel = "Local";
 	// 버튼 사이즈 동일하게
+
 	ImVec2 buttonSize(120, 30);
 
 	ImGui::SetNextItemWidth(buttonSize.x); // 버튼 너비 고정
 	if (ImGui::Button(buttonLabel.c_str(), buttonSize)) {
-		player->AddMode(); // 기존 코드 유지
+		player->AddControlMode(); // 기존 코드 유지
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(coordiButtonLabel.c_str(), buttonSize)) {
+		player->AddCoordiMode();
 	}
 	USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
 	if (PickObj) {

@@ -3,6 +3,7 @@
 #include "Define.h"
 #include "ObjectFactory.h"
 #include "DiscHellowComponent.h"
+#include "Player.h"
 ULocalGizmoComponent::ULocalGizmoComponent()
 {
 	UObject* obj = FObjectFactory::ConstructObject<UArrowComp>();
@@ -32,8 +33,8 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowZ->SetDir(ARROW_DIR::AD_Z);
 
 	AttachChildren.push_back(ArrowZ);
-	GetWorld()->GetObjectArr().push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
+	GetWorld()->GetObjectArr().push_back(ArrowZ);
 
 	UDiscHollowComponent* disc = new UDiscHollowComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
 	disc->SetType("DiscX");
@@ -64,6 +65,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 
 ULocalGizmoComponent::~ULocalGizmoComponent()
 {
+
 }
 
 void ULocalGizmoComponent::Initialize()
@@ -74,6 +76,20 @@ void ULocalGizmoComponent::Initialize()
 void ULocalGizmoComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
+	if (GetWorld()->GetPickingObj()) {
+		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
+		if(GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+			SetRotation(GetWorld()->GetPickingObj()->GetWorldRotation());
+		else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
+			SetRotation(FVector(0.0f,0.0f,0.0f));
+
+		//float scaleMax = 0.3f;
+		
+	/*	scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().x) / 2);
+		scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().y) / 2);
+		scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().z) / 2);
+		SetScale({ scaleMax ,scaleMax ,scaleMax });*/
+	}
 }
 
 void ULocalGizmoComponent::Release()

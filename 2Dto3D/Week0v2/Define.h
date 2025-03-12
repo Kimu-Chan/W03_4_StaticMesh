@@ -178,6 +178,12 @@ enum ControlMode
 	CM_ROTATION,
 	CM_END
 };
+enum CoordiMode
+{
+	CDM_WORLD,
+	CDM_LOCAL,
+	CDM_END
+};
 struct FQuat
 {
 	float w, x, y, z;

@@ -70,7 +70,7 @@ void UPlayer::Input()
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		if (!bSpaceDown) {
-			AddMode();
+			AddControlMode();
 			bSpaceDown = true;
 		}
 	}
@@ -159,9 +159,18 @@ void UPlayer::PickObj(FVector& pickPosition)
 	}
 }
 
-void UPlayer::AddMode()
+void UPlayer::AddControlMode()
 {
-	cMode = static_cast<ControlMode>(((cMode + 1) % ControlMode::CM_END));
+	cMode = static_cast<ControlMode>((cMode + 1) % ControlMode::CM_END);
+}
+
+void UPlayer::AddCoordiMode()
+{
+	cdMode = static_cast<CoordiMode>((cdMode + 1) % CoordiMode::CDM_END);
+	//if (cdMode == CoordiMode::CDM_WORLD)
+	//	cdMode = CoordiMode::CDM_LOCAL;
+	//else if (cdMode == CoordiMode::CDM_LOCAL)
+	//	cdMode = CoordiMode::CDM_WORLD;
 }
 
 void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& pickPosition)
@@ -289,29 +298,58 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UArrowComp* Arrow, int32
 {
 	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
 	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
-	switch (Arrow->GetDir())
-	{
-	case AD_X:
-		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-			pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
-		else
-			pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
-		break;
-	case AD_Y:
-		if (pObj->GetUpVector().y >= 0)
-			pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
-		else
-			pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
-		break;
-	case AD_Z:
+	if (cdMode == CDM_LOCAL) {
+		switch (Arrow->GetDir())
+		{
+		case AD_X:
+			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+				pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
+			else
+				pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
+			break;
+		case AD_Y:
+			if (pObj->GetUpVector().y >= 0)
+				pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
+			else
+				pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
+			break;
+		case AD_Z:
 
-		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-			pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
-		else
-			pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
-		break;
-	default:
-		break;
+			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+				pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
+			else
+				pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
+			break;
+		default:
+			break;
+		}
+	}
+	else if (cdMode == CDM_WORLD)
+	{
+		switch (Arrow->GetDir())
+		{
+		case AD_X:
+			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+				pObj->AddLocation(FVector(1.0f,0.0f,0.0f) * deltaX * 0.01f);
+			else
+				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+			break;
+		case AD_Y:
+			if (pObj->GetUpVector().y >= 0)
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.01f * -1);
+			else
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.01f);
+			break;
+		case AD_Z:
+
+			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+				pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.01f);
+			else
+				pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.01f );
+			break;
+		default:
+			break;
+		}
 	}
 }
 

@@ -18,7 +18,8 @@ public:
 	void				Input();
 	void PickGizmo(FVector& rayOrigin);
 	void PickObj(FVector& pickPosition);
-	void				AddMode();
+	void				AddControlMode();
+	void				AddCoordiMode();
 
 private:
 	void ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin);
@@ -32,9 +33,12 @@ private:
 
 	POINT m_LastMousePos;
 	ControlMode cMode = CM_TRANSLATION;
+	CoordiMode cdMode = CDM_WORLD;
+	
 
 public:
 	void SetMode(ControlMode _Mode) { cMode = _Mode; }
-	ControlMode GetMode() { return cMode; }
+	ControlMode GetControlMode() { return cMode; }
+	CoordiMode GetCoordiMode() { return cdMode; }
 };
 
