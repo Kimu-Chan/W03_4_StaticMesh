@@ -132,7 +132,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
 			 pObj = static_cast<UPrimitiveComponent*>(iter);
 		}
-		if (pObj && pObj->GetType() != "Arrow")
+		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ")
 		{
 			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
