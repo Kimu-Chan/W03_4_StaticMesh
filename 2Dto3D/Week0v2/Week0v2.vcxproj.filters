@@ -277,5 +277,8 @@
     <ClInclude Include="ActorComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>소스 파일\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

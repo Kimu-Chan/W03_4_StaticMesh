@@ -40,6 +40,7 @@ void UWorld::CreateBaseObject()
 	UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
 	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
+	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowX");
 	LocalGizmo[0] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 
@@ -47,6 +48,7 @@ void UWorld::CreateBaseObject()
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
 	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
+	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowY");
 	LocalGizmo[1] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 
@@ -55,6 +57,7 @@ void UWorld::CreateBaseObject()
 	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
 
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
+	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowZ");
 	LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
 }
@@ -157,8 +160,9 @@ SceneData UWorld::SaveData()
 		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
 			Primitive = static_cast<UPrimitiveComponent*>(iter);
 		}
-		if (Primitive && Primitive->GetType() != "Arrow")
+		if (Primitive)
 		{
+			if(Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ")
 			Save.Primitives[Count] = iter;
 			Count++;
 		}
