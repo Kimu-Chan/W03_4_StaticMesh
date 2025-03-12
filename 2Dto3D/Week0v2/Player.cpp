@@ -103,9 +103,13 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 			//	Scale = GetWorld()->LocalGizmo[2]->GetWorldScale().z;
 			//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
 			//}
-			float minDistance = 1000000.0f;
+			int maxIntersect = 0;
+			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
-			if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
+			int currentIntersectCount = 0;
+			//UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
+			//if (!localGizmo) continue;
+			if (RayIntersectsObject(pickPosition, i, Distance, currentIntersectCount))
 			{
 				if (currentIntersectCount > maxIntersect && minDistance > Distance)
 				{
