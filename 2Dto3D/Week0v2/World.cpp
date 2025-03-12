@@ -38,7 +38,7 @@ void UWorld::CreateBaseObject()
 	GUObjectArray.push_back(gizmo);
 
 	UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
+	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
 	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowX");
 	LocalGizmo[0] = static_cast<UArrowComp*>(localGizmo);
@@ -46,7 +46,7 @@ void UWorld::CreateBaseObject()
 
 	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
+	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
 	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowY");
 	LocalGizmo[1] = static_cast<UArrowComp*>(localGizmo);
@@ -54,7 +54,7 @@ void UWorld::CreateBaseObject()
 
 	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
+	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
 
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
 	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowZ");
@@ -91,19 +91,19 @@ void UWorld::UpdateLocalGizmo()
 {
 	if (pickingObj)
 	{
-		
+		//UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(pickingObj)->GetType().c_str());
 		FVector temp = FVector(pickingObj->GetScale().x, 0.0f, 0.0f);
 		LocalGizmo[0]->SetLocation(pickingObj->GetLocation());
 
 		LocalGizmo[0]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
+		//LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
 		LocalGizmo[1]->SetLocation(pickingObj->GetLocation());
 		LocalGizmo[1]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y + 2.0f, 1.0f));
+		//LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y + 2.0f, 1.0f));
 
 		LocalGizmo[2]->SetLocation(pickingObj->GetLocation());
 		LocalGizmo[2]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
+		//LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
 
 	}
 }
@@ -162,9 +162,10 @@ SceneData UWorld::SaveData()
 		}
 		if (Primitive)
 		{
-			if(Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ")
-			Save.Primitives[Count] = iter;
-			Count++;
+			if (Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ") {
+				Save.Primitives[Count] = iter;
+				Count++;
+			}
 		}
 	}
 	Save.Version = 1;

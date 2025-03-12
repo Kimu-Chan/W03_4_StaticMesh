@@ -35,9 +35,9 @@ void UGizmoComponent::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-
-	//FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferGizmo, FEngineLoop::resourceMgr.numVerticesGizmo);
-	Super::Render();
+	FStaticMesh* mesh = FEngineLoop::resourceMgr.GetMesh("Gizmo").get();
+	FEngineLoop::renderer.RenderPrimitive(mesh->vertexBuffer, mesh->numVertices);
+	//Super::Render();
 	FEngineLoop::graphicDevice.DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 }
