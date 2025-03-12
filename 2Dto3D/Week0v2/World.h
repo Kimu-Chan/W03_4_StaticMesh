@@ -26,7 +26,6 @@ public:
 	void NewScene();
 	void	SetPickingObj(UObject* _Obj); 
 private:
-	//TArray<TDoubleLinkedList<UObject*>> m_pObjectList;
 
 	TArray<UObject*> GUObjectArray;
 	USceneComponent* pickingObj = nullptr;
@@ -35,7 +34,7 @@ private:
 	UCameraComponent* camera = nullptr;
 	UPlayer* localPlayer = nullptr;
 public:
-	TArray<UObject*> GetObjectArr() { return GUObjectArray; }
+	TArray<UObject*>& GetObjectArr() { return GUObjectArray; }
 
 	UArrowComp* LocalGizmo[3] = { nullptr, nullptr, nullptr };
 	UCameraComponent* GetCamera() { return camera; }

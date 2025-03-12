@@ -8,6 +8,7 @@
 #include "ObjectFactory.h"
 #include "Player.h"
 #include "ArrowComp.h"
+#include "LocalGizmoComponent.h"
 UWorld::UWorld()
 {
 }
@@ -57,6 +58,9 @@ void UWorld::CreateBaseObject()
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
 	LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
 	GUObjectArray.push_back(localGizmo);
+
+	UObject* tmp = FObjectFactory::ConstructObject<LocalGizmoComponent>();
+	GUObjectArray.push_back(tmp);
 }
 
 void UWorld::Tick(double deltaTime)
@@ -107,6 +111,10 @@ void UWorld::UpdateLocalGizmo()
 
 void UWorld::Render()
 {
+	for (auto iter : GUObjectArray)
+	{
+		iter->Render();
+	}
 }
 
 void UWorld::Input()

@@ -15,6 +15,12 @@ void USceneComponent::Initialize()
 
 void USceneComponent::Update(double deltaTime)
 {
+	Super::Update(deltaTime);
+	if (AttachParent) {
+		SetLocation(GetLocation() + AttachParent->GetLocation());
+		SetRotation(GetRotation() + AttachParent->GetRotation());
+		SetRotation(GetScale() + AttachParent->GetScale());
+	}
 }
 
 
@@ -47,15 +53,6 @@ FVector USceneComponent::GetUpVector()
 	return Up;
 }
 
-FVector USceneComponent::GetLocation()
-{
-	return RelativeLocation;
-}
-
-void USceneComponent::SetLocation(FVector _newLoc)
-{
-	RelativeLocation = _newLoc;
-}
 
 void USceneComponent::AddLocation(FVector _added)
 {
@@ -73,4 +70,9 @@ void USceneComponent::AddScale(FVector _added)
 {
 	RelativeScale3D = RelativeScale3D + _added;
 
+}
+
+void USceneComponent::AddChild(USceneComponent* _newChild)
+{
+	AttachChildren.push_back(_newChild);
 }
