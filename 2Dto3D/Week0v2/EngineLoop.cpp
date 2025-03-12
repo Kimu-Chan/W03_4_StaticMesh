@@ -54,8 +54,10 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	WindowInit(hInstance);
 	graphicDevice.Initialize(hWnd);
 	renderer.Initialize(&graphicDevice);
+
 	UIMgr = new UImGuiManager;
 	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
+
 	resourceMgr.Initialize(&renderer);
 	GWorld = new UWorld;
 	GWorld->Initialize();

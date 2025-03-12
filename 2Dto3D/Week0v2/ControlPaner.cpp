@@ -3,8 +3,15 @@
 #include "CameraComponent.h"
 #include "ImGuiManager.h"
 #include "SceneMgr.h"
+
+#include "EditorWindow.h"
+// #include "ImGUI\imgui.h"
+#include "IWindowToggleable.h"
+#include "Font\IconDefs.h"
+
 ControlPanel::ControlPanel()
 {
+	
 }
 
 ControlPanel::~ControlPanel()
@@ -12,7 +19,7 @@ ControlPanel::~ControlPanel()
 }
 
 void ControlPanel::Draw(UWorld* world, double elapsedTime )
-{
+{	
 	UCameraComponent* Camera = static_cast<UCameraComponent*>(world->GetCamera());
 
 	ImGui::Begin("Jungle Control Panel");
@@ -49,6 +56,24 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		SceneData LoadData = FSceneMgr::ParseSceneData(LoadJsonData);
 		world->LoadData(LoadData);
 	}
+
+	
+	ImGuiIO& io = ImGui::GetIO();
+	
+	//OutputDebugString( (std::to_wstring(io.Fonts->Fonts.Size) + L"\n").c_str());
+	
+
+
+	ImFont* UnicodeFont = io.Fonts->Fonts[1];
+	ImGui::PushFont(UnicodeFont);
+	
+	// if (ImGui::Button(u8"\ue9b7")) // Toggle Control Panel
+	if (ImGui::Button(ICON_MONITOR))
+	{
+		Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
+	}
+
+	ImGui::PopFont();
 
 	ImGui::Separator();
 

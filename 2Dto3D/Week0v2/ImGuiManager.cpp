@@ -14,6 +14,8 @@ void UImGuiManager::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceCont
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplWin32_Init(hWnd);
     ImGui_ImplDX11_Init(device, deviceContext);
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+
 }
 
 void UImGuiManager::BeginFrame()

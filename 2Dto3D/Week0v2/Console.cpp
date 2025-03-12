@@ -2,6 +2,7 @@
 #include <cstdarg>
 #include <cstdio>
 
+
 // 싱글톤 인스턴스 반환
 Console& Console::GetInstance() {
     static Console instance;
@@ -31,10 +32,13 @@ void Console::AddLog(LogLevel level, const char* fmt, ...) {
     scrollToBottom = true;
 }
 
+
 // 콘솔 창 렌더링
 void Console::Draw() {
+    if (!bWasOpen) return;
+    
     ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Console")) {
+    if (!ImGui::Begin("Console", &bWasOpen)) { // 창 상태 연동 
         ImGui::End();
         return;
     }

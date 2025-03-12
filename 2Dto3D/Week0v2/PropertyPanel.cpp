@@ -40,5 +40,6 @@ void PropertyPanel::Draw(UWorld* world)
 		PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
 		PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
 	}
+
 	ImGui::End();
 }

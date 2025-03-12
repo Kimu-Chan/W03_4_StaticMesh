@@ -49,6 +49,9 @@
     <Filter Include="헤더 파일\Engine">
       <UniqueIdentifier>{ec5ca991-d367-4b30-a7a4-4967aeee26d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Font">
+      <UniqueIdentifier>{4b0db69d-f824-486f-8d67-1e85a253c04b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Launch.cpp">
@@ -270,6 +273,18 @@
     </ClInclude>
     <ClInclude Include="UClass.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IWindowToggleable.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorWindow.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\RawFonts.h">
+      <Filter>헤더 파일\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\IconDefs.h">
+      <Filter>헤더 파일\Font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

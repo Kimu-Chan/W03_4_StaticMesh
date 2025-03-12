@@ -180,8 +180,11 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="EngineStatics.h" />
+    <ClInclude Include="Font\IconDefs.h" />
+    <ClInclude Include="Font\RawFonts.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoComponent.h" />
     <ClInclude Include="ImGuiManager.h" />
@@ -193,6 +196,7 @@
     <ClInclude Include="ImGUI\imstb_rectpack.h" />
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
+    <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
     <ClInclude Include="LocalGizmoComponent.h" />
