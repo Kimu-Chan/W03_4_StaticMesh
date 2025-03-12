@@ -60,11 +60,11 @@ void UWorld::CreateBaseObject()
 	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
 	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowZ");
 	LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
-	GUObjectArray.push_back(localGizmo)*/;
+	GUObjectArray.push_back(localGizmo);
 
-	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
-	TestLocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
-	GUObjectArray.push_back(tmp);
+	//UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
+	//TestLocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
+	//GUObjectArray.push_back(tmp);
 }
 
 void UWorld::Tick(double deltaTime)
@@ -98,22 +98,21 @@ void UWorld::UpdateLocalGizmo()
 	if (pickingObj)
 	{
 		//UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(pickingObj)->GetType().c_str());
-		FVector temp = FVector(pickingObj->GetScale().x, 0.0f, 0.0f);
-		LocalGizmo[0]->SetLocation(pickingObj->GetLocation());
+		LocalGizmo[0]->SetLocation(pickingObj->GetWorldLocation());
 
-		LocalGizmo[0]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[0]->SetRotation(pickingObj->GetWorldRotation());
 		//LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
-		LocalGizmo[1]->SetLocation(pickingObj->GetLocation());
-		LocalGizmo[1]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[1]->SetLocation(pickingObj->GetWorldLocation());
+		LocalGizmo[1]->SetRotation(pickingObj->GetWorldRotation());
 		//LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y + 2.0f, 1.0f));
 
-		LocalGizmo[2]->SetLocation(pickingObj->GetLocation());
-		LocalGizmo[2]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[2]->SetLocation(pickingObj->GetWorldLocation());
+		LocalGizmo[2]->SetRotation(pickingObj->GetWorldRotation());
 		//LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
 
-		TestLocalGizmo->SetLocation(pickingObj->GetWorldLocation());
-		TestLocalGizmo->SetRotation(pickingObj->GetWorldRotation());
-		TestLocalGizmo->SetScale(pickingObj->GetWorldScale());
+		//TestLocalGizmo->SetLocation(pickingObj->GetWorldLocation());
+		//TestLocalGizmo->SetRotation(pickingObj->GetWorldRotation());
+		//TestLocalGizmo->SetScale(pickingObj->GetWorldScale());
 	}
 }
 

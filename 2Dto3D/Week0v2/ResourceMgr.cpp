@@ -13,9 +13,9 @@ void FResourceMgr::Initialize(FRenderer* renderer)
     RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
     RegisterMesh(renderer, "Gizmo", gizmoVertices, sizeof(gizmoVertices) / sizeof(FVertexSimple), nullptr, 0);
 
-    LoadObjAsset(renderer, "ArrowX", L"Assets/AxisArrow.obj");
-    LoadObjAsset(renderer, "ArrowY", L"Assets/AxisArrow.obj");
-    LoadObjAsset(renderer, "ArrowZ", L"Assets/AxisArrow.obj");
+    LoadObjAsset(renderer, "ArrowX", L"Assets/AxisArrowX.obj");
+    LoadObjAsset(renderer, "ArrowY", L"Assets/AxisArrowY.obj");
+    LoadObjAsset(renderer, "ArrowZ", L"Assets/AxisArrowZ.obj");
 }
 
 void FResourceMgr::Release(FRenderer* renderer) {

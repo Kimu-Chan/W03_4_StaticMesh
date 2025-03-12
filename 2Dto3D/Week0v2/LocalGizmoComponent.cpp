@@ -7,6 +7,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 {
 	UObject* obj = FObjectFactory::ConstructObject<UArrowComp>();
 	UArrowComp* ArrowX = static_cast<UArrowComp*>(obj);
+	ArrowX->SetType("ArrowX");
 	ArrowX->SetParent(this);
 	AttachChildren.push_back(ArrowX);
 	GetWorld()->GetObjectArr().push_back(ArrowX);
@@ -14,6 +15,8 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 
 	obj = FObjectFactory::ConstructObject<UArrowComp>();
 	UArrowComp* ArrowY = static_cast<UArrowComp*>(obj);
+	ArrowY->SetType("ArrowY");
+
 	ArrowY->SetParent(this);
 	ArrowY->SetDir(ARROW_DIR::AD_Y);
 	AttachChildren.push_back(ArrowY);
@@ -23,6 +26,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 
 	obj = FObjectFactory::ConstructObject<UArrowComp>();
 	UArrowComp* ArrowZ = static_cast<UArrowComp*>(obj);
+	ArrowZ->SetType("ArrowZ");
 	ArrowZ->SetParent(this);
 	ArrowZ->SetDir(ARROW_DIR::AD_Z);
 
