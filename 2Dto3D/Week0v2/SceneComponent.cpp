@@ -16,11 +16,11 @@ void USceneComponent::Initialize()
 void USceneComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
-	if (AttachParent) {
-		SetLocation(GetLocation() + AttachParent->GetLocation());
-		SetRotation(GetRotation() + AttachParent->GetRotation());
-		SetRotation(GetScale() + AttachParent->GetScale());
-	}
+	//if (AttachParent) {
+	//	SetLocation(GetWorldLocation() + AttachParent->GetWorldLocation());
+	//	SetRotation(GetWorldRotation() + AttachParent->GetWorldRotation());
+	//	SetRotation(GetWorldScale() + AttachParent->GetWorldScale());
+	//}
 }
 
 
@@ -75,4 +75,34 @@ void USceneComponent::AddScale(FVector _added)
 void USceneComponent::AddChild(USceneComponent* _newChild)
 {
 	AttachChildren.push_back(_newChild);
+}
+
+FVector USceneComponent::GetWorldRotation()
+{
+	if (AttachParent)
+	{
+		return FVector(AttachParent->GetLocalRotation() + GetLocalRotation());
+	}
+	else
+		return GetLocalRotation();
+}
+
+FVector USceneComponent::GetWorldScale()
+{
+	if (AttachParent)
+	{
+		return FVector(AttachParent->GetWorldScale() + GetLocalScale());
+	}
+	else
+		return GetLocalScale();
+}
+
+FVector USceneComponent::GetWorldLocation()
+{
+	if (AttachParent)
+	{
+		return FVector(AttachParent->GetWorldLocation() + GetLocalLocation());
+	}
+	else
+		return GetLocalLocation();
 }

@@ -22,18 +22,28 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 	numVerticesGizmo = sizeof(gizmoVertices) / sizeof(FVertexSimple);
 	vertexBufferGizmo = renderer->CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
 
-	//numVerticesArrowX = sizeof(arrow_x_vertices) / sizeof(FVertexSimple);
-	//vertexBufferArrowX = renderer->CreateVertexBuffer(arrow_x_vertices, sizeof(arrow_x_vertices));
-	LoadObjAsset(renderer, L"Assets/AxisArrow.obj", &vertexBufferArrowX, numVerticesArrowX, &indiceBufferArrowX, numIndicesArrowX);
+	//numVerticesArrowX = sizeof(translationX_vertices) / sizeof(FVertexSimple);
+	//vertexBufferArrowX = renderer->CreateVertexBuffer(translationX_vertices, sizeof(translationX_vertices));
+	LoadObjAsset(renderer, L"Assets/AxisArrowX.obj", &vertexBufferArrowX, numVerticesArrowX, &indiceBufferArrowX, numIndicesArrowX);
 	if (vertexBufferArrowX)
 	{
-		UE_LOG(LogLevel::Error, "DDDDDDDDDDDDD");
+		UE_LOG(LogLevel::Error, "XXXXXXXXXX");
 	}
-	numVerticesArrowY = sizeof(arrow_y_vertices) / sizeof(FVertexSimple);
-	vertexBufferArrowY = renderer->CreateVertexBuffer(arrow_y_vertices, sizeof(arrow_y_vertices));
+	//numVerticesArrowY = sizeof(translationY_vertices) / sizeof(FVertexSimple);
+	//vertexBufferArrowY = renderer->CreateVertexBuffer(translationY_vertices, sizeof(translationY_vertices));
 
-	numVerticesArrowZ = sizeof(arrow_z_vertices) / sizeof(FVertexSimple);
-	vertexBufferArrowZ = renderer->CreateVertexBuffer(arrow_z_vertices, sizeof(arrow_z_vertices));
+	LoadObjAsset(renderer, L"Assets/AxisArrowY.obj", &vertexBufferArrowY, numVerticesArrowY, &indiceBufferArrowY, numIndicesArrowY);
+	if (vertexBufferArrowY)
+	{
+		UE_LOG(LogLevel::Error, "YYYYYYYYYY");
+	}
+	//numVerticesArrowZ = sizeof(translationZ_vertices) / sizeof(FVertexSimple);
+	//vertexBufferArrowZ = renderer->CreateVertexBuffer(translationZ_vertices, sizeof(translationZ_vertices));
+	LoadObjAsset(renderer, L"Assets/AxisArrowZ.obj", &vertexBufferArrowZ, numVerticesArrowZ, &indiceBufferArrowZ, numIndicesArrowZ);
+	if (vertexBufferArrowZ)
+	{
+		UE_LOG(LogLevel::Error, "ZZZZZZZZZ");
+	}
 }
 
 void FResourceMgr::Release(FRenderer* renderer)
@@ -70,8 +80,10 @@ void FResourceMgr::LoadObjAsset(FRenderer* renderer, FWString filepath, ID3D11Bu
 			if (type == "v") // Vertex position
 			{
 				FVector vertex;
-				lineStream >> vertex.x >> vertex.y >> vertex.z;
-				FVertexSimple vertexSimple{ vertex.x, vertex.y, vertex.z, 1, 0 , 0, 1 };
+				FVector color;
+				lineStream >> vertex.x >> vertex.y >> vertex.z >> color.x >> color.y >> color.z;
+
+				FVertexSimple vertexSimple{ vertex.x, vertex.y, vertex.z, color.x, color.y , color.z, 1 };
 				vertices.push_back(vertexSimple);
 				positions.push_back(vertex);
 			}

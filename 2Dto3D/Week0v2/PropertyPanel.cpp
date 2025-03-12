@@ -29,9 +29,9 @@ void PropertyPanel::Draw(UWorld* world)
 	}
 	USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
 	if (PickObj) {
-		float pickObjLoc[3] = { PickObj->GetLocation().x,PickObj->GetLocation().y ,PickObj->GetLocation().z };
-		float pickObjRot[3] = { PickObj->GetRotation().x,PickObj->GetRotation().y ,PickObj->GetRotation().z };
-		float pickObjScale[3] = { PickObj->GetScale().x,PickObj->GetScale().y ,PickObj->GetScale().z };
+		float pickObjLoc[3] = { PickObj->GetWorldLocation().x,PickObj->GetWorldLocation().y ,PickObj->GetWorldLocation().z };
+		float pickObjRot[3] = { PickObj->GetWorldRotation().x,PickObj->GetWorldRotation().y ,PickObj->GetWorldRotation().z };
+		float pickObjScale[3] = { PickObj->GetWorldScale().x,PickObj->GetWorldScale().y ,PickObj->GetWorldScale().z };
 
 		ImGui::InputFloat3("Tranlsation", pickObjLoc);
 		ImGui::InputFloat3("Rotation", pickObjRot);

@@ -100,9 +100,9 @@ std::string FSceneMgr::SerializeSceneData(const SceneData& sceneData)
     for (auto it = sceneData.Primitives.begin(); it != sceneData.Primitives.end(); ++it) {
         int id = it->first;
         USceneComponent* primitive = static_cast<USceneComponent*>(it->second);
-        TArray<float> Location = { primitive->GetLocation().x,primitive->GetLocation().y,primitive->GetLocation().z };
-        TArray<float> Rotation = { primitive->GetRotation().x,primitive->GetRotation().y,primitive->GetRotation().z };
-        TArray<float> Scale = { primitive->GetScale().x,primitive->GetScale().y,primitive->GetScale().z };
+        TArray<float> Location = { primitive->GetWorldLocation().x,primitive->GetWorldLocation().y,primitive->GetWorldLocation().z };
+        TArray<float> Rotation = { primitive->GetWorldRotation().x,primitive->GetWorldRotation().y,primitive->GetWorldRotation().z };
+        TArray<float> Scale = { primitive->GetWorldScale().x,primitive->GetWorldScale().y,primitive->GetWorldScale().z };
 
         j["Primitives"][std::to_string(id)] = {
             {"Location", Location},

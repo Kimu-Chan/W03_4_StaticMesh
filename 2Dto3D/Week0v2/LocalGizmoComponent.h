@@ -1,19 +1,22 @@
 #pragma once
 #include "SceneComponent.h"
-#include "ArrowComp.h"
-class LocalGizmoComponent : public USceneComponent
+
+class UArrowComp;
+class ULocalGizmoComponent : public USceneComponent
 {
-	DECLARE_CLASS(LocalGizmoComponent, USceneComponent)
+	DECLARE_CLASS(ULocalGizmoComponent, USceneComponent)
 
 public:
-	LocalGizmoComponent();
-	virtual				~LocalGizmoComponent();
+	ULocalGizmoComponent();
+	virtual				~ULocalGizmoComponent();
 
 	virtual void		Initialize();
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
 
+	TArray<UArrowComp*>& GetArrowArr() { return ArrowArr; }
 private:
+	TArray<UArrowComp*> ArrowArr;
 
 };
 

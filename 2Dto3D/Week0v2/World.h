@@ -6,6 +6,7 @@ class UArrowComp;
 class UCameraComponent;
 class UPlayer;
 class USceneComponent;
+class ULocalGizmoComponent;
 class UWorld
 {
 public:
@@ -37,8 +38,10 @@ public:
 	TArray<UObject*>& GetObjectArr() { return GUObjectArray; }
 
 	UArrowComp* LocalGizmo[3] = { nullptr, nullptr, nullptr };
+	ULocalGizmoComponent* TestLocalGizmo = nullptr;
 	UCameraComponent* GetCamera() { return camera; }
 	UPlayer* GetPlayer() { return localPlayer; }
+
 
 	USceneComponent* GetPickingObj() { return pickingObj; }
 	UObject* GetWorldGizmo() { return worldGizmo; }

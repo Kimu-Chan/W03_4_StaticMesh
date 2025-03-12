@@ -16,6 +16,7 @@ void UArrowComp::Initialize()
 
 void UArrowComp::Update(double deltaTime)
 {
+	Super::Update(deltaTime);
 }
 
 void UArrowComp::Release()
@@ -26,7 +27,7 @@ void UArrowComp::Render()
 {
 	if (!GetWorld()->GetPickingObj())
 		return;
-	FMatrix Model = JungleMath::CreateModelMatrix(GetLocation(), GetRotation(), GetScale());
+	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 
 	// 최종 MVP 행렬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
@@ -45,10 +46,22 @@ void UArrowComp::Render()
 		);
 		break;
 	case AD_Y:
-		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowY, FEngineLoop::resourceMgr.numVerticesArrowY);
+		//FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowY, FEngineLoop::resourceMgr.numVerticesArrowY);
+		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowY,
+			FEngineLoop::resourceMgr.numVerticesArrowY,
+			FEngineLoop::resourceMgr.indiceBufferArrowY,
+			FEngineLoop::resourceMgr.numIndicesArrowY
+		);
+		break;
 		break;
 	case AD_Z:
-		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowZ, FEngineLoop::resourceMgr.numVerticesArrowZ);
+		//FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowZ, FEngineLoop::resourceMgr.numVerticesArrowZ);
+		FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowZ,
+			FEngineLoop::resourceMgr.numVerticesArrowZ,
+			FEngineLoop::resourceMgr.indiceBufferArrowZ,
+			FEngineLoop::resourceMgr.numIndicesArrowZ
+		);
+		break;
 		break;
 	case AD_END:
 		UE_LOG(LogLevel::Warning, "whatthe...");

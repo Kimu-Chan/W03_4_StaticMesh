@@ -4,7 +4,7 @@ class UArrowComp;
 class USceneComponent;
 class UPlayer : public UObject
 {
-	DECLARE_CLASS(LocalGizmoComponent, UObject)
+	DECLARE_CLASS(ULocalGizmoComponent, UObject)
 
 public:
 	UPlayer();

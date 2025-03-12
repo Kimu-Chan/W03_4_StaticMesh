@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "ArrowComp.h"
 #include "CameraComponent.h"
+#include "LocalGizmoComponent.h"
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -86,30 +87,30 @@ void UPlayer::Input()
 void UPlayer::PickGizmo(FVector& rayOrigin, FVector& rayDir)
 {
 	if (GetWorld()->GetPickingObj()) {
-		for (int i = 0;i < 3;++i)
+		for (auto i : GetWorld()->TestLocalGizmo->GetArrowArr())
 		{
-			UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
+			//UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
 			float Scale = 0.0f;
 			FVector DetectLoc;
-			if (i == 0) {
-				Scale = GetWorld()->LocalGizmo[0]->GetScale().x;
-				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector();
-			}
-			else if (i == 1) {
-				Scale = GetWorld()->LocalGizmo[1]->GetScale().y;
-				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetUpVector();
-			}
-			else if (i == 2) {
-				Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
-				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
-			}
+			//if (i == 0) {
+			//	Scale = GetWorld()->LocalGizmo[0]->GetWorldScale().x;
+			//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetRightVector();
+			//}
+			//else if (i == 1) {
+			//	Scale = GetWorld()->LocalGizmo[1]->GetWorldScale().y;
+			//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetUpVector();
+			//}
+			//else if (i == 2) {
+			//	Scale = GetWorld()->LocalGizmo[2]->GetWorldScale().z;
+			//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
+			//}
 			float minDistance = 1000000.0f;
 			float Distance = 0.0f;
-			if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
+			if (RayIntersectsObject(rayOrigin, rayDir, i, Distance))
 			{
 				if (minDistance > Distance)
 				{
-					GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
+					GetWorld()->SetPickingGizmo(i);
 					minDistance = Distance;
 				}
 			}
@@ -207,12 +208,12 @@ bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDi
 {
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전 적용)
 	FMatrix rotationMatrix = FMatrix::CreateRotation(
-		obj->GetRotation().x,
-		obj->GetRotation().y,
-		obj->GetRotation().z
+		obj->GetWorldRotation().x,
+		obj->GetWorldRotation().y,
+		obj->GetWorldRotation().z
 	);
 
-	FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->GetLocation());
+	FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->GetWorldLocation());
 
 	// 최종 변환 행렬
 	FMatrix worldMatrix = rotationMatrix * translationMatrix;
@@ -226,14 +227,14 @@ bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDi
 	//bool isGizmo = (dynamic_cast<UGizmoComp*>(obj) != nullptr);
 
 	// OBB의 반 크기 적용 (기즈모의 경우 Y,Z 스케일을 0.2로 조정)
-	FVector halfSize = obj->GetScale();
+	FVector halfSize = obj->GetWorldScale();
 	//if (isGizmo)
 	//{
 	//	halfSize.y = 0.2f;
 	//	halfSize.z = 0.2f;
 	//}
 
-	FVector p = obj->GetLocation() - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
+	FVector p = obj->GetWorldLocation() - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
 	FVector d = rayDir.Normalize(); // 레이 방향 정규화
 
 	float tMin = -FLT_MAX, tMax = FLT_MAX;

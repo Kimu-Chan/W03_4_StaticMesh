@@ -55,10 +55,10 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Text("Orthogonal");
 	ImGui::SliderFloat("FOV", &Camera->GetFov(), 30.0f, 120.0f);
 
-	float cameraLocation[3] = { Camera->GetLocation().x, Camera->GetLocation().y, Camera->GetLocation().z };
+	float cameraLocation[3] = { Camera->GetWorldLocation().x, Camera->GetWorldLocation().y, Camera->GetWorldLocation().z };
 	ImGui::InputFloat3("Camera Location", cameraLocation);
 
-	float cameraRotation[3] = { Camera->GetRotation().x, Camera->GetRotation().y, Camera->GetRotation().z };
+	float cameraRotation[3] = { Camera->GetWorldRotation().x, Camera->GetWorldRotation().y, Camera->GetWorldRotation().z };
 	ImGui::InputFloat3("Camera Rotation", cameraRotation);
 
 	Camera->SetLocation(FVector(cameraLocation[0], cameraLocation[1], cameraLocation[2]));

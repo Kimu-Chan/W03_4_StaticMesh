@@ -22,7 +22,10 @@ public:
 	ID3D11Buffer* indiceBufferArrowX = nullptr;
 
 	ID3D11Buffer* vertexBufferArrowY = nullptr;
+	ID3D11Buffer* indiceBufferArrowY = nullptr;
+
 	ID3D11Buffer* vertexBufferArrowZ = nullptr;
+	ID3D11Buffer* indiceBufferArrowZ = nullptr;
 
 
 	UINT numVerticesSphere;
@@ -36,6 +39,9 @@ public:
 	UINT numIndicesArrowX;
 
 	UINT numVerticesArrowY;
+	UINT numIndicesArrowY;
+
 	UINT numVerticesArrowZ;
+	UINT numIndicesArrowZ;
 };
 

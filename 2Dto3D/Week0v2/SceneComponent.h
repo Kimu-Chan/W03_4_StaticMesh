@@ -23,12 +23,16 @@ protected:
 	FVector				RelativeLocation;
 	FVector				RelativeRotation;
 	FVector				RelativeScale3D;
-	USceneComponent*	AttachParent;
+	USceneComponent*	AttachParent = nullptr;
 	TArray<USceneComponent*> AttachChildren;
 public:
-	inline FVector				GetRotation() { return RelativeRotation; }
-	inline FVector				GetScale()    {	return RelativeScale3D;    }
-	inline FVector				GetLocation() { return RelativeLocation; }
+	FVector						GetWorldRotation();
+	FVector						GetWorldScale();
+	FVector						GetWorldLocation();
+	inline FVector				GetLocalRotation() { return RelativeRotation; }
+	inline FVector				GetLocalScale() { return RelativeScale3D; }
+	inline FVector				GetLocalLocation() { return RelativeLocation; }
+
 	inline void					SetLocation(FVector _newLoc) { RelativeLocation = _newLoc; }
 	inline void					SetRotation(FVector _newRot) { RelativeRotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { RelativeScale3D = _newScale; }

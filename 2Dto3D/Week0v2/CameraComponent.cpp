@@ -103,11 +103,11 @@ void UCameraComponent::Input()
 	}
 	if (GetAsyncKeyState('Z') & 0x8000)
 	{
-		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector());
+		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation() + GetWorld()->GetPickingObj()->GetRightVector());
 	}
 	if (GetAsyncKeyState('X') & 0x8000)
 	{
-		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector());
+		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation() + GetWorld()->GetPickingObj()->GetForwardVector());
 	}
 }
 

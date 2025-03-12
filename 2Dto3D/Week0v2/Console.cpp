@@ -121,5 +121,3 @@ void Console::Draw() {
     ImGui::End();
 }
 
-void Console::Draw() {
-}

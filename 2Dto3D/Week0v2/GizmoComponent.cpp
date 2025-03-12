@@ -26,7 +26,7 @@ void UGizmoComponent::Render()
 {
 	FEngineLoop::graphicDevice.DeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	FMatrix Model = JungleMath::CreateModelMatrix(GetLocation(), GetRotation(), GetScale());
+	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 
 	// 최종 MVP 행렬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
