@@ -1,3 +1,4 @@
+#pragma once
 #include "ControlPaner.h"
 #include "World.h"
 #include "CameraComponent.h"
@@ -7,8 +8,8 @@
 #include "EditorWindow.h"
 // #include "ImGUI\imgui.h"
 #include "IWindowToggleable.h"
-#include "Font\IconDefs.h"
-
+//#include "Font\IconDefs.h"
+//#include "Font/RawFonts.h"
 ControlPanel::ControlPanel()
 {
 	
@@ -61,17 +62,38 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGuiIO& io = ImGui::GetIO();
 	
 	//OutputDebugString( (std::to_wstring(io.Fonts->Fonts.Size) + L"\n").c_str());
-	
 
+	ImFont* UnicodeFont = io.Fonts->Fonts[FEATHER_FONT];
 
-	ImFont* UnicodeFont = io.Fonts->Fonts[1];
+	ImVec2 ControlButtonSize = ImVec2(32, 32);
 	ImGui::PushFont(UnicodeFont);
-	
-	// if (ImGui::Button(u8"\ue9b7")) // Toggle Control Panel
-	if (ImGui::Button(ICON_MONITOR))
+	ImVec4 ActiveColor = ImVec4(0, 0.5, 0, 0.6f);
+
+	//bool isTranslationActive = (PrimaryGizmo && PrimaryGizmo->GetCurrentGizmo() == EGizmoType::Translation);
+	//if (isTranslationActive)
+	//	ImGui::PushStyleColor(ImGuiCol_Button, ActiveColor); // 활성 상태 색상
+	if (ImGui::Button(u8"\ue9bc", ControlButtonSize))
 	{
-		Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
+		//if (PrimaryGizmo)
+		//{
+		//	PrimaryGizmo->SetGizmoType(EGizmoType::Translation);
+		//}
 	}
+	if (ImGui::Button(u8"\ue9d3", ControlButtonSize))
+	{
+		//if (PrimaryGizmo)
+		//{
+		//	PrimaryGizmo->SetGizmoType(EGizmoType::Rotation);
+		//}
+	}
+	/*if (ImGui::Button(u8"\ue9b7"))
+	{
+	}*/
+	/// Toggle Control Panel
+	//if (ImGui::Button(ICON_MONITOR))
+	//{
+	//	Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
+	//}
 
 	ImGui::PopFont();
 
