@@ -168,6 +168,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 {
 	UObject* Possible = nullptr;
 	int maxIntersect = 0;
+			float minDistance = FLT_MAX;
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
 		UPrimitiveComponent* pObj = nullptr;
@@ -176,21 +177,22 @@ void UPlayer::PickObj(FVector& pickPosition)
 		}
 		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ")
 		{
-			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
 			int currentIntersectCount = 0;
 			if (RayIntersectsObject(pickPosition, pObj, Distance, currentIntersectCount))
 			{
-				if (currentIntersectCount > maxIntersect && minDistance > Distance) {
-					Possible = pObj;
+				if (minDistance > Distance) {
 					minDistance = Distance;
-					maxIntersect = currentIntersectCount;
+					if (currentIntersectCount > 0) {
+						maxIntersect = currentIntersectCount;
+						Possible = pObj;
+
+					}
 				}
 			}
 		}
 	}
 	if (Possible) {
-		UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(Possible)->GetType().c_str());
 		GetWorld()->SetPickingObj(Possible);
 	}
 }
@@ -211,19 +213,12 @@ void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, c
 	pickPosition.x = ((2.0f * screenX / viewport.Width) - 1) / projectionMatrix[0][0];
 	pickPosition.y = -((2.0f * screenY / viewport.Height) - 1) / projectionMatrix[1][1];
 	pickPosition.z = 1.0f; // Near Plane
-
-	std::wstring ws = L"pickPosition:" + std::to_wstring(pickPosition.x) + 
-					  L", " + std::to_wstring(pickPosition.y) + 
-					  L", " + std::to_wstring(pickPosition.z) + L"\n";
-	
-	
-	OutputDebugString(ws.c_str());
 }
 int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount)
 {
 
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전, 크기 적용)
-	FMatrix scaleMatrix = FMatrix::CreateRotation(
+	FMatrix scaleMatrix = FMatrix::CreateScale(
 		obj->GetWorldScale().x,
 		obj->GetWorldScale().y,
 		obj->GetWorldScale().z
@@ -239,7 +234,9 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	// 최종 변환 행렬
 	FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-	FMatrix inverseMatrix = FMatrix::Inverse(worldMatrix * GEngineLoop.View);
+	FMatrix ViewMatrix = GEngineLoop.View;
+	FMatrix inverseMatrix = FMatrix::Inverse(worldMatrix * ViewMatrix);
+
 	FVector cameraOrigin = { 0,0,0 };
 
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);

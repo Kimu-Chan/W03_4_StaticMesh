@@ -62,8 +62,8 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
         }
         else {
             idx0 = indices[i * 3];
-            idx1 = indices[i * 3 + 1];
-            idx2 = indices[i * 3 + 2];
+            idx2 = indices[i * 3 + 1];
+            idx1 = indices[i * 3 + 2];
         }
 
         // 각 삼각형의 버텍스 위치를 FVector로 불러옵니다.
@@ -72,15 +72,15 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
         FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);
         FVector v2 = *reinterpret_cast<FVector*>(pbPositions + idx2 * stride);
 
-        float fHitDistance = 0.0f;
+        float fHitDistance;
         if (IntersectRayTriangle(rayOrigin, rayDirection, v0, v1, v2, fHitDistance)) {
-            if (fHitDistance < fNearHitDistance)
-                fNearHitDistance = fHitDistance;
+            if (fHitDistance < fNearHitDistance) {
+                pfNearHitDistance =  fNearHitDistance = fHitDistance;
+            }
             nIntersections++;
         }
+       
     }
-
-    pfNearHitDistance = fNearHitDistance;
     return nIntersections;
 }
 
@@ -109,6 +109,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
 
     float t = f * edge2.Dot(q);
     if (t > epsilon) {
+
         hitDistance = t;
         return true;
     }
