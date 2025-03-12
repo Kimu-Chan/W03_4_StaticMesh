@@ -1,10 +1,19 @@
+#pragma once
 #include "ControlPaner.h"
 #include "World.h"
 #include "CameraComponent.h"
 #include "ImGuiManager.h"
 #include "SceneMgr.h"
+#include "Player.h"
+
+#include "EditorWindow.h"
+// #include "ImGUI\imgui.h"
+#include "IWindowToggleable.h"
+//#include "Font\IconDefs.h"
+//#include "Font/RawFonts.h"
 ControlPanel::ControlPanel()
 {
+	
 }
 
 ControlPanel::~ControlPanel()
@@ -12,7 +21,7 @@ ControlPanel::~ControlPanel()
 }
 
 void ControlPanel::Draw(UWorld* world, double elapsedTime )
-{
+{	
 	UCameraComponent* Camera = static_cast<UCameraComponent*>(world->GetCamera());
 
 	ImGui::Begin("Jungle Control Panel");
@@ -31,6 +40,78 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		world->SpawnObject(static_cast<OBJECTS>(primitiveType));
 	}
+
+
+
+
+	ImGui::Separator();
+
+	ImGuiIO& io = ImGui::GetIO();
+		//OutputDebugString( (std::to_wstring(io.Fonts->Fonts.Size) + L"\n").c_str());
+
+	ImFont* UnicodeFont = io.Fonts->Fonts[FEATHER_FONT];
+
+	ImVec2 ControlButtonSize = ImVec2(32, 32);
+	ImGui::PushFont(UnicodeFont);
+	ImVec4 ActiveColor = ImVec4(0, 0.5, 0, 0.6f);
+
+	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());
+	// 현재 모드 저장 변수 ( 이 변수는 지역 변수로만 사용한다)
+	if (!player) return;
+	static ControlMode selectedMode = CM_TRANSLATION;
+
+	//PropertyPanel* propPanel = world->GetPropertyPanel(); // PropertyPanel 가져오기
+	//bool isTranslationActive = (PrimaryGizmo && PrimaryGizmo->GetCurrentGizmo() == EGizmoType::Translation);
+	//if (isTranslationActive)
+	//	ImGui::PushStyleColor(ImGuiCol_Button, ActiveColor); // 활성 상태 색상
+	if (ImGui::Button(u8"\ue9bc", ControlButtonSize))
+	{
+		selectedMode = CM_TRANSLATION;
+		player->SetMode(CM_TRANSLATION); // 현재 모드를 TRANSLATION 으로 변경
+
+		//propPanel->SetMode(CM_TRANSLATION);
+
+		//if (PrimaryGizmo)
+		//{
+		//	PrimaryGizmo->SetGizmoType(EGizmoType::Translation);
+		//}
+	}
+	
+	ImGui::SameLine();
+
+	if (ImGui::Button(u8"\ue9d3", ControlButtonSize))
+	{
+		selectedMode = CM_ROTATION;
+		player->SetMode(CM_ROTATION);
+		//if (PrimaryGizmo)
+		//{
+		//	PrimaryGizmo->SetGizmoType(EGizmoType::Rotation);
+		//}
+	}
+	
+	ImGui::SameLine();
+
+	if (ImGui::Button(u8"\ue9ab", ControlButtonSize))
+	{
+		selectedMode = CM_SCALE;
+		player->SetMode(CM_SCALE);
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::Button(u8"\ue9b7"))
+	{
+		Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;
+	}
+	/// Toggle Control Panel
+	//if (ImGui::Button(ICON_MONITOR))
+	//{
+	//	Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
+	//}
+
+	ImGui::PopFont();
+
+	ImGui::Separator();
 
 	static char sceneName[64] = "Default";
 	ImGui::InputText("Scene Name", sceneName, IM_ARRAYSIZE(sceneName));

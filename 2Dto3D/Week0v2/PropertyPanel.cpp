@@ -16,16 +16,22 @@ void PropertyPanel::Draw(UWorld* world)
 {
 	ImGui::Begin("Jungle Property Panel");
 
-	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());
+	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());	
 	std::string buttonLabel;
+
 	if(player->GetMode() == ControlMode::CM_TRANSLATION)
 	  buttonLabel = "Translation";
 	else if (player->GetMode() == ControlMode::CM_ROTATION)
 		buttonLabel = "Rotation";
 	else if (player->GetMode() == ControlMode::CM_SCALE)
 		buttonLabel = "Scale";
-	if (ImGui::Button(buttonLabel.c_str())) {
-		player->AddMode();
+
+	// 버튼 사이즈 동일하게
+	ImVec2 buttonSize(120, 30);
+
+	ImGui::SetNextItemWidth(buttonSize.x); // 버튼 너비 고정
+	if (ImGui::Button(buttonLabel.c_str(), buttonSize)) {
+		player->AddMode(); // 기존 코드 유지
 	}
 	USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
 	if (PickObj) {
@@ -41,5 +47,6 @@ void PropertyPanel::Draw(UWorld* world)
 		PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
 		PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
 	}
+
 	ImGui::End();
 }
