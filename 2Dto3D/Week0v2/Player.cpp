@@ -85,37 +85,20 @@ void UPlayer::Input()
 
 void UPlayer::PickGizmo(FVector& pickPosition)
 {
-	//if (!GetWorld()->TestLocalGizmo)
-	//	return;
 	//if (GetWorld()->GetPickingObj()) {
-	//	for (auto i : GetWorld()->TestLocalGizmo->GetArrowArr())
+	//	for (int i = 0;i < 3;++i)
 	//	{
-	//		//UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
-	//		float Scale = 0.0f;
-	//		FVector DetectLoc;
-	//		//if (i == 0) {
-	//		//	Scale = GetWorld()->LocalGizmo[0]->GetWorldScale().x;
-	//		//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetRightVector();
-	//		//}
-	//		//else if (i == 1) {
-	//		//	Scale = GetWorld()->LocalGizmo[1]->GetWorldScale().y;
-	//		//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetUpVector();
-	//		//}
-	//		//else if (i == 2) {
-	//		//	Scale = GetWorld()->LocalGizmo[2]->GetWorldScale().z;
-	//		//	DetectLoc = Arrow->GetWorldLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
-	//		//}
 	//		int maxIntersect = 0;
 	//		float minDistance = FLT_MAX;
 	//		float Distance = 0.0f;
 	//		int currentIntersectCount = 0;
-	//		//UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
-	//		//if (!localGizmo) continue;
-	//		if (RayIntersectsObject(pickPosition, i, Distance, currentIntersectCount))
+	//		UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
+	//		if (!localGizmo) continue;
+	//		if (RayIntersectsObject(pickPosition, localGizmo, Distance, currentIntersectCount))
 	//		{
 	//			if (currentIntersectCount > maxIntersect && minDistance > Distance)
 	//			{
-	//				GetWorld()->SetPickingGizmo(i);
+	//				GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
 	//				minDistance = Distance;
 	//				maxIntersect = currentIntersectCount;
 	//			}
@@ -123,45 +106,25 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 	//	}
 	//}
 	if (GetWorld()->GetPickingObj()) {
-		for (int i = 0;i < 3;++i)
+		for (auto iter : GetWorld()->LocalGizmo->GetArrowArr())
 		{
 			int maxIntersect = 0;
 			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
 			int currentIntersectCount = 0;
-			UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
-			if (!localGizmo) continue;
-			if (RayIntersectsObject(pickPosition, localGizmo, Distance, currentIntersectCount))
+			//UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
+			if (!iter) continue;
+			if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
 			{
 				if (currentIntersectCount > maxIntersect && minDistance > Distance)
 				{
-					GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
+					GetWorld()->SetPickingGizmo(iter);
 					minDistance = Distance;
 					maxIntersect = currentIntersectCount;
 				}
 			}
 		}
 	}
-	//if (GetWorld()->GetPickingObj()) {
-	//	for (auto iter : GetWorld()->TestLocalGizmo->GetArrowArr())
-	//	{
-	//		int maxIntersect = 0;
-	//		float minDistance = FLT_MAX;
-	//		float Distance = 0.0f;
-	//		int currentIntersectCount = 0;
-	//		//UPrimitiveComponent* localGizmo = dynamic_cast<UPrimitiveComponent*>(GetWorld()->LocalGizmo[i]);
-	//		if (!iter) continue;
-	//		if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
-	//		{
-	//			if (currentIntersectCount > maxIntersect && minDistance > Distance)
-	//			{
-	//				GetWorld()->SetPickingGizmo(iter);
-	//				minDistance = Distance;
-	//				maxIntersect = currentIntersectCount;
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 void UPlayer::PickObj(FVector& pickPosition)
@@ -174,7 +137,8 @@ void UPlayer::PickObj(FVector& pickPosition)
 		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
 			 pObj = static_cast<UPrimitiveComponent*>(iter);
 		}
-		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ")
+		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ"
+			&& pObj->GetType() != "DiscX"&& pObj->GetType() != "DiscX"&& pObj->GetType() != "DiscX")
 		{
 			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
@@ -223,7 +187,7 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 {
 
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전, 크기 적용)
-	FMatrix scaleMatrix = FMatrix::CreateRotation(
+	FMatrix scaleMatrix = FMatrix::CreateScale(
 		obj->GetWorldScale().x,
 		obj->GetWorldScale().y,
 		obj->GetWorldScale().z

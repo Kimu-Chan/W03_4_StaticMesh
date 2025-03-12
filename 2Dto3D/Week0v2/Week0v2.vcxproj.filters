@@ -151,7 +151,10 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ActorComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="DiscHellowComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +282,21 @@
     </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>소스 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorWindow.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\IconDefs.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\RawFonts.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IWindowToggleable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscHellowComponent.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -58,27 +58,7 @@ void UArrowComp::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-	//switch (Dir)
-	//{
-	//case AD_X:
-	//	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowX, 
-	//		FEngineLoop::resourceMgr.numVerticesArrowX,
-	//		FEngineLoop::resourceMgr.indiceBufferArrowX,
-	//		FEngineLoop::resourceMgr.numIndicesArrowX
-	//	);
-	//	break;
-	//case AD_Y:
-	//	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowY, FEngineLoop::resourceMgr.numVerticesArrowY);
-	//	break;
-	//case AD_Z:
-	//	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferArrowZ, FEngineLoop::resourceMgr.numVerticesArrowZ);
-	//	break;
-	//case AD_END:
-	//	UE_LOG(LogLevel::Warning, "whatthe...");
-	//	break;
-	//default:
-	//	break;
-	//}
+
 	Super::Render();
 
 #pragma region GizmoDepth

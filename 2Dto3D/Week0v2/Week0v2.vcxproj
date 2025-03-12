@@ -134,6 +134,7 @@
     <ClCompile Include="ControlPaner.cpp" />
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
+    <ClCompile Include="DiscHellowComponent.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
     <ClCompile Include="EngineStatics.cpp" />
     <ClCompile Include="GizmoComponent.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="DiscHellowComponent.h" />
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="EngineStatics.h" />

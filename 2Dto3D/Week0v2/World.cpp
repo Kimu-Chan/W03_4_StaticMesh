@@ -38,33 +38,33 @@ void UWorld::CreateBaseObject()
 	static_cast<UGizmoComponent*>(gizmo)->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
 	GUObjectArray.push_back(gizmo);
 
-	UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
-	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
-	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowX");
-	LocalGizmo[0] = static_cast<UArrowComp*>(localGizmo);
-	GUObjectArray.push_back(localGizmo);
+	//UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
+	////static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(2.0f, 1.0f, 1.0f));
+	//static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
+	//static_cast<UArrowComp*>(localGizmo)->SetType("ArrowX");
+	//LocalGizmo[0] = static_cast<UArrowComp*>(localGizmo);
+	//GUObjectArray.push_back(localGizmo);
 
-	localGizmo = nullptr;
-	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
-	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
-	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowY");
-	LocalGizmo[1] = static_cast<UArrowComp*>(localGizmo);
-	GUObjectArray.push_back(localGizmo);
+	//localGizmo = nullptr;
+	//localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
+	////static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 2.0f, 1.0f));
+	//static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
+	//static_cast<UArrowComp*>(localGizmo)->SetType("ArrowY");
+	//LocalGizmo[1] = static_cast<UArrowComp*>(localGizmo);
+	//GUObjectArray.push_back(localGizmo);
 
-	localGizmo = nullptr;
-	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	//static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
+	//localGizmo = nullptr;
+	//localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
+	////static_cast<UArrowComp*>(localGizmo)->SetScale(FVector(1.0f, 1.0f, 2.0f));
 
-	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
-	static_cast<UArrowComp*>(localGizmo)->SetType("ArrowZ");
-	LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
-	GUObjectArray.push_back(localGizmo);
+	//static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
+	//static_cast<UArrowComp*>(localGizmo)->SetType("ArrowZ");
+	//LocalGizmo[2] = static_cast<UArrowComp*>(localGizmo);
+	//GUObjectArray.push_back(localGizmo);
 
-	//UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
-	//TestLocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
-	//GUObjectArray.push_back(tmp);
+	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
+	LocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
+	GUObjectArray.push_back(tmp);
 }
 
 void UWorld::Tick(double deltaTime)
@@ -86,7 +86,7 @@ void UWorld::Release()
 		delete iter;
 	}
 	GUObjectArray.clear();
-	TestLocalGizmo = nullptr;
+	LocalGizmo = nullptr;
 	pickingObj = nullptr;
 	pickingGizmo = nullptr;
 	worldGizmo = nullptr;
@@ -97,22 +97,22 @@ void UWorld::UpdateLocalGizmo()
 {
 	if (pickingObj)
 	{
-		//UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(pickingObj)->GetType().c_str());
-		LocalGizmo[0]->SetLocation(pickingObj->GetWorldLocation());
+		////UE_LOG(LogLevel::Error, dynamic_cast<UPrimitiveComponent*>(pickingObj)->GetType().c_str());
+		//LocalGizmo[0]->SetLocation(pickingObj->GetWorldLocation());
 
-		LocalGizmo[0]->SetRotation(pickingObj->GetWorldRotation());
-		//LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
-		LocalGizmo[1]->SetLocation(pickingObj->GetWorldLocation());
-		LocalGizmo[1]->SetRotation(pickingObj->GetWorldRotation());
-		//LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y + 2.0f, 1.0f));
+		//LocalGizmo[0]->SetRotation(pickingObj->GetWorldRotation());
+		////LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x + 2.0f, 1.0f, 1.0f));
+		//LocalGizmo[1]->SetLocation(pickingObj->GetWorldLocation());
+		//LocalGizmo[1]->SetRotation(pickingObj->GetWorldRotation());
+		////LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y + 2.0f, 1.0f));
 
-		LocalGizmo[2]->SetLocation(pickingObj->GetWorldLocation());
-		LocalGizmo[2]->SetRotation(pickingObj->GetWorldRotation());
-		//LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
+		//LocalGizmo[2]->SetLocation(pickingObj->GetWorldLocation());
+		//LocalGizmo[2]->SetRotation(pickingObj->GetWorldRotation());
+		////LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
 
-		//TestLocalGizmo->SetLocation(pickingObj->GetWorldLocation());
-		//TestLocalGizmo->SetRotation(pickingObj->GetWorldRotation());
-		//TestLocalGizmo->SetScale(pickingObj->GetWorldScale());
+		LocalGizmo->SetLocation(pickingObj->GetWorldLocation());
+		LocalGizmo->SetRotation(pickingObj->GetWorldRotation());
+		LocalGizmo->SetScale(pickingObj->GetWorldScale());
 	}
 }
 
