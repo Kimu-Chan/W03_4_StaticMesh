@@ -9,7 +9,8 @@
 *.slo
 *.lo
 *.o
-
+*.obj
+*.iobj
 
 # Precompiled Headers
 *.gch
