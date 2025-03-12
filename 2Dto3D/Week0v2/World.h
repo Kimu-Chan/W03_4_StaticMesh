@@ -30,7 +30,7 @@ private:
 
 	TArray<UObject*> GUObjectArray;
 	USceneComponent* pickingObj = nullptr;
-	UObject* pickingGizmo = nullptr;
+	USceneComponent* pickingGizmo = nullptr;
 	UObject* worldGizmo = nullptr;
 	UCameraComponent* camera = nullptr;
 	UPlayer* localPlayer = nullptr;
@@ -44,8 +44,7 @@ public:
 
 	USceneComponent* GetPickingObj() { return pickingObj; }
 	UObject* GetWorldGizmo() { return worldGizmo; }
-	UObject* GetPickingGizmo() { return pickingGizmo; }
-	void	SetPickingGizmo(UObject* _Obj) { pickingGizmo = _Obj; };
-
+	USceneComponent* GetPickingGizmo() { return pickingGizmo; }
+	void	SetPickingGizmo(UObject* _Obj);
 };
 

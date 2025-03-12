@@ -16,8 +16,9 @@ public:
 	virtual void		Release();
 
 	TArray<UArrowComp*>& GetArrowArr() { return ArrowArr; }
+	TArray<UDiscHollowComponent*>& GetDiscArr() { return HollowDiscArr; }
 private:
 	TArray<UArrowComp*> ArrowArr;
-	TArray< UDiscHollowComponent*> HollowDiscArr;
+	TArray<UDiscHollowComponent*> HollowDiscArr;
 };
 

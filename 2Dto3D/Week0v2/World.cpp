@@ -161,3 +161,8 @@ void UWorld::SetPickingObj(UObject* _Obj)
 {
 	 pickingObj = static_cast<USceneComponent*>(_Obj); 
 }
+
+void UWorld::SetPickingGizmo(UObject* _Obj)
+{
+	pickingGizmo = static_cast<USceneComponent*>(_Obj);
+}
