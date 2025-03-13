@@ -11,6 +11,7 @@
 #include "CameraComponent.h"
 #include "LocalGizmoComponent.h"
 #include "DiscHellowComponent.h"
+#include "ScaleGizmoComponent.h"
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -87,7 +88,7 @@ void UPlayer::Input()
 void UPlayer::PickGizmo(FVector& pickPosition)
 {
 	if (GetWorld()->GetPickingObj()) {
-		if (cMode == CM_TRANSLATION || cMode == CM_SCALE) {
+		if (cMode == CM_TRANSLATION) {
 			for (auto iter : GetWorld()->LocalGizmo->GetArrowArr())
 			{
 				int maxIntersect = 0;
@@ -126,6 +127,25 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 				}
 			}
 		}
+		else if (cMode == CM_SCALE) {
+			for (auto iter : GetWorld()->LocalGizmo->GetScaleArr())
+			{
+				int maxIntersect = 0;
+				float minDistance = FLT_MAX;
+				float Distance = 0.0f;
+				int currentIntersectCount = 0;
+				if (!iter) continue;
+				if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
+				{
+					if (currentIntersectCount > maxIntersect && minDistance > Distance)
+					{
+						GetWorld()->SetPickingGizmo(iter);
+						minDistance = Distance;
+						maxIntersect = currentIntersectCount;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -142,7 +162,8 @@ void UPlayer::PickObj(FVector& pickPosition)
 		else
 			continue;
 		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ"
-			&& pObj->GetType() != "DiscX"&& pObj->GetType() != "DiscY"&& pObj->GetType() != "DiscZ")
+			&& pObj->GetType() != "DiscX"&& pObj->GetType() != "DiscY"&& pObj->GetType() != "DiscZ"
+			&& pObj->GetType() != "ScaleX" && pObj->GetType() != "ScaleY" && pObj->GetType() != "ScaleZ")
 		{
 			float minDistance = FLT_MAX;
 			float Distance = 0.0f;
@@ -417,21 +438,21 @@ void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, in
 {
 	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
 	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
-	if (Gizmo->GetType() == "ArrowX")
+	if (Gizmo->GetType() == "ScaleX")
 	{
 		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
 			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f * xdir);
 		else
 			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f * xdir);
 	}
-	else if (Gizmo->GetType() == "ArrowY")
+	else if (Gizmo->GetType() == "ScaleY")
 	{
 		if (pObj->GetUpVector().y >= 0)
 			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * -0.01f);
 		else
 			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.01f);
 	}
-	else if (Gizmo->GetType() == "ArrowZ")
+	else if (Gizmo->GetType() == "ScaleZ")
 	{
 		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
 			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.01f * zdir);

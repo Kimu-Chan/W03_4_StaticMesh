@@ -3,6 +3,8 @@
 
 class UArrowComp;
 class UDiscHollowComponent;
+class UScaleGizmoComponent;
+
 class ULocalGizmoComponent : public USceneComponent
 {
 	DECLARE_CLASS(ULocalGizmoComponent, USceneComponent)
@@ -17,8 +19,10 @@ public:
 
 	TArray<UArrowComp*>& GetArrowArr() { return ArrowArr; }
 	TArray<UDiscHollowComponent*>& GetDiscArr() { return HollowDiscArr; }
+	TArray<UScaleGizmoComponent*>& GetScaleArr() { return ScaleArr; }
 private:
 	TArray<UArrowComp*> ArrowArr;
 	TArray<UDiscHollowComponent*> HollowDiscArr;
+	TArray<UScaleGizmoComponent*> ScaleArr;
 };
 

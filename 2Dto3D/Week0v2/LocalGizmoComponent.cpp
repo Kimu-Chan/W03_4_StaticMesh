@@ -4,6 +4,7 @@
 #include "ObjectFactory.h"
 #include "DiscHellowComponent.h"
 #include "Player.h"
+#include "ScaleGizmoComponent.h"
 ULocalGizmoComponent::ULocalGizmoComponent()
 {
 	UObject* obj = FObjectFactory::ConstructObject<UArrowComp>();
@@ -31,7 +32,6 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowZ->SetType("ArrowZ");
 	ArrowZ->SetParent(this);
 	ArrowZ->SetDir(ARROW_DIR::AD_Z);
-
 	AttachChildren.push_back(ArrowZ);
 	GetWorld()->GetObjectArr().push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
@@ -64,6 +64,36 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	{
 		i->SetScale({ 2.5f,2.5f,2.5f });
 	}
+
+	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
+	UScaleGizmoComponent* ScaleX = static_cast<UScaleGizmoComponent*>(obj);
+	AttachChildren.push_back(ScaleX);
+	ScaleX->SetType("ScaleX");
+	ScaleX->SetParent(this);
+	AttachChildren.push_back(ScaleX);
+	GetWorld()->GetObjectArr().push_back(ScaleX);
+	ScaleArr.push_back(ScaleX);
+
+	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
+	UScaleGizmoComponent* ScaleY = static_cast<UScaleGizmoComponent*>(obj);
+	AttachChildren.push_back(ScaleY);
+	ScaleY->SetType("ScaleY");
+	ScaleY->SetParent(this);
+	AttachChildren.push_back(ScaleY);
+	GetWorld()->GetObjectArr().push_back(ScaleY);
+	ScaleArr.push_back(ScaleY);
+
+	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
+	UScaleGizmoComponent* ScaleZ = static_cast<UScaleGizmoComponent*>(obj);
+	AttachChildren.push_back(ScaleZ);
+	ScaleZ->SetType("ScaleZ");
+	ScaleZ->SetParent(this);
+	AttachChildren.push_back(ScaleZ);
+	GetWorld()->GetObjectArr().push_back(ScaleZ);
+	ScaleArr.push_back(ScaleZ);
+
+
+
 }
 
 ULocalGizmoComponent::~ULocalGizmoComponent()

@@ -156,6 +156,7 @@
     <ClCompile Include="PropertyPanel.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
+    <ClCompile Include="ScaleGizmoComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SceneMgr.cpp" />
     <ClCompile Include="SphereComp.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
     <ClInclude Include="ResourceMgr.h" />
+    <ClInclude Include="ScaleGizmoComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneMgr.h" />
     <ClInclude Include="Sphere.h" />

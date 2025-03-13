@@ -156,6 +156,9 @@
     <ClCompile Include="DiscHellowComponent.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
+    <ClCompile Include="ScaleGizmoComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -296,6 +299,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="DiscHellowComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleGizmoComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,6 +16,10 @@ void FResourceMgr::Initialize(FRenderer* renderer)
     LoadObjAsset(renderer, "ArrowX", L"Assets/AxisArrowX.obj");
     LoadObjAsset(renderer, "ArrowY", L"Assets/AxisArrowY.obj");
     LoadObjAsset(renderer, "ArrowZ", L"Assets/AxisArrowZ.obj");
+	LoadObjAsset(renderer, "ScaleX", L"Assets/AxisScaleArrowX.obj");
+	LoadObjAsset(renderer, "ScaleY", L"Assets/AxisScaleArrowY.obj");
+	LoadObjAsset(renderer, "ScaleZ", L"Assets/AxisScaleArrowZ.obj");
+
 }
 
 void FResourceMgr::Release(FRenderer* renderer) {
