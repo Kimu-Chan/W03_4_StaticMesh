@@ -5,7 +5,6 @@ cbuffer constants : register(b0)
     float Flag;
 }
 
-
 struct VS_INPUT
 {
     float4 position : POSITION; // Input position from vertex buffer

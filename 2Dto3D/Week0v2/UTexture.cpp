@@ -3,9 +3,10 @@
 
 void UTexture::init()
 {
+
     LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"Asset/Texture/WoodCrate01.dds");
+        L"Assets/Texture/Fire001.bmp");
     CreateSampler(FEngineLoop::graphicDevice.Device);
 }
 
@@ -23,9 +24,11 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&wicFactory));
     if (FAILED(hr)) return hr;
 
+
     // 이미지 파일 디코딩
     hr = wicFactory->CreateDecoderFromFilename(filename, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
     if (FAILED(hr)) return hr;
+
 
     hr = decoder->GetFrame(0, &frame);
     if (FAILED(hr)) return hr;
@@ -82,6 +85,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     decoder->Release();
     frame->Release();
     converter->Release();
+
 
     return hr;
 }

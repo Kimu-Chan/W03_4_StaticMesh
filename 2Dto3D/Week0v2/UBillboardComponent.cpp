@@ -53,6 +53,9 @@ void UBillboardComponent::Render()
 	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
 		indexTextureBuffer,numIndices,m_texture.m_TextureSRV,m_texture.m_SamplerState);
 	//Super::Render();
+
+
+	FEngineLoop::renderer.PrepareShader();
 }
 
 FMatrix UBillboardComponent::CreateBillboardMatrix()
