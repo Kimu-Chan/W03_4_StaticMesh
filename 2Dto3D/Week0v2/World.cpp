@@ -25,21 +25,21 @@ void UWorld::Initialize()
 
 void UWorld::CreateBaseObject()
 {
-	UObject* player = FObjectFactory::ConstructObject<UPlayer>();
+	UObject* player = FObjectFactory::ConstructObject<UPlayer>("LocalPlayer");
 	GUObjectArray.push_back(player);
 	localPlayer = static_cast<UPlayer*>(player);
 
-	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>();
+	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
 	camera->SetLocation(FVector(0, 0, -10.f));
 	GUObjectArray.push_back(camera);
 
-	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>();
+	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>("WorldGizmo");
 	static_cast<UGizmoComponent*>(gizmo)->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
 	GUObjectArray.push_back(gizmo);
 
 
-	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
+	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>("LocalGizmo");
 	LocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
 	GUObjectArray.push_back(tmp);
 }
@@ -52,7 +52,8 @@ void UWorld::Tick(double deltaTime)
 	{
 		iter->Update(deltaTime);
 	}
-	UpdateLocalGizmo();
+	//if(!Trashbin.empty())
+	//	CleanUp();
 }
 
 void UWorld::Release()
@@ -69,16 +70,6 @@ void UWorld::Release()
 	worldGizmo = nullptr;
 	camera = nullptr;
 	localPlayer = nullptr;
-}
-void UWorld::UpdateLocalGizmo()
-{
-	if (pickingObj)
-	{
-
-		//LocalGizmo->SetLocation(pickingObj->GetWorldLocation());
-		//LocalGizmo->SetRotation(pickingObj->GetWorldRotation());
-		//LocalGizmo->SetScale(pickingObj->GetWorldScale());
-	}
 }
 
 void UWorld::Render()
@@ -100,13 +91,13 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	switch (_Obj)
 	{
 	case OBJ_SPHERE:
-		pObj = FObjectFactory::ConstructObject<USphereComp>();
+		pObj = FObjectFactory::ConstructObject<USphereComp>("Sphere");
 		GUObjectArray.push_back(pObj);
 		break;
 	case OBJ_TRIANGLE:
 		break;
 	case OBJ_CUBE:
-		pObj = FObjectFactory::ConstructObject<UCubeComp>();
+		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
 
 		break;
@@ -160,6 +151,27 @@ void UWorld::NewScene()
 void UWorld::SetPickingObj(UObject* _Obj)
 {
 	 pickingObj = static_cast<USceneComponent*>(_Obj); 
+}
+
+void UWorld::DeleteObj(UObject* _Obj)
+{
+	UObject* tmpObj = _Obj;
+	GUObjectArray.erase(std::find(GUObjectArray.begin(),GUObjectArray.end(), _Obj));
+	delete tmpObj;
+}
+
+void UWorld::ThrowAwayObj(UObject* _Obj)
+{
+	Trashbin.push_back(_Obj);
+}
+
+void UWorld::CleanUp()
+{
+	for (auto it : Trashbin)
+	{
+		DeleteObj(it);
+	}
+	Trashbin.clear();
 }
 
 void UWorld::SetPickingGizmo(UObject* _Obj)

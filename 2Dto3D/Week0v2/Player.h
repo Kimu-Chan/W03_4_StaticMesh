@@ -16,11 +16,11 @@ public:
 	virtual void		Release();
 
 	void				Input();
-	void PickGizmo(FVector& rayOrigin);
-	void PickObj(FVector& pickPosition);
+	void				PickGizmo(FVector& rayOrigin);
+	void				PickObj(FVector& pickPosition);
 	void				AddControlMode();
 	void				AddCoordiMode();
-
+	void				DeletePickedObj();
 private:
 	void ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin);
 	int RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount);

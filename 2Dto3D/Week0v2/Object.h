@@ -12,6 +12,8 @@ class UObject
 {
 public:
 						UObject();
+						UObject(FString& name);
+						UObject(FString& name, uint32 uuid);
 	virtual				~UObject();
 
 	virtual void		Initialize();
@@ -22,11 +24,12 @@ public:
 
 	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
 	inline FEngineLoop&			GetEngine() { return GEngineLoop; }
-
+	inline void					SetName(FString& _Name) { Name = FName(_Name); }
+	inline FName&				GetName() { return Name; }
 public:
 	uint32 UUID;
 	uint32 InternalIndex; // Index of GUObjectArray
-
+	FName Name;
 public:
 	static void* operator new(size_t size) {
 		UE_LOG(LogLevel::Display, "UObject Created : %d", size);

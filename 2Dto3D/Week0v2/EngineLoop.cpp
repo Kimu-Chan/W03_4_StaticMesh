@@ -5,6 +5,8 @@
 #include "JungleMath.h"
 #include "ControlPaner.h"
 #include "PropertyPanel.h"
+#include "Outliner.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -121,7 +123,7 @@ void FEngineLoop::Tick()
 		Console::GetInstance().Draw();
 		ControlPanel::GetInstance().Draw(GetWorld(),elapsedTime);
 		PropertyPanel::GetInstance().Draw(GetWorld());
-
+		Outliner::GetInstance().Draw(GetWorld());
 		UIMgr->EndFrame();
 
 		graphicDevice.SwapBuffer();

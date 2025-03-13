@@ -17,18 +17,22 @@ public:
 	void Initialize();
 	void CreateBaseObject();
 	void Tick(double deltaTime);
-	void UpdateLocalGizmo();
 	void Release();
 	void Render();
 	void Input();
 	void SpawnObject(OBJECTS _Obj);
 	void LoadData(SceneData& _Data);
 	SceneData SaveData();
-	void NewScene();
+	void	NewScene();
 	void	SetPickingObj(UObject* _Obj); 
+	void	DeleteObj(UObject* _Obj);
+	void	ThrowAwayObj(UObject* _Obj);
+	void	CleanUp();
 private:
 
 	TArray<UObject*> GUObjectArray;
+	TArray<UObject*> Trashbin;
+
 	USceneComponent* pickingObj = nullptr;
 	USceneComponent* pickingGizmo = nullptr;
 	UObject* worldGizmo = nullptr;

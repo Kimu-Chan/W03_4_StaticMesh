@@ -157,7 +157,10 @@
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
     <ClCompile Include="ScaleGizmoComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Outliner.cpp">
+      <Filter>소스 파일\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -305,7 +308,10 @@
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="NameTypes.h">
-      <Filter>헤더 파일\UWorld</Filter>
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Outliner.h">
+      <Filter>헤더 파일\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

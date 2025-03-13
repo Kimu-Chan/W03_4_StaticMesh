@@ -83,6 +83,10 @@ void UPlayer::Input()
 			bSpaceDown = false;
 		}
 	}
+	if (GetAsyncKeyState(VK_DELETE) & 0x8000)
+	{
+		DeletePickedObj();
+	}
 }
 
 void UPlayer::PickGizmo(FVector& pickPosition)
@@ -200,6 +204,12 @@ void UPlayer::AddCoordiMode()
 	//	cdMode = CoordiMode::CDM_WORLD;
 }
 
+void UPlayer::DeletePickedObj()
+{
+	GetWorld()->ThrowAwayObj(GetWorld()->GetPickingObj());
+	GetWorld()->SetPickingObj(nullptr);
+}
+
 void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& pickPosition)
 {
 	D3D11_VIEWPORT viewport;
@@ -305,77 +315,39 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 		if (Gizmo->GetType() == "DiscX")
 		{
 				if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.1f);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * 0.1f);
+					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX);
+					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY);
 				}
 				else {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.1f);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * -0.1f);
+					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaX);
+					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaY);
 				}
 		}
 		else if (Gizmo->GetType() == "DiscY")
 		{
 			if (pObj->GetUpVector().y >= 0)
 			{
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
+				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
+				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
 			}
 			else {
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.1f);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.1f);
+				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY);
+				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX);
 			}
 		}
 		else if (Gizmo->GetType() == "DiscZ")
 		{
 
 			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.1f);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY * 0.1f);
+				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
+				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
 			}
 			else {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
+				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
+				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
 			};
 		}
 	}
-	//switch (Arrow->GetDir())
-	//{
-	//case AD_X:
-	//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
-	//		pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.1f);
-	//		pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * 0.1f);
-	//	}
-	//	else {
-	//		pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.1f);
-	//		pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * -0.1f);
-	//	}
-
-	//	break;
-	//case AD_Y:
-	//	if (pObj->GetUpVector().y >= 0)
-	//	{
-	//		pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
-	//		pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
-	//	}
-	//	else {
-	//		pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.1f);
-	//		pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.1f);
-	//	}
-	//	break;
-	//case AD_Z:
-
-	//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {
-	//		pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.1f);
-	//		pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY * 0.1f);
-	//	}
-	//	else {
-	//		pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
-	//		pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
-	//	}
-	//	break;
-	//default:
-	//	break;
-	//}
 }
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)

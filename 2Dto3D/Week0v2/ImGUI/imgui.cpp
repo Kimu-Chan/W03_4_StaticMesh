@@ -251,7 +251,9 @@ CODE
    If a function/type has been renamed / or marked obsolete, try to fix the name in your code before it is permanently removed
    from the public API. If you have a problem with a missing function/symbols, search for its name in the code, there will
    likely be a comment about it. Please report any issue to the GitHub page!
- - To find out usage of old API, you can add '#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS' in your configuration file.
+ - To find out usage of old API, you can add '#define IMGUI_D
+ 
+ BLE_OBSOLETE_FUNCTIONS' in your configuration file.
  - Try to keep your copy of Dear ImGui reasonably up to date!
 
 

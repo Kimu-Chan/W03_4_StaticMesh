@@ -1,7 +1,7 @@
 #include "ArrowComp.h"
 #include "JungleMath.h"
 #include "Player.h"
-UArrowComp::UArrowComp() : UPrimitiveComponent("AxisArrowZ")
+UArrowComp::UArrowComp() : UPrimitiveComponent("Arrow")
 {
 }
 

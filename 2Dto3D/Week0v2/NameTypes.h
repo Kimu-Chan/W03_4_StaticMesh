@@ -1,6 +1,8 @@
 #pragma once
 #include "Define.h"
 #include <ostream>
+#include <iostream>
+
 class FNameEntry
 {
 public:
@@ -13,11 +15,18 @@ public:
 class FNamePool
 {
 private:
-	FNamePool();
+	FNamePool() {}
 	TArray<FNameEntry*> Entries;
 	TMap<FString , int32> NameToIndex;
 
 public:
+	static FString ToLowerCase(const FString& Str)
+	{
+		FString LowerStr = Str;
+		std::transform(LowerStr.begin(), LowerStr.end(), LowerStr.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		return LowerStr;
+	}
 	static FNamePool& GetInstance()
 	{
 		static FNamePool instance;
@@ -26,6 +35,7 @@ public:
 
 	int AddEntry(const FString& Name)
 	{
+		FString lowName = ToLowerCase(Name);
 		auto it = NameToIndex.find(Name);
 		if (it != NameToIndex.end())
 			return it->second;

@@ -1,7 +1,7 @@
 #include "ScaleGizmoComponent.h"
 #include "JungleMath.h"
 #include "Player.h"
-UScaleGizmoComponent::UScaleGizmoComponent() : UPrimitiveComponent("AxisArrowZ")
+UScaleGizmoComponent::UScaleGizmoComponent() : UPrimitiveComponent("Scale")
 {
 }
 

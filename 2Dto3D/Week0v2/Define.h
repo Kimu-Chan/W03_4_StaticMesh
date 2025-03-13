@@ -30,6 +30,7 @@ using FString = std::string;
 using FWString = std::wstring;
 
 #include "Console.h"
+#include "NameTypes.h"
 
 struct FVertexSimple
 {
