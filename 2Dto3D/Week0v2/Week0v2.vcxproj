@@ -152,6 +152,7 @@
     <ClCompile Include="GraphicDevice.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
+    <ClCompile Include="PrimitiveBatch.cpp" />
     <ClCompile Include="PrimitiveComponent.cpp" />
     <ClCompile Include="PropertyPanel.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="JungleMath.h" />
     <ClInclude Include="LocalGizmoComponent.h" />
     <ClInclude Include="ObjectFactory.h" />
+    <ClInclude Include="PrimitiveBatch.h" />
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
     <ClInclude Include="ResourceMgr.h" />

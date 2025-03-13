@@ -33,5 +33,7 @@ void USphereComp::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+	UPrimitiveBatch::GetInstance().AddBox(GetWorldLocation(), { 1,1,1,1 }, Model);
+	UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 10, 5, 100, { 1,1,1,1 }, Model);
 	Super::Render();
 }

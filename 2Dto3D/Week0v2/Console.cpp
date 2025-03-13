@@ -35,10 +35,7 @@ void Console::AddLog(LogLevel level, const char* fmt, ...) {
 
 // 콘솔 창 렌더링
 void Console::Draw() {
-    OutputDebugString((std::to_wstring(bWasOpen) + L"\n").c_str());
-
     if (!bWasOpen) return;
-
     // 창 크기 및 위치 계산
     float controllWindowWidth = static_cast<float>(width) * 0.5f;
     float expandedHeight = static_cast<float>(height) * 0.35f;

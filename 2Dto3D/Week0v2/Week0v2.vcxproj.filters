@@ -159,6 +159,9 @@
     <ClCompile Include="ScaleGizmoComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="PrimitiveBatch.cpp">
+      <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -303,6 +306,9 @@
     </ClInclude>
     <ClInclude Include="ScaleGizmoComponent.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveBatch.h">
+      <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

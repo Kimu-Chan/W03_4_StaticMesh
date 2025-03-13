@@ -26,6 +26,7 @@ public:
     void Prepare();
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
+    void RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT stride, UINT offset);
 
     void CreateShader();
     void CreateConstantBuffer();
@@ -37,11 +38,13 @@ public:
     void SetPixelShader(const FWString filename, FString funcname, FString version);
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
     ID3D11Buffer* CreateVertexBuffer(const TArray<FVertexSimple>& vertices, UINT byteWidth);
+    ID3D11Buffer* CreateDynamicBatchBuffer(size_t capacity);
     ID3D11Buffer* CreateIndexBuffer(uint32* indices, UINT byteWidth);
     ID3D11Buffer* CreateIndexBuffer(const TArray<uint32>& indices, UINT byteWidth);
 
     void ReleaseBuffer(ID3D11Buffer*& Buffer);
     void ReleaseConstantBuffer();
+    void UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices);
     void UpdateConstant(FMatrix _MVP, float _Flag);
 
     struct FConstants
