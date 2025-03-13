@@ -1,5 +1,6 @@
 #pragma once
 #include "Define.h"
+
 uint32 quadTextureInices[] =
 {
 	0,1,2,

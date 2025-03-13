@@ -324,19 +324,38 @@ ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UIN
 {    // 2. Create a vertex buffer
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = byteWidth;
-    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; // will never be updated 
     vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vertexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+    //D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
 
     ID3D11Buffer* vertexBuffer;
 
-    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, nullptr, &vertexBuffer);
     if (FAILED(hr))
     {
         UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
     }
     return vertexBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateIndexTextureBuffer(uint32* indices, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC indexbufferdesc = {};
+    indexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; 
+    indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    indexbufferdesc.ByteWidth = byteWidth;  
+    indexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; 
+
+    ID3D11Buffer* indexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&indexbufferdesc, nullptr, &indexBuffer); 
+    if (FAILED(hr))
+    {
+        return nullptr;
+    }
+    return indexBuffer;
 }
 
 void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)

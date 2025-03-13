@@ -6,7 +6,7 @@ void UTexture::init()
 
     LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"Assets/Texture/Fire001.bmp");
+        L"Assets/Texture/font.png");
     CreateSampler(FEngineLoop::graphicDevice.Device);
 
     if (!m_TextureSRV || !m_SamplerState) {

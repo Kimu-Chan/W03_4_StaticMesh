@@ -23,5 +23,21 @@ private:
 	ID3D11Buffer* indexTextureBuffer;
 	UINT numVertices;
 	UINT numIndices;
+
+private:
+	int CellsPerRow = 16;
+	int CellsPerColumn = 16;
+	int CellWidth = 32;
+	int CellHeight = 32;
+	int BitmapWidth = 512;
+	int BitmapHeight = 512;
+
+	float u = 0;
+	float v = 0;
+
+	void UpdateVertexBuffer(const TArray<FVertexTexture>& vertices,
+		const TArray<uint32>& indices);
+
+
 };
 
