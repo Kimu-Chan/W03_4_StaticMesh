@@ -14,7 +14,7 @@ PropertyPanel::~PropertyPanel()
 
 void PropertyPanel::Draw(UWorld* world)
 {
-	float controllWindowWidth = static_cast<float>(width) * 0.15f;
+	float controllWindowWidth = static_cast<float>(width) * 0.178f;
 	float controllWindowHeight = static_cast<float>(height) * 0.15f;
 
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
