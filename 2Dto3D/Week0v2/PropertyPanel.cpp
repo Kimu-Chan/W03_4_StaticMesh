@@ -14,6 +14,16 @@ PropertyPanel::~PropertyPanel()
 
 void PropertyPanel::Draw(UWorld* world)
 {
+	float controllWindowWidth = static_cast<float>(width) * 0.15f;
+	float controllWindowHeight = static_cast<float>(height) * 0.15f;
+
+	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
+	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * .75f;
+
+	// 창 크기와 위치 설정
+	ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
+	ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
+
 	ImGui::Begin("Jungle Property Panel");
 
 	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());	
@@ -60,4 +70,12 @@ void PropertyPanel::Draw(UWorld* world)
 	}
 
 	ImGui::End();
+}
+void PropertyPanel::OnResize(HWND hWnd)
+{
+	RECT clientRect;
+	GetClientRect(hWnd, &clientRect);
+	width = clientRect.right - clientRect.left;
+	height = clientRect.bottom - clientRect.top;
+	
 }

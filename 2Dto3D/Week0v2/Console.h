@@ -7,6 +7,7 @@
 #include "EditorWIndow.h"
 #include "IWindowToggleable.h"
 
+#include <Windows.h>
 enum class LogLevel { Display, Warning, Error };
 
 class Console : public IWindowToggleable
@@ -20,7 +21,7 @@ public:
     void Clear();
     void AddLog(LogLevel level, const char* fmt, ...);
     void Draw();
-
+    void OnResize(HWND hWnd);
     void Toggle() override { 
         if (bWasOpen) {
             bWasOpen = false;
@@ -50,10 +51,14 @@ public:
     bool showError = true;     // Error 체크박스
 
     bool bWasOpen = true;
-
     // 복사 방지
     Console(const Console&) = delete;
     Console& operator=(const Console&) = delete;
     Console(Console&&) = delete;
     Console& operator=(Console&&) = delete;
+private:
+    bool bExpand = true;
+    UINT width;
+    UINT height;
+
 };

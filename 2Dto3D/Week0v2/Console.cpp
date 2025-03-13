@@ -35,14 +35,36 @@ void Console::AddLog(LogLevel level, const char* fmt, ...) {
 
 // 콘솔 창 렌더링
 void Console::Draw() {
+    OutputDebugString((std::to_wstring(bWasOpen) + L"\n").c_str());
+
     if (!bWasOpen) return;
-    
-    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Console", &bWasOpen)) { // 창 상태 연동 
+
+    // 창 크기 및 위치 계산
+    float controllWindowWidth = static_cast<float>(width) * 0.5f;
+    float expandedHeight = static_cast<float>(height) * 0.35f;
+    float collapsedHeight = 25.0f; // 접었을 때 높이
+    float controllWindowHeight = bExpand ? expandedHeight : collapsedHeight;
+
+    float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth);
+    float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight);
+
+    // 창 크기와 위치 설정
+    ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
+    ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
+
+    // 창을 표시하고 닫힘 여부 확인
+    bExpand = ImGui::Begin("Console", &bWasOpen);
+    if (!bExpand) {
         ImGui::End();
         return;
     }
 
+    // 창을 접었을 경우 UI를 표시하지 않음
+    if (!bExpand) {
+        ImGui::End();
+        return;
+    }
+    
 
 
     // 버튼 UI (로그 수준별 추가)
@@ -123,5 +145,12 @@ void Console::Draw() {
     }
 
     ImGui::End();
+}
+void Console::OnResize(HWND hWindow)
+{
+    RECT clientRect;
+    GetClientRect(hWindow, &clientRect);
+    width = clientRect.right - clientRect.left;
+    height = clientRect.bottom - clientRect.top;
 }
 

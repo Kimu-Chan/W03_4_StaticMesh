@@ -26,6 +26,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				FEngineLoop::graphicDevice.OnResize(hWnd);
 			}
 		}
+		Console::GetInstance().OnResize(hWnd);
+		ControlPanel::GetInstance().OnResize(hWnd);
+		PropertyPanel::GetInstance().OnResize(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
