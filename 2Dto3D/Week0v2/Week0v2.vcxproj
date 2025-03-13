@@ -153,6 +153,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Outliner.cpp" />
+    <ClCompile Include="PrimitiveBatch.cpp" />
     <ClCompile Include="PrimitiveComponent.cpp" />
     <ClCompile Include="PropertyPanel.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="NameTypes.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="Outliner.h" />
+    <ClInclude Include="PrimitiveBatch.h" />
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
     <ClInclude Include="ResourceMgr.h" />
