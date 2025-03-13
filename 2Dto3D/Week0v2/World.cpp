@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "ArrowComp.h"
 #include "LocalGizmoComponent.h"
+#include "UBillboardComponent.h"
 UWorld::UWorld()
 {
 }
@@ -42,6 +43,11 @@ void UWorld::CreateBaseObject()
 	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>();
 	LocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
 	GUObjectArray.push_back(tmp);
+
+	//테스트용 빌보드. 필요없으면 삭제
+	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
+	billboard = static_cast<UBillboardComponent*>(billboard);
+	GUObjectArray.push_back(billboard);
 }
 
 void UWorld::Tick(double deltaTime)
