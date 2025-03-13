@@ -7,11 +7,13 @@
 #include "Renderer.h"
 #include "Define.h"
 #include "Arrow.h"
+#include "Quad.h"
 void FResourceMgr::Initialize(FRenderer* renderer)
 {
     RegisterMesh(renderer, "Sphere", sphere_vertices, sizeof(sphere_vertices) / sizeof(FVertexSimple), nullptr, 0);
     RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
     RegisterMesh(renderer, "Gizmo", gizmoVertices, sizeof(gizmoVertices) / sizeof(FVertexSimple), nullptr, 0);
+    RegisterMesh(renderer, "Quad", quadVertices, sizeof(quadVertices) / sizeof(FVertexSimple), quadInices, sizeof(quadInices)/sizeof(uint32));
 
     LoadObjAsset(renderer, "ArrowX", L"Assets/AxisArrowX.obj");
     LoadObjAsset(renderer, "ArrowY", L"Assets/AxisArrowY.obj");

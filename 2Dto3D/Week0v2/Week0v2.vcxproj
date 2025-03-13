@@ -163,10 +163,18 @@
     <ClCompile Include="SceneMgr.cpp" />
     <ClCompile Include="SphereComp.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="UBillboardComponent.cpp" />
     <ClCompile Include="UClass.cpp" />
+    <ClCompile Include="UTexture.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="PixelTextureShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="ShaderW0.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -174,6 +182,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="VertexTextureShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +227,8 @@
     <ClInclude Include="PrimitiveBatch.h" />
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
+    <ClInclude Include="Quad.h" />
+    <ClInclude Include="QuadTexture.h" />
     <ClInclude Include="ResourceMgr.h" />
     <ClInclude Include="ScaleGizmoComponent.h" />
     <ClInclude Include="SceneComponent.h" />
@@ -224,7 +240,9 @@
     <ClInclude Include="SphereComp.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="StaticMesh.h" />
+    <ClInclude Include="UBillboardComponent.h" />
     <ClInclude Include="UClass.h" />
+    <ClInclude Include="UTexture.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

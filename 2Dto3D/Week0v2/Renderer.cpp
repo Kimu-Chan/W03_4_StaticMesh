@@ -3,12 +3,14 @@
 void FRenderer::Initialize(FGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
+    CreateTextureShader();
     CreateConstantBuffer();
 
 }
 
 void FRenderer::Release() {
     ReleaseShader();
+    ReleaseTextureShader();
     if (ConstantBuffer) ConstantBuffer->Release();
 
 }
@@ -290,6 +292,137 @@ void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }
 }
+
+void FRenderer::CreateTextureShader()
+{
+    ID3DBlob* vertextextureshaderCSO;
+    ID3DBlob* pixeltextureshaderCSO;
+
+    HRESULT hr;
+    hr = D3DCompileFromFile(L"VertexTextureShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &vertextextureshaderCSO, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "VertexShader Error");
+    }
+    Graphics->Device->CreateVertexShader(vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), nullptr, &VertexTextureShader);
+
+    hr = D3DCompileFromFile(L"PixelTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &pixeltextureshaderCSO, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "PixelShader Error");
+    }
+    Graphics->Device->CreatePixelShader(pixeltextureshaderCSO->GetBufferPointer(), pixeltextureshaderCSO->GetBufferSize(), nullptr, &PixelTextureShader);
+
+    D3D11_INPUT_ELEMENT_DESC layout[] = {
+       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+       { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), &TextureInputLayout);
+
+    //자료구조 변경 필요
+    TextureStride = sizeof(FVertexTexture);
+    vertextextureshaderCSO->Release();
+    pixeltextureshaderCSO->Release();
+}
+
+void FRenderer::ReleaseTextureShader()
+{
+    if (TextureInputLayout)
+    {
+        TextureInputLayout->Release();
+        TextureInputLayout = nullptr;
+    }
+
+    if (PixelTextureShader)
+    {
+        PixelTextureShader->Release();
+        PixelTextureShader = nullptr;
+    }
+
+    if (VertexTextureShader)
+    {
+        VertexTextureShader->Release();
+        VertexTextureShader = nullptr;
+    }
+}
+
+void FRenderer::PrepareTextureShader()
+{
+    Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(TextureInputLayout);
+    
+    //텍스쳐용 ConstantBuffer 추가필요할수도
+    if (ConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+    }
+    
+}
+
+ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth)
+{    // 2. Create a vertex buffer
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vertexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+    //D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+    ID3D11Buffer* vertexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, nullptr, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
+    return vertexBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateIndexTextureBuffer(uint32* indices, UINT byteWidth)
+{
+    D3D11_BUFFER_DESC indexbufferdesc = {};
+    indexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; 
+    indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    indexbufferdesc.ByteWidth = byteWidth;  
+    indexbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; 
+
+    ID3D11Buffer* indexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&indexbufferdesc, nullptr, &indexBuffer); 
+    if (FAILED(hr))
+    {
+        return nullptr;
+    }
+    return indexBuffer;
+}
+
+void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
+{
+    if (!_TextureSRV || !_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Warning, "SRV, Sampler Error");
+    }
+    if (numIndices <= 0)
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "numIndices Error");
+    }
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &TextureStride, &offset);
+    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    // 입력 레이아웃 및 기본 설정
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
+
+    // 드로우 호출 (6개의 인덱스 사용)
+    Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
+}
+
+
 
 
 

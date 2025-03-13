@@ -47,10 +47,26 @@ public:
     void UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices);
     void UpdateConstant(FMatrix _MVP, float _Flag);
 
+
     struct FConstants
     {
         FMatrix MVP;
         float   Flag;
     };
+public://텍스쳐용 기능 추가
+    ID3D11VertexShader* VertexTextureShader = nullptr;
+    ID3D11PixelShader* PixelTextureShader = nullptr;
+    ID3D11InputLayout* TextureInputLayout = nullptr;
+
+    uint32 TextureStride;
+    void CreateTextureShader();
+    void ReleaseTextureShader();
+    void PrepareTextureShader();
+    ID3D11Buffer* CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth);
+    ID3D11Buffer* CreateIndexTextureBuffer(uint32* indices, UINT byteWidth);
+    void RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices,
+        ID3D11Buffer* pIndexBuffer, UINT numIndices,
+        ID3D11ShaderResourceView* _TextureSRV,
+        ID3D11SamplerState* _SamplerState);
 };
 
