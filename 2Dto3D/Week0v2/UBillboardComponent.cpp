@@ -33,8 +33,8 @@ void UBillboardComponent::Update(double deltaTime)
 	int col = charIndex % 16;
 	int row = charIndex / 16;
 
-	float u1 = 5 * (32.0f / 512.0f);
-	float v1 = 2 * (32.0f / 512.0f);
+	float u1 = 1 * (32.0f / 512.0f);
+	float v1 = 4 * (32.0f / 512.0f);
 	float u2 = u1 + (32.0f / 512.0f);
 	float v2 = v1 + (32.0f / 512.0f);
 
