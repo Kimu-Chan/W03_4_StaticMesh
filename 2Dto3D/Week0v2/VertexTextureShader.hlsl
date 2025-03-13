@@ -1,5 +1,5 @@
 struct VSInput {
-    float4 position : POSITION;
+    float3 position : POSITION;
     float2 texCoord : TEXCOORD;
 };
 
@@ -18,7 +18,7 @@ PSInput main(VSInput input) {
 
 
     PSInput output;
-    output.position = output.position = mul(float4(input.position.xyz, 1.0f), MVP);
+    output.position = mul(float4(input.position, 1.0f), MVP);
     
     output.texCoord = input.texCoord;
     

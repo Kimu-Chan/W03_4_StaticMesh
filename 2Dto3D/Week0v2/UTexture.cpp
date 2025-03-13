@@ -8,6 +8,10 @@ void UTexture::init()
         FEngineLoop::graphicDevice.DeviceContext,
         L"Assets/Texture/Fire001.bmp");
     CreateSampler(FEngineLoop::graphicDevice.Device);
+
+    if (!m_TextureSRV || !m_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Error, "TextureSRV, SamplerState Createion Error");
+    }
 }
 
 HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext* context, const wchar_t* filename)
@@ -86,7 +90,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     frame->Release();
     converter->Release();
 
-
+    Console::GetInstance().AddLog(LogLevel::Warning, "Texture File Load Successs");
     return hr;
 }
 

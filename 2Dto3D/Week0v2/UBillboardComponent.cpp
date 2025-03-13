@@ -19,6 +19,7 @@ UBillboardComponent::~UBillboardComponent()
 void UBillboardComponent::Initialize()
 {
     Super::Initialize();
+	CreateQuadTextureVertexBuffer();
 	m_texture.init();
 }
 
@@ -36,7 +37,9 @@ void UBillboardComponent::Render()
 	FEngineLoop::renderer.PrepareTextureShader();
 
 	if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_TRANSLATION)
+	{
 		return;
+	}
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
@@ -53,7 +56,6 @@ void UBillboardComponent::Render()
 	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
 		indexTextureBuffer,numIndices,m_texture.m_TextureSRV,m_texture.m_SamplerState);
 	//Super::Render();
-
 
 	FEngineLoop::renderer.PrepareShader();
 }
@@ -96,4 +98,10 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexTextureBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
 	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, iCount * sizeof(UINT));
 
+	if (!vertexTextureBuffer) {
+		Console::GetInstance().AddLog(LogLevel::Warning, "Buffer Error");
+	}
+	if (!indexTextureBuffer) {
+		Console::GetInstance().AddLog(LogLevel::Warning, "Buffer Error");
+	}
 }

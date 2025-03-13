@@ -258,10 +258,19 @@ void FRenderer::CreateTextureShader()
     ID3DBlob* vertextextureshaderCSO;
     ID3DBlob* pixeltextureshaderCSO;
 
-    D3DCompileFromFile(L"VertexTextureShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &vertextextureshaderCSO, nullptr);
+    HRESULT hr;
+    hr = D3DCompileFromFile(L"VertexTextureShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &vertextextureshaderCSO, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "VertexShader Error");
+    }
     Graphics->Device->CreateVertexShader(vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), nullptr, &VertexTextureShader);
 
-    D3DCompileFromFile(L"PixelTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &pixeltextureshaderCSO, nullptr);
+    hr = D3DCompileFromFile(L"PixelTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &pixeltextureshaderCSO, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "PixelShader Error");
+    }
     Graphics->Device->CreatePixelShader(pixeltextureshaderCSO->GetBufferPointer(), pixeltextureshaderCSO->GetBufferSize(), nullptr, &PixelTextureShader);
 
     D3D11_INPUT_ELEMENT_DESC layout[] = {
@@ -332,6 +341,13 @@ ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UIN
 
 void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
 {
+    if (!_TextureSRV || !_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Warning, "SRV, Sampler Error");
+    }
+    if (numIndices <= 0)
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "numIndices Error");
+    }
     UINT offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &TextureStride, &offset);
     Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -344,7 +360,7 @@ void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVert
     Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
 
     // 드로우 호출 (6개의 인덱스 사용)
-    Graphics->DeviceContext->DrawIndexed(6, 0, 0);
+    Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
 
