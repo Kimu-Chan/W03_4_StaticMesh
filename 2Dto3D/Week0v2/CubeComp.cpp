@@ -1,6 +1,7 @@
 #include "CubeComp.h"
 #include "JungleMath.h"
 #include "World.h"
+#include "PrimitiveBatch.h"
 UCubeComp::UCubeComp() : UPrimitiveComponent("Cube")
 {
 }
@@ -33,5 +34,7 @@ void UCubeComp::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+
+	UPrimitiveBatch::GetInstance().AddBox(GetWorldLocation(), { 1,1,1,1 }, Model);
 	Super::Render();
 }

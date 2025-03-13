@@ -129,6 +129,16 @@ void FRenderer::RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, I
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+void FRenderer::RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT stride, UINT offset)
+{
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVectexBuffer, &stride, &offset);
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+    // 한 번의 Draw Call로 모든 선을 렌더링
+    Graphics->DeviceContext->Draw(numVertices, 0);
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
     // 2. Create a vertex buffer
@@ -167,6 +177,23 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(const TArray<FVertexSimple>& vertice
         UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
     }
     return vertexBuffer;
+}
+ID3D11Buffer* FRenderer::CreateDynamicBatchBuffer(size_t capacity)
+{
+    D3D11_BUFFER_DESC bd = {};
+    bd.Usage = D3D11_USAGE_DYNAMIC;
+    bd.ByteWidth = sizeof(FVertexSimple) * capacity;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bd.MiscFlags = 0;
+
+    ID3D11Buffer* buffer = nullptr;
+    HRESULT hr = Graphics->Device->CreateBuffer(&bd, nullptr, &buffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "동적 배치 버퍼 생성 실패");
+    }
+    return buffer;
 }
 
 ID3D11Buffer* FRenderer::CreateIndexBuffer(uint32* indices, UINT byteWidth)
@@ -234,6 +261,19 @@ void FRenderer::ReleaseConstantBuffer()
         ConstantBuffer->Release();
         ConstantBuffer = nullptr;
     }
+}
+void FRenderer::UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    HRESULT hr = Graphics->DeviceContext->Map(vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, Vertices.data(), Vertices.size() * sizeof(FVertexSimple));
+        Graphics->DeviceContext->Unmap(vertexBuffer, 0);
+    }
+    else {
+        UE_LOG(LogLevel::Warning, "Vertex buffer 매핑 실패");
+    }
+
 }
 void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
 {

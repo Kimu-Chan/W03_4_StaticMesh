@@ -65,10 +65,10 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 
 	UIMgr = new UImGuiManager;
 	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
-
 	resourceMgr.Initialize(&renderer);
 	GWorld = new UWorld;
 	GWorld->Initialize();
+
 
 	return 0;
 }
@@ -135,7 +135,6 @@ void FEngineLoop::Tick()
 		} while (elapsedTime < targetFrameTime);
 	}
 }
-
 void FEngineLoop::Render()
 {
 	/*
@@ -145,12 +144,14 @@ void FEngineLoop::Render()
 	}
 	*/
 
+	UPrimitiveBatch::GetInstance().Begin();
+	UPrimitiveBatch::GetInstance().AddGrid(50);
 	for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
 	{
 		GetWorld()->GetObjectArr()[i]->Render();
 	}
+	UPrimitiveBatch::GetInstance().End(View, Projection);
 }
-
 float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)
 {
 	DXGI_SWAP_CHAIN_DESC desc;

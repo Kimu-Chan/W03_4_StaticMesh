@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include "GraphicDevice.h"
 #include "Renderer.h"
+#include "PrimitiveBatch.h"
 #include "ResourceMgr.h"
 
 class UImGuiManager;
