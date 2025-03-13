@@ -16,6 +16,12 @@ public:
 	virtual void		Render()					override;
 private:
 	FMatrix CreateBillboardMatrix();
+	void CreateQuadTextureVertexBuffer();
 	UTexture m_texture;
+
+	ID3D11Buffer* vertexTextureBuffer;
+	ID3D11Buffer* indexTextureBuffer;
+	UINT numVertices;
+	UINT numIndices;
 };
 

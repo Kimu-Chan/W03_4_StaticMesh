@@ -223,6 +223,7 @@
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
     <ClInclude Include="Quad.h" />
+    <ClInclude Include="QuadTexture.h" />
     <ClInclude Include="ResourceMgr.h" />
     <ClInclude Include="ScaleGizmoComponent.h" />
     <ClInclude Include="SceneComponent.h" />

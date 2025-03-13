@@ -1,6 +1,7 @@
 #include "UBillboardComponent.h"
 #include "JungleMath.h"
 #include "Player.h"
+#include "QuadTexture.h"
 
 #include <DirectXMath.h>
 UBillboardComponent::UBillboardComponent() : UPrimitiveComponent("Quad")
@@ -32,6 +33,8 @@ void UBillboardComponent::Release()
 
 void UBillboardComponent::Render()
 {
+	FEngineLoop::renderer.PrepareTextureShader();
+
 	if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_TRANSLATION)
 		return;
 
@@ -46,7 +49,10 @@ void UBillboardComponent::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	Super::Render();
+
+	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
+		indexTextureBuffer,numIndices,m_texture.m_TextureSRV,m_texture.m_SamplerState);
+	//Super::Render();
 }
 
 FMatrix UBillboardComponent::CreateBillboardMatrix()
@@ -76,4 +82,15 @@ FMatrix UBillboardComponent::CreateBillboardMatrix()
 	FMatrix M = S * R * T;
 
 	return M;
+}
+
+void UBillboardComponent::CreateQuadTextureVertexBuffer()
+{
+	uint32 vCount = sizeof(quadTextureVertices)/sizeof(FVertexTexture);
+	uint32 iCount = sizeof(quadTextureInices) / sizeof(uint32);
+	numVertices = vCount;
+	numIndices = iCount;
+	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexTextureBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
+	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, iCount * sizeof(UINT));
+
 }

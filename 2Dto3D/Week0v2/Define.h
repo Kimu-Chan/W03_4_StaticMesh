@@ -36,6 +36,13 @@ struct FVertexSimple
 	float x, y, z;    // Position
 	float r, g, b, a; // Color
 };
+
+struct FVertexTexture
+{
+	float x, y, z;    // Position
+	float u, v; // Texture
+};
+
 struct FVector
 {
 	float x, y, z;

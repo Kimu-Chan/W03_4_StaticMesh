@@ -59,6 +59,7 @@ public://텍스쳐용 기능 추가
     void CreateTextureShader();
     void ReleaseTextureShader();
     void PrepareTextureShader();
+    ID3D11Buffer* CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth);
     void RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices,
         ID3D11Buffer* pIndexBuffer, UINT numIndices,
         ID3D11ShaderResourceView* _TextureSRV,

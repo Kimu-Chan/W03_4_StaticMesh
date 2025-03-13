@@ -4,7 +4,7 @@ class UTexture
 {
 public:
 	void init();
-private:
+//private:
 	HRESULT LoadTextureFromFile(ID3D11Device* device,
 		ID3D11DeviceContext* context, const wchar_t* filename);
 	void CreateSampler(ID3D11Device* device);

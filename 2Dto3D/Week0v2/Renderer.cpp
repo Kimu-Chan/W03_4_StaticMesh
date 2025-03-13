@@ -271,7 +271,7 @@ void FRenderer::CreateTextureShader()
     Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), &TextureInputLayout);
 
     //자료구조 변경 필요
-    TextureStride = sizeof(FVertexSimple);
+    TextureStride = sizeof(FVertexTexture);
     vertextextureshaderCSO->Release();
     pixeltextureshaderCSO->Release();
 }
@@ -303,12 +303,31 @@ void FRenderer::PrepareTextureShader()
     Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
     Graphics->DeviceContext->IASetInputLayout(TextureInputLayout);
     
-    /*텍스쳐용 ConstantBuffer 추가필요
+    //텍스쳐용 ConstantBuffer 추가필요할수도
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
-    */
+    
+}
+
+ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth)
+{    // 2. Create a vertex buffer
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+    ID3D11Buffer* vertexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
+    return vertexBuffer;
 }
 
 void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
