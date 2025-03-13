@@ -54,7 +54,14 @@ public://텍스쳐용 기능 추가
     ID3D11VertexShader* VertexTextureShader = nullptr;
     ID3D11PixelShader* PixelTextureShader = nullptr;
     ID3D11InputLayout* TextureInputLayout = nullptr;
+
+    uint32 TextureStride;
     void CreateTextureShader();
     void ReleaseTextureShader();
+    void PrepareTextureShader();
+    void RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices,
+        ID3D11Buffer* pIndexBuffer, UINT numIndices,
+        ID3D11ShaderResourceView* _TextureSRV,
+        ID3D11SamplerState* _SamplerState);
 };
 

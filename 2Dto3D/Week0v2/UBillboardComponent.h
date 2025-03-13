@@ -1,5 +1,7 @@
 #pragma once
 #include "PrimitiveComponent.h"
+#include "UTexture.h"
+
 class UBillboardComponent :
     public UPrimitiveComponent
 {
@@ -14,5 +16,6 @@ public:
 	virtual void		Render()					override;
 private:
 	FMatrix CreateBillboardMatrix();
+	UTexture m_texture;
 };
 

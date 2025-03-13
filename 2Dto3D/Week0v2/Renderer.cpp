@@ -270,8 +270,8 @@ void FRenderer::CreateTextureShader()
     };
     Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), &TextureInputLayout);
 
-    //?
-    Stride = sizeof(FVertexSimple);
+    //자료구조 변경 필요
+    TextureStride = sizeof(FVertexSimple);
     vertextextureshaderCSO->Release();
     pixeltextureshaderCSO->Release();
 }
@@ -310,6 +310,25 @@ void FRenderer::PrepareTextureShader()
     }
     */
 }
+
+void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
+{
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &TextureStride, &offset);
+    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    // 입력 레이아웃 및 기본 설정
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
+
+    // 드로우 호출 (6개의 인덱스 사용)
+    Graphics->DeviceContext->DrawIndexed(6, 0, 0);
+}
+
+
 
 
 

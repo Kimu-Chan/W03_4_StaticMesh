@@ -1,14 +1,9 @@
 #pragma once
 #include "Object.h"
-class UTexture :
-    public UObject
+class UTexture
 {
 public:
-
-	virtual void		Initialize();
-	virtual void		Update(double deltaTime);
-	virtual void		Release();
-	virtual void		Render();
+	void init();
 private:
 	HRESULT LoadTextureFromFile(ID3D11Device* device,
 		ID3D11DeviceContext* context, const wchar_t* filename);

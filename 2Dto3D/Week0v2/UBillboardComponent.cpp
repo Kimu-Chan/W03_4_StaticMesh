@@ -18,6 +18,7 @@ UBillboardComponent::~UBillboardComponent()
 void UBillboardComponent::Initialize()
 {
     Super::Initialize();
+	m_texture.init();
 }
 
 void UBillboardComponent::Update(double deltaTime)

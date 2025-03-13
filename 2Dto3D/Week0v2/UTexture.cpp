@@ -1,27 +1,12 @@
 #include "UTexture.h"
 #include <wincodec.h>
 
-void UTexture::Initialize()
+void UTexture::init()
 {
-    LoadTextureFromFile(FEngineLoop::graphicDevice.Device, 
+    LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"");
+        L"Asset/Texture/WoodCrate01.dds");
     CreateSampler(FEngineLoop::graphicDevice.Device);
-}
-
-void UTexture::Update(double deltaTime)
-{
-}
-
-void UTexture::Release()
-{
-    if (m_TextureSRV) m_TextureSRV->Release();
-    if (m_Texture) m_Texture->Release();
-    if (m_SamplerState) m_SamplerState->Release();
-}
-
-void UTexture::Render()
-{
 }
 
 HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext* context, const wchar_t* filename)
