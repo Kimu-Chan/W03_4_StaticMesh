@@ -104,7 +104,7 @@ void FEngineLoop::Tick()
 		GWorld->Tick(elapsedTime);
 
 		UCameraComponent* Camera = static_cast<UCameraComponent*>(GWorld->GetCamera());
-		View = JungleMath::CreateViewMatrix(Camera->GetWorldLocation(), Camera->GetWorldLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
+		View = JungleMath::CreateViewMatrix(Camera->GetWorldLocation(), Camera->GetWorldLocation() + Camera->GetForwardVector(), { 0, 0, 1 });
 		Projection = JungleMath::CreateProjectionMatrix(
 			Camera->GetFov() * (3.141592f / 180.0f),
 			GetAspectRatio(graphicDevice.SwapChain), 

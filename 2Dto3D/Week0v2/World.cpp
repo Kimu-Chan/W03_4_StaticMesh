@@ -31,7 +31,7 @@ void UWorld::CreateBaseObject()
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
-	camera->SetLocation(FVector(0, 0, -10.f));
+	camera->SetLocation(FVector(0.0f, 10.0f, 0.f));
 	GUObjectArray.push_back(camera);
 
 	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>("WorldGizmo");

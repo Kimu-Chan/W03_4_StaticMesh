@@ -34,21 +34,21 @@ void USceneComponent::Render()
 
 FVector USceneComponent::GetForwardVector()
 {
-	FVector Forward = FVector(0.f, 0.f, 1.0f);
+	FVector Forward = FVector(1.f, 0.f, 0.0f);
 	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
 	return Forward;
 }
 
 FVector USceneComponent::GetRightVector()
 {
-	FVector Right = FVector(1.f, 0.f, 0.0f);
+	FVector Right = FVector(0.f, 1.f, 0.0f);
 	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
 	return Right;
 }
 
 FVector USceneComponent::GetUpVector()
 {
-	FVector Up = FVector(0.f, 1.f, 0.0f);
+	FVector Up = FVector(0.f, 0.f, 1.0f);
 	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
 	return Up;
 }

@@ -125,17 +125,17 @@ void UCameraComponent::MoveRight(float _Value)
 
 void UCameraComponent::MoveUp(float _Value)
 {
-	RelativeLocation.y += _Value *0.5f;
+	RelativeLocation.z += _Value *0.5f;
 }
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	RelativeRotation.y += _Value;
+	RelativeRotation.z += _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)
 {
-	RelativeRotation.x += _Value;
+	RelativeRotation.y += _Value;
 }
 
 

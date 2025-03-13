@@ -327,7 +327,7 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 		{
 			if (pObj->GetUpVector().y >= 0)
 			{
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
+				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaY);
 				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
 			}
 			else {
@@ -343,7 +343,7 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
 			}
 			else {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
+				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
 				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
 			};
 		}
@@ -359,23 +359,23 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 		if (Gizmo->GetType() == "ArrowX")
 		{
 			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-				pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
+				pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f);
 			else
-				pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
+				pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f);
 		}
 		else if (Gizmo->GetType() == "ArrowY")
 		{
 			if (pObj->GetUpVector().y >= 0)
-				pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
+				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f) * -1);
 			else
-				pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
+				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f));
 		}
 		else if (Gizmo->GetType() == "ArrowZ")
 		{
-			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
+			if (GetWorld()->GetCamera()->GetUpVector().x <= 0)
+				pObj->AddLocation(pObj->GetUpVector() * deltaY * 0.01f * zdir);
 			else
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
+				pObj->AddLocation(pObj->GetUpVector() * deltaY * -0.01f * zdir);
 		}
 
 	}
@@ -384,21 +384,20 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 		if (Gizmo->GetType() == "ArrowX")
 		{
 			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
-			else
 				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+			else
+				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
 		}
 		else if (Gizmo->GetType() == "ArrowY")
 		{
-			pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaY * -0.01f);
-		}
+			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
+			else
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+		}	
 		else if (Gizmo->GetType() == "ArrowZ")
 		{
-
-			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-				pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.01f);
-			else
-				pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.01f);
+			pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
 		}
 	}
 }
@@ -410,22 +409,22 @@ void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, in
 	if (Gizmo->GetType() == "ScaleX")
 	{
 		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f * xdir);
-		else
 			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f * xdir);
+		else
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f * xdir);
 	}
 	else if (Gizmo->GetType() == "ScaleY")
 	{
-		if (pObj->GetUpVector().y >= 0)
-			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * -0.01f);
+		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
 		else
-			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.01f);
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
 	}
 	else if (Gizmo->GetType() == "ScaleZ")
 	{
 		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.01f * zdir);
+			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f * zdir);
 		else
-			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.01f * zdir);
+			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * 0.01f * -zdir);
 	}
 }
