@@ -34,10 +34,10 @@ void UPrimitiveBatch::AddGrid(int gridSize)
         
         // y-up 기준
         // 세로선
-        AddLine({ pos, 0, -gridSize * Spacing }, { pos, 0, gridSize * Spacing }, { 0.5f, 0.5f, 0.5f, 1.0f });
+        AddLine({ pos, -gridSize * Spacing, 0 }, { pos, gridSize * Spacing, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
 
         // 가로선
-        AddLine({ -gridSize * Spacing, 0, pos }, { gridSize * Spacing, 0, pos }, { 0.5f, 0.5f, 0.5f, 1.0f });
+        AddLine({ -gridSize * Spacing,  pos, 0 }, { gridSize * Spacing,  pos, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
     }
 }
 void UPrimitiveBatch::SetSpacing(float spacing)

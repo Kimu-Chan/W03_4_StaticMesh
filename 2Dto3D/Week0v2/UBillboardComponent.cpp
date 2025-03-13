@@ -77,12 +77,6 @@ void UBillboardComponent::Release()
 void UBillboardComponent::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
-
-	if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_TRANSLATION)
-	{
-		return;
-	}
-
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
 
