@@ -22,6 +22,16 @@ ControlPanel::~ControlPanel()
 
 void ControlPanel::Draw(UWorld* world, double elapsedTime )
 {	
+	float controllWindowWidth = static_cast<float>(width) * 0.3f;
+	float controllWindowHeight = static_cast<float>(height) * 0.36f;
+
+	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
+	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
+
+	// 창 크기와 위치 설정
+	ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
+	ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
+
 
 	ImGui::Begin("Jungle Control Panel");
 	ImGui::Text("Hello Jungle World!");
@@ -40,14 +50,8 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->SpawnObject(static_cast<OBJECTS>(primitiveType));
 	}
 
-
-
-
 	ImGui::Separator();
-
 	ImGuiIO& io = ImGui::GetIO();
-		//OutputDebugString( (std::to_wstring(io.Fonts->Fonts.Size) + L"\n").c_str());
-
 	ImFont* UnicodeFont = io.Fonts->Fonts[FEATHER_FONT];
 
 	ImVec2 ControlButtonSize = ImVec2(32, 32);
@@ -147,3 +151,12 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 
 	ImGui::End();
 }
+
+void ControlPanel::OnResize(HWND hWindow)
+{
+	RECT clientRect;
+	GetClientRect(hWindow, &clientRect);
+	width = clientRect.right - clientRect.left;
+	height = clientRect.bottom - clientRect.top;
+}
+

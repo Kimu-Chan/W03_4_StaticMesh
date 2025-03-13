@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWindowToggleable.h"
-
+#include <Windows.h>
 class UWorld;
 class ControlPanel : public IWindowToggleable
 {
@@ -16,7 +16,7 @@ public:
 		return Inst;
 	}
 	void Draw(UWorld* world, double elapsedTime);
-
+	void OnResize(HWND hWnd);
 	void Toggle() override {
 		if (bWasOpen) {
 			bWasOpen = false;
@@ -27,5 +27,7 @@ public:
 
 private:
 	bool bWasOpen = true;
+	UINT width;
+	UINT height;
 };
 
