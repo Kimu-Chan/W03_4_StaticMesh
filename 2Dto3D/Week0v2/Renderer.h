@@ -44,10 +44,17 @@ public:
     void ReleaseConstantBuffer();
     void UpdateConstant(FMatrix _MVP, float _Flag);
 
+
     struct FConstants
     {
         FMatrix MVP;
         float   Flag;
     };
+public://텍스쳐용 기능 추가
+    ID3D11VertexShader* VertexTextureShader = nullptr;
+    ID3D11PixelShader* PixelTextureShader = nullptr;
+    ID3D11InputLayout* TextureInputLayout = nullptr;
+    void CreateTextureShader();
+    void ReleaseTextureShader();
 };
 

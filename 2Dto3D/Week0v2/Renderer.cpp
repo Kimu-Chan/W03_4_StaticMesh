@@ -3,12 +3,14 @@
 void FRenderer::Initialize(FGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
+    CreateTextureShader();
     CreateConstantBuffer();
 
 }
 
 void FRenderer::Release() {
     ReleaseShader();
+    ReleaseTextureShader();
     if (ConstantBuffer) ConstantBuffer->Release();
 
 }
@@ -249,6 +251,64 @@ void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }
+}
+
+void FRenderer::CreateTextureShader()
+{
+    ID3DBlob* vertextextureshaderCSO;
+    ID3DBlob* pixeltextureshaderCSO;
+
+    D3DCompileFromFile(L"VertexTextureShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &vertextextureshaderCSO, nullptr);
+    Graphics->Device->CreateVertexShader(vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), nullptr, &VertexTextureShader);
+
+    D3DCompileFromFile(L"PixelTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &pixeltextureshaderCSO, nullptr);
+    Graphics->Device->CreatePixelShader(pixeltextureshaderCSO->GetBufferPointer(), pixeltextureshaderCSO->GetBufferSize(), nullptr, &PixelTextureShader);
+
+    D3D11_INPUT_ELEMENT_DESC layout[] = {
+       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+       { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertextextureshaderCSO->GetBufferPointer(), vertextextureshaderCSO->GetBufferSize(), &TextureInputLayout);
+
+    //?
+    Stride = sizeof(FVertexSimple);
+    vertextextureshaderCSO->Release();
+    pixeltextureshaderCSO->Release();
+}
+
+void FRenderer::ReleaseTextureShader()
+{
+    if (TextureInputLayout)
+    {
+        TextureInputLayout->Release();
+        TextureInputLayout = nullptr;
+    }
+
+    if (PixelTextureShader)
+    {
+        PixelTextureShader->Release();
+        PixelTextureShader = nullptr;
+    }
+
+    if (VertexTextureShader)
+    {
+        VertexTextureShader->Release();
+        VertexTextureShader = nullptr;
+    }
+}
+
+void FRenderer::PrepareTextureShader()
+{
+    Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(TextureInputLayout);
+    
+    /*텍스쳐용 ConstantBuffer 추가필요
+    if (ConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+    }
+    */
 }
 
 
