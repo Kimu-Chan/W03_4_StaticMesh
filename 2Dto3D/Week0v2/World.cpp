@@ -63,19 +63,19 @@ void UWorld::CreateBaseObject()
 	GUObjectArray.push_back(text);
 	
 	//테스트용 파티클
-	/*
 	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
 	particle = static_cast<UParticleSubUVComp*>(particle);
 	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
 	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
 	GUObjectArray.push_back(castParticle);
-	*/
 
+	/*
 	UObject* particle = FObjectFactory::ConstructObject<UBillboardComponent>();
 	particle = static_cast<UBillboardComponent*>(particle);
 	UBillboardComponent* castParticle = static_cast<UBillboardComponent*>(particle);
 	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
 	GUObjectArray.push_back(castParticle);
+	*/
 }
 
 void UWorld::ReleaseBaseObject()

@@ -10,14 +10,16 @@ UParticleSubUVComp::~UParticleSubUVComp()
 
 void UParticleSubUVComp::Initialize()
 {
-
+	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	FEngineLoop::renderer.PrepareSubUVConstant();
+	CreateSubUVVertexBuffer();
 	Super::Initialize();
 }
 
 void UParticleSubUVComp::Update(double deltaTime)
 {
 	//Console::GetInstance().AddLog(LogLevel::Warning, "NumV %d, NumI %d", numVertices,numIndices);
-	/*
+	
 	
 	static int indexU = 0;
 	static int indexV = 0;
@@ -40,10 +42,6 @@ void UParticleSubUVComp::Update(double deltaTime)
 		indexV = 0;
 	}
 
-
-
-	int charIndex = 'A' - ' ';
-
 	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
 	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
 
@@ -52,16 +50,10 @@ void UParticleSubUVComp::Update(double deltaTime)
 	float u2 = u1 + normalWidthOffset;
 	float v2 = v1 + normalHeightOffset;
 
-	TArray<FVertexTexture> vertices =
-	{
-		{-1.0f,1.0f,0.0f,u1,v1},
-		{ 1.0f,1.0f,0.0f,u2,v1},
-		{-1.0f,-1.0f,0.0f,u1,v2},
-		{ 1.0f,-1.0f,0.0f,u2,v2}
+	finalIndexU = float(indexU) * normalWidthOffset;
+	finalIndexV = float(indexV) * normalHeightOffset;
+	
 
-	};
-	UpdateVertexBuffer(vertices);
-	*/
 	Super::Update(deltaTime);
 }
 
@@ -72,6 +64,8 @@ void UParticleSubUVComp::Release()
 void UParticleSubUVComp::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
+	FEngineLoop::renderer.UpdateSubUVConstant(finalIndexU, finalIndexV);
+	FEngineLoop::renderer.PrepareSubUVConstant();
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
@@ -84,8 +78,8 @@ void UParticleSubUVComp::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	FEngineLoop::renderer.RenderTextPrimitive(vertexTextureBuffer, numVertices,
-		m_texture.m_TextureSRV, m_texture.m_SamplerState);
+	FEngineLoop::renderer.RenderTexturePrimitive(vertexSubUVBuffer, numTextVertices,
+		indexTextureBuffer, numIndices, m_texture.m_TextureSRV, m_texture.m_SamplerState);
 	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();
@@ -102,4 +96,27 @@ void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertic
 	context->Unmap(vertexTextureBuffer, 0);
 	*/
 
+}
+
+void UParticleSubUVComp::CreateSubUVVertexBuffer()
+{
+
+	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
+	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
+
+	TArray<FVertexTexture> vertices =
+	{
+		{-1.0f,1.0f,0.0f,0,0},
+		{ 1.0f,1.0f,0.0f,1,0},
+		{-1.0f,-1.0f,0.0f,0,1},
+		{ 1.0f,-1.0f,0.0f,1,1}
+
+	};
+	vertices[1].u = normalWidthOffset;
+	vertices[2].v = normalHeightOffset;
+	vertices[3].u = normalWidthOffset;
+	vertices[3].v = normalHeightOffset;
+
+	vertexSubUVBuffer = FEngineLoop::renderer.CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(FVertexTexture));
+	numTextVertices = vertices.size();
 }

@@ -14,7 +14,7 @@ public:
 private:
 
 	ID3D11Buffer* vertexTextBuffer;
-	UINT numVertices;
+	UINT numTextVertices;
 
 	int RowCount = 16;
 	int ColumnCount = 16;

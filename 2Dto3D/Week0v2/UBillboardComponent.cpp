@@ -40,6 +40,8 @@ void UBillboardComponent::Release()
 void UBillboardComponent::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
+	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	FEngineLoop::renderer.PrepareSubUVConstant();
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;

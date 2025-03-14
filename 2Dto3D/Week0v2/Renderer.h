@@ -73,9 +73,14 @@ public://텍스쳐용 기능 추가
         ID3D11SamplerState* _SamplerState);
     ID3D11Buffer* CreateVertexBuffer(FVertexTexture* vertices, UINT byteWidth);
 
-
-    //ID3D11Buffer* ConstantBuffer = nullptr;
-
+    struct FSubUVConstant
+    {
+        float indexU;
+        float indexV;
+    };
+    ID3D11Buffer* SubUVConstantBuffer = nullptr;
+    void UpdateSubUVConstant(float _indexU, float _indexV);
+    void PrepareSubUVConstant();
 
 };
 

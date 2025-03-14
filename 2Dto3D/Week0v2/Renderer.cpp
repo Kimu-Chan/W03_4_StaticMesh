@@ -254,6 +254,10 @@ void FRenderer::CreateConstantBuffer()
     constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &ConstantBuffer);
+
+
+    constantbufferdesc.ByteWidth = sizeof(FSubUVConstant) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &SubUVConstantBuffer);
 }
 
 void FRenderer::ReleaseConstantBuffer()
@@ -461,6 +465,31 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexTexture* vertices, UINT byteW
         UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
     }
     return vertexBuffer;
+}
+
+void FRenderer::UpdateSubUVConstant(float _indexU, float _indexV)
+{
+    if (SubUVConstantBuffer)
+    {
+        D3D11_MAPPED_SUBRESOURCE constantbufferMSR;// GPU의 메모리 주소 매핑
+
+        Graphics->DeviceContext->Map(SubUVConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant buffer every frame
+        FSubUVConstant* constants = (FSubUVConstant*)constantbufferMSR.pData; //GPU 메모리 직접 접근
+        {
+            constants->indexU = _indexU;
+            constants->indexV = _indexV;
+        }
+        Graphics->DeviceContext->Unmap(SubUVConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
+    }
+}
+
+void FRenderer::PrepareSubUVConstant()
+{
+    if (SubUVConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &SubUVConstantBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &SubUVConstantBuffer);
+    }
 }
 
 

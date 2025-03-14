@@ -27,6 +27,8 @@ void UText::Release()
 void UText::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
+	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	FEngineLoop::renderer.PrepareSubUVConstant();
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
@@ -39,7 +41,7 @@ void UText::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 	
-	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numVertices,
+	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
 		m_texture.m_TextureSRV, m_texture.m_SamplerState);
 	//Super::Render();
 
@@ -117,7 +119,7 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 
 void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth)
 {
-	numVertices = _vertex.size();
+	numTextVertices = _vertex.size();
 	// 2. Create a vertex buffer
 	D3D11_BUFFER_DESC vertexbufferdesc = {};
 	vertexbufferdesc.ByteWidth = byteWidth;
