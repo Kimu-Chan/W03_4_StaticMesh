@@ -18,6 +18,16 @@ Outliner& Outliner::GetInstance()
 
 void Outliner::Draw(UWorld* world)
 {
+    float controllWindowWidth = static_cast<float>(width) * 0.178f;
+    float controllWindowHeight = static_cast<float>(height) * 0.15f;
+
+    float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
+    float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.43f;
+
+    // 창 크기와 위치 설정
+    ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
+    ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
+
     if (ImGui::Begin("OutLiner")) // 윈도우 시작
     {
         if (ImGui::TreeNode("Primitives")) // 트리 노드 생성
@@ -44,4 +54,9 @@ void Outliner::Draw(UWorld* world)
 
 void Outliner::OnResize(HWND hWnd)
 {
+    RECT clientRect;
+    GetClientRect(hWnd, &clientRect);
+    width = clientRect.right - clientRect.left;
+    height = clientRect.bottom - clientRect.top;
+
 }

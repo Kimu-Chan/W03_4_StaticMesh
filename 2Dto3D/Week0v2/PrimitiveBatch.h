@@ -13,6 +13,7 @@ public:
 
 public:
 	void AddLine(const FVector& start, const FVector& end, const FVector4& color);
+	void AddGridLine(const FVector& start, const FVector& end, const FVector4& color);
 	void AddGrid(int gridSize);
 	void Begin();
 	void SetSpacing(float spacing);
@@ -28,6 +29,8 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	size_t allocatedCapacity;
 	TArray<FVertexSimple> Vertices;
+	TArray<FVertexSimple> GridVertices;
 	float Spacing = 5.f;
+	float PreSpacing = 0.f;
 	
 };

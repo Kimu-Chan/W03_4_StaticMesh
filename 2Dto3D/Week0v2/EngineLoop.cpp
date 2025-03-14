@@ -31,6 +31,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Console::GetInstance().OnResize(hWnd);
 		ControlPanel::GetInstance().OnResize(hWnd);
 		PropertyPanel::GetInstance().OnResize(hWnd);
+		Outliner::GetInstance().OnResize(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -68,8 +69,6 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	resourceMgr.Initialize(&renderer);
 	GWorld = new UWorld;
 	GWorld->Initialize();
-
-
 	return 0;
 }
 
@@ -139,6 +138,7 @@ void FEngineLoop::Tick()
 		} while (elapsedTime < targetFrameTime);
 	}
 }
+float a = 5;
 void FEngineLoop::Render()
 {
 	
