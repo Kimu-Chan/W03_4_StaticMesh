@@ -11,7 +11,7 @@
 void FResourceMgr::Initialize(FRenderer* renderer)
 {
     RegisterMesh(renderer, "Sphere", sphere_vertices, sizeof(sphere_vertices) / sizeof(FVertexSimple), nullptr, 0);
-    RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
+    //RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
     RegisterMesh(renderer, "Gizmo", gizmoVertices, sizeof(gizmoVertices) / sizeof(FVertexSimple), nullptr, 0);
     RegisterMesh(renderer, "Quad", quadVertices, sizeof(quadVertices) / sizeof(FVertexSimple), quadInices, sizeof(quadInices)/sizeof(uint32));
 
@@ -21,7 +21,7 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 	LoadObjAsset(renderer, "ScaleX", L"Assets/AxisScaleArrowX.obj");
 	LoadObjAsset(renderer, "ScaleY", L"Assets/AxisScaleArrowY.obj");
 	LoadObjAsset(renderer, "ScaleZ", L"Assets/AxisScaleArrowZ.obj");
-	LoadObjNormalAsset(renderer, "Cube1", L"Assets/Cube.obj");
+	LoadObjNormalAsset(renderer, "Cube", L"Assets/Cube.obj");
 }
 
 void FResourceMgr::Release(FRenderer* renderer) {

@@ -14,9 +14,11 @@ public:
     ID3D11PixelShader* PixelShader = nullptr;
     ID3D11InputLayout* InputLayout = nullptr;
     ID3D11Buffer* ConstantBuffer = nullptr;
+    ID3D11Buffer* LightingBuffer = nullptr;
 
     D3D11_VIEWPORT ViewportInfo; // 렌더링 영역을 정의하는 뷰포트 정보
 
+    FLighting lightingData{};
 
 
     uint32 Stride;
@@ -27,9 +29,10 @@ public:
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
     void RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT stride, UINT offset);
-
+    void InitLightBuffer();
     void CreateShader();
     void CreateConstantBuffer();
+    void CreateLightingBuffer();
     void ReleaseShader();
     void PrepareShader();
     void ResetVertexShader();
@@ -44,10 +47,10 @@ public:
 
     void ReleaseBuffer(ID3D11Buffer*& Buffer);
     void ReleaseConstantBuffer();
+    void UpdateLightBuffer();
     void UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices);
     void UpdateConstant(FMatrix _MVP, float _Flag);
-
-
+   
     struct FConstants
     {
         FMatrix MVP;

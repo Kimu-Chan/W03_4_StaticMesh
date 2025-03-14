@@ -5,7 +5,8 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
     CreateShader();
     CreateTextureShader();
     CreateConstantBuffer();
-
+    InitLightBuffer();
+    CreateLightingBuffer();
 }
 
 void FRenderer::Release() {
@@ -38,9 +39,11 @@ void FRenderer::CreateShader() {
     Graphics->Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &PixelShader);
 
     D3D11_INPUT_ELEMENT_DESC layout[] = {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,  0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 28,  D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
+
     Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &InputLayout);
 
     Stride = sizeof(FVertexSimple);
@@ -76,6 +79,8 @@ void FRenderer::PrepareShader()
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+        Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &LightingBuffer);
+
     }
 }
 void FRenderer::ResetVertexShader()
@@ -140,6 +145,20 @@ void FRenderer::RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT 
     Graphics->DeviceContext->Draw(numVertices, 0);
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
+
+void FRenderer::InitLightBuffer()
+{
+     lightingData.lightDirX = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightDirY = -1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightDirZ = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightColorX = 1.0f;
+    lightingData.lightColorY = 1.0f;
+    lightingData.lightColorZ = 1.0f;
+    lightingData.AmbientFactor = 0.1f;
+
+
+}
+
 
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
@@ -256,12 +275,33 @@ void FRenderer::CreateConstantBuffer()
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &ConstantBuffer);
 }
 
+void FRenderer::CreateLightingBuffer()
+{
+    D3D11_BUFFER_DESC constantbufferdesc = {};
+    constantbufferdesc.ByteWidth = sizeof(FLighting);
+    constantbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
+    constantbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &LightingBuffer);
+
+}
+
 void FRenderer::ReleaseConstantBuffer()
 {
     if (ConstantBuffer)
     {
         ConstantBuffer->Release();
         ConstantBuffer = nullptr;
+    }
+}
+void FRenderer::UpdateLightBuffer()
+{
+    if (!LightingBuffer) return;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    HRESULT result = Graphics->DeviceContext->Map(LightingBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(result)) {
+        memcpy(mappedResource.pData, &lightingData, sizeof(FLighting));
+        Graphics->DeviceContext->Unmap(LightingBuffer, 0);
     }
 }
 void FRenderer::UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices)
@@ -292,7 +332,6 @@ void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }
 }
-
 void FRenderer::CreateTextureShader()
 {
     ID3DBlob* vertextextureshaderCSO;
@@ -413,6 +452,7 @@ void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVert
 
     // 입력 레이아웃 및 기본 설정
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP );
     Graphics->DeviceContext->VSSetShader(VertexTextureShader, nullptr, 0);
     Graphics->DeviceContext->PSSetShader(PixelTextureShader, nullptr, 0);
     Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);

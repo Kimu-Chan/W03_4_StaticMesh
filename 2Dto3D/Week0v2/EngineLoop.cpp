@@ -115,7 +115,7 @@ void FEngineLoop::Tick()
 
 		graphicDevice.Prepare();
 		renderer.PrepareShader();
-
+		renderer.UpdateLightBuffer();
 		//GWorld->Render();
 		Render();
 
@@ -141,11 +141,10 @@ void FEngineLoop::Tick()
 float a = 5;
 void FEngineLoop::Render()
 {
-	
-
 	UPrimitiveBatch::GetInstance().Begin();
 	UPrimitiveBatch::GetInstance().AddGrid(50);
 	UPrimitiveBatch::GetInstance().AddWorldGizmo();
+
 	GWorld->Render();
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();

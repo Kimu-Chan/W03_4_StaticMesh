@@ -44,6 +44,15 @@ struct FVertexTexture
 	float x, y, z;    // Position
 	float u, v; // Texture
 };
+struct FLighting
+{
+	float lightDirX, lightDirY, lightDirZ; // 조명 방향
+	float pad1;                      // 16바이트 정렬용 패딩
+	float lightColorX, lightColorY, lightColorZ;    // 조명 색상
+	float pad2;                      // 16바이트 정렬용 패딩
+	float AmbientFactor;             // ambient 계수
+	float pad3[3];                   // 추가 패딩 (16바이트 정렬)
+};
 
 struct FVector
 {

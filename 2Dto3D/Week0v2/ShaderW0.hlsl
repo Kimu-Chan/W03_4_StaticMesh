@@ -1,41 +1,66 @@
-// ShaderW0.hlsl
-cbuffer constants : register(b0)
+// MatrixBuffer: 변환 행렬 관리
+cbuffer MatrixBuffer : register(b0)
 {
     row_major float4x4 MVP;
-    float Flag;
-}
+};
+
+// LightingBuffer: 조명 관련 파라미터 관리
+cbuffer LightingBuffer : register(b1)
+{
+    float3 LightDirection; // 조명 방향 (단위 벡터; 빛이 들어오는 방향의 반대 사용)
+    float pad1; // 16바이트 정렬용 패딩
+    float3 LightColor; // 조명 색상 (예: (1, 1, 1))
+    float pad2; // 16바이트 정렬용 패딩
+    float AmbientFactor; // ambient 계수 (예: 0.1)
+    float pad3[3]; // 16바이트 정렬 맞춤 추가 패딩
+};
 
 struct VS_INPUT
 {
-    float4 position : POSITION; // Input position from vertex buffer
-    float4 color : COLOR; // Input color from vertex buffer
+    float4 position : POSITION; // 버텍스 위치
+    float4 color : COLOR; // 버텍스 색상
+    float3 normal : NORMAL; // 버텍스 노멀
 };
 
 struct PS_INPUT
 {
-    float4 position : SV_POSITION; // Transformed position to pass to the pixel shader
-    float4 color : COLOR; // Color to pass to the pixel shader
+    float4 position : SV_POSITION; // 변환된 화면 좌표
+    float4 color : COLOR; // 전달할 색상
+    float3 normal : NORMAL; // 정규화된 노멀 벡터
 };
-
 
 PS_INPUT mainVS(VS_INPUT input)
 {
-    PS_INPUT output = input;
+    PS_INPUT output;
     
-    float4x4 modelViewProjection = MVP;  // MVP 행렬을 그대로 사용
-    output.position = mul(float4(input.position.xyz, 1.0f), modelViewProjection);
-
-    // Pass the color to the pixel shader
+    // MVP 행렬을 사용한 위치 변환
+    output.position = mul(input.position, MVP);
     
+    // 색상 전달
     output.color = input.color;
-    if(Flag == 1.0f){
-        output.color.rgb *= 0.5f;
-    }
+    
+    // 노멀은 정규화하여 전달
+    output.normal = normalize(input.normal);
+    
     return output;
 }
 
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
-    // Output the color directly
-    return input.color;
+    // 표면 노멀 정규화
+    float3 N = normalize(input.normal);
+    
+    // 조명 방향 계산 (directional light의 경우 빛이 들어오는 방향의 반대 사용)
+    float3 L = normalize(-LightDirection);
+    
+    // Lambert 법칙에 따른 diffuse 계수 (0~1 사이 클램프)
+    float diffuse = saturate(dot(N, L));
+    
+    // ambient와 diffuse 조명의 조합:
+    // - ambient: AmbientFactor * 기본 색상
+    // - diffuse: diffuse * LightColor * 기본 색상
+    float3 litColor = AmbientFactor * input.color.rgb 
+                    + diffuse * LightColor * input.color.rgb;
+    
+    return float4(litColor, input.color.a);
 }
