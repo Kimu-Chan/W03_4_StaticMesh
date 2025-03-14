@@ -31,6 +31,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Console::GetInstance().OnResize(hWnd);
 		ControlPanel::GetInstance().OnResize(hWnd);
 		PropertyPanel::GetInstance().OnResize(hWnd);
+		Outliner::GetInstance().OnResize(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -68,8 +69,6 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	resourceMgr.Initialize(&renderer);
 	GWorld = new UWorld;
 	GWorld->Initialize();
-
-
 	return 0;
 }
 
@@ -135,6 +134,7 @@ void FEngineLoop::Tick()
 		} while (elapsedTime < targetFrameTime);
 	}
 }
+float a = 5;
 void FEngineLoop::Render()
 {
 	/*
@@ -145,12 +145,14 @@ void FEngineLoop::Render()
 	*/
 
 	UPrimitiveBatch::GetInstance().Begin();
-	UPrimitiveBatch::GetInstance().AddGrid(50);
+	UPrimitiveBatch::GetInstance().SetSpacing(10);
+	UPrimitiveBatch::GetInstance().AddGrid(10000);
+
 	for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
 	{
 		GetWorld()->GetObjectArr()[i]->Render();
 	}
-	UPrimitiveBatch::GetInstance().End(View, Projection);
+		UPrimitiveBatch::GetInstance().End(View, Projection);
 }
 float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)
 {
