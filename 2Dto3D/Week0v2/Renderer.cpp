@@ -361,7 +361,8 @@ void FRenderer::PrepareTextureShader()
 }
 
 ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth)
-{    // 2. Create a vertex buffer
+{   
+    // 2. Create a vertex buffer
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = byteWidth;
     vertexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; // will never be updated 

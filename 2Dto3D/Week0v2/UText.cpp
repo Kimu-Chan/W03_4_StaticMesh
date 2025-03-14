@@ -10,13 +10,14 @@ UText::~UText()
 
 void UText::Initialize()
 {
+
 	Super::Initialize();
 }
 
 void UText::Update(double deltaTime)
 {
 
-	Super::Initialize();
+	Super::Update(deltaTime);
 }
 
 void UText::Release()
@@ -38,8 +39,8 @@ void UText::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-
-	FEngineLoop::renderer.RenderTextPrimitive(vertexTextureBuffer, numVertices,
+	Console::GetInstance().AddLog(LogLevel::Warning, "NumVertices is %d", numVertices);
+	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numVertices,
 		m_texture.m_TextureSRV, m_texture.m_SamplerState);
 	//Super::Render();
 
@@ -56,9 +57,10 @@ void UText::SetText(FWString _text)
 	TArray<FVertexTexture> vertexTextureArr;
 	int textSize = _text.size();
 
-	float CellWdith = ColumnCount / BitmapWidth;
-	float CellHeight = RowCount / BitmapHeight;
+	float nTexelUOffset = CellWidth / BitmapWidth;
+	float nTexelVOffset = CellHeight/ BitmapHeight;
 
+	/*
 	FVertexTexture leftUP = { -1.0f,1.0f,0.0f,0.0f,0.0f };
 	FVertexTexture rightUP = { 1.0f,1.0f,0.0f,1.0f,0.0f };
 	FVertexTexture leftDown = { -1.0f,-1.0f,0.0f,0.0f,1.0f };
@@ -75,9 +77,19 @@ void UText::SetText(FWString _text)
 	vertexTextureArr.push_back(rightUP);
 	vertexTextureArr.push_back(rightDown);
 	vertexTextureArr.push_back(leftDown);
+	*/
 
 	for (int i = 0; i < _text.size(); i++)
 	{
+		FVertexTexture leftUP = { -1.0f,1.0f,0.0f,0.0f,0.0f };
+		FVertexTexture rightUP = { 1.0f,1.0f,0.0f,1.0f,0.0f };
+		FVertexTexture leftDown = { -1.0f,-1.0f,0.0f,0.0f,1.0f };
+		FVertexTexture rightDown = { 1.0f,-1.0f,0.0f,1.0f,1.0f };
+		rightUP.u *= nTexelUOffset;
+		leftDown.v *= nTexelVOffset;
+		rightDown.u *= nTexelUOffset;
+		rightDown.v *= nTexelVOffset;
+
 		leftUP.x += quadWidth * i;
 		rightUP.x += quadWidth * i;
 		leftDown.x += quadWidth * i;
@@ -87,14 +99,14 @@ void UText::SetText(FWString _text)
 		float startV = 0.0f;
 
 		setStartUV(_text[i], startU, startV);
-		leftUP.u += (CellWdith * startU) / BitmapWidth;
-		leftUP.v += (CellHeight * startV) / BitmapHeight;
-		rightUP.u += (CellWdith * startU) / BitmapWidth;
-		rightUP.v += (CellHeight * startV) / BitmapHeight;
-		leftDown.u += (CellWdith * startU) / BitmapWidth;
-		leftDown.v += (CellHeight * startV) / BitmapHeight;
-		rightDown.u += (CellWdith * startU) / BitmapWidth;
-		rightDown.v += (CellHeight * startV) / BitmapHeight;
+		leftUP.u += (nTexelUOffset * startU);
+		leftUP.v += (nTexelVOffset * startV);
+		rightUP.u += (nTexelUOffset * startU);
+		rightUP.v += (nTexelVOffset * startV);
+		leftDown.u += (nTexelUOffset * startU);
+		leftDown.v += (nTexelVOffset * startV);
+		rightDown.u += (nTexelUOffset * startU);
+		rightDown.v += (nTexelVOffset * startV);
 
 		vertexTextureArr.push_back(leftUP);
 		vertexTextureArr.push_back(rightUP);
@@ -102,8 +114,11 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightUP);
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
+
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
+
+	Console::GetInstance().AddLog(LogLevel::Warning, "NumVertices is %d", numVertices);
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
 
 }
@@ -117,12 +132,14 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 	int offsetV = (offset+aStartU) / ColumnCount;
 	int offsetU = (offset+aStartU) % ColumnCount;
 
-	outStartU = aStartU + offsetU;
+	outStartU = offsetU;
 	outStartV = aStartV + offsetV;
+
 }
 
 void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth)
 {
+	numVertices = _vertex.size();
 	// 2. Create a vertex buffer
 	D3D11_BUFFER_DESC vertexbufferdesc = {};
 	vertexbufferdesc.ByteWidth = byteWidth;
@@ -138,7 +155,7 @@ void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,
 	{
 		UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
 	}
-	vertexTextureBuffer = vertexBuffer;
+	vertexTextBuffer = vertexBuffer;
 }
 
 

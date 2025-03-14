@@ -12,6 +12,10 @@ public:
 	virtual void		Render()					override;
 	void SetText(FWString _text);
 private:
+
+	ID3D11Buffer* vertexTextBuffer;
+	UINT numVertices;
+
 	int RowCount = 16;
 	int ColumnCount = 16;
 	float CellWidth = 32;
@@ -23,8 +27,6 @@ private:
 	float quadHeight = 2;
 
 	void setStartUV(char alphabet, float& outStartU, float& outStartV);
-
-
 	void CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth);
 
 };

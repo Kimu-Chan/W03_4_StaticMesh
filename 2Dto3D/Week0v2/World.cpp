@@ -10,6 +10,7 @@
 #include "ArrowComp.h"
 #include "LocalGizmoComponent.h"
 #include "UBillboardComponent.h"
+#include "UText.h"
 
 UWorld::UWorld()
 {
@@ -51,6 +52,15 @@ void UWorld::CreateBaseObject()
 	UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
 	castBillboard->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
 	GUObjectArray.push_back(billboard);
+
+	
+	UObject* text = FObjectFactory::ConstructObject<UText>();
+	text = static_cast<UText*>(text);
+	UText* castText = static_cast<UText*>(text);
+	castText->SetTexture(L"Assets/Texture/font.png");
+	castText->SetText(L"HELLO");
+	GUObjectArray.push_back(text);
+	
 }
 
 void UWorld::ReleaseBaseObject()
