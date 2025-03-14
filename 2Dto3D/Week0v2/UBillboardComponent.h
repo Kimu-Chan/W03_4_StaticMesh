@@ -18,7 +18,6 @@ public:
 protected:
 	UTexture m_texture;
 	FMatrix CreateBillboardMatrix();
-	void CreateQuadTextureVertexBuffer();
 
 	ID3D11Buffer* vertexTextureBuffer;
 	ID3D11Buffer* indexTextureBuffer;
@@ -26,17 +25,7 @@ protected:
 	UINT numIndices;
 
 private:
-	int CellsPerRow = 6;
-	int CellsPerColumn = 6;
-	float CellWidth = 341.3;
-	float CellHeight = 341.3;
-	int BitmapWidth = 2048;
-	int BitmapHeight = 2048;
-
-	float u = 0;
-	float v = 0;
-
-	void UpdateVertexBuffer(const TArray<FVertexTexture>& vertices);
+	void CreateQuadTextureVertexBuffer();
 
 
 

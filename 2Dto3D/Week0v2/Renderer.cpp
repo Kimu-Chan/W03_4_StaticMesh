@@ -443,5 +443,24 @@ void FRenderer::RenderTextPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertice
 
 
 
+ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexTexture* vertices, UINT byteWidth)
+{
+    // 2. Create a vertex buffer
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+    ID3D11Buffer* vertexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
+    return vertexBuffer;
+}
 
 

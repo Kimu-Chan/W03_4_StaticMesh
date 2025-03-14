@@ -71,5 +71,11 @@ public://텍스쳐용 기능 추가
     void RenderTextPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices,
         ID3D11ShaderResourceView* _TextureSRV,
         ID3D11SamplerState* _SamplerState);
+    ID3D11Buffer* CreateVertexBuffer(FVertexTexture* vertices, UINT byteWidth);
+
+
+    //ID3D11Buffer* ConstantBuffer = nullptr;
+
+
 };
 

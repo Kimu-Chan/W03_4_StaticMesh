@@ -11,6 +11,7 @@
 #include "LocalGizmoComponent.h"
 #include "UBillboardComponent.h"
 #include "UText.h"
+#include "UParticleSubUVComp.h"
 
 UWorld::UWorld()
 {
@@ -50,10 +51,10 @@ void UWorld::CreateBaseObject()
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
 	UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
-	castBillboard->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+	castBillboard->SetTexture(L"Assets/Texture/emart.png");
 	GUObjectArray.push_back(billboard);
 
-	
+	//테스트용 텍스트
 	UObject* text = FObjectFactory::ConstructObject<UText>();
 	text = static_cast<UText*>(text);
 	UText* castText = static_cast<UText*>(text);
@@ -61,6 +62,20 @@ void UWorld::CreateBaseObject()
 	castText->SetText(L"HELLOJUNGLE");
 	GUObjectArray.push_back(text);
 	
+	//테스트용 파티클
+	/*
+	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+	particle = static_cast<UParticleSubUVComp*>(particle);
+	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+	GUObjectArray.push_back(castParticle);
+	*/
+
+	UObject* particle = FObjectFactory::ConstructObject<UBillboardComponent>();
+	particle = static_cast<UBillboardComponent*>(particle);
+	UBillboardComponent* castParticle = static_cast<UBillboardComponent*>(particle);
+	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+	GUObjectArray.push_back(castParticle);
 }
 
 void UWorld::ReleaseBaseObject()

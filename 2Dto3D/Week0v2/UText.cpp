@@ -99,7 +99,6 @@ void UText::SetText(FWString _text)
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
 
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
-
 }
 
 void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
