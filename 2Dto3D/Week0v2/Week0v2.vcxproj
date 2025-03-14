@@ -201,6 +201,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ControlPaner.h" />
+    <ClInclude Include="CoreTypes.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
@@ -225,14 +226,19 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
     <ClInclude Include="LocalGizmoComponent.h" />
+    <ClInclude Include="MathDefines.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="NameTypes.h" />
     <ClInclude Include="ObjectFactory.h" />
+    <ClInclude Include="ObjectMacros.h" />
+    <ClInclude Include="ObjectTypes.h" />
     <ClInclude Include="Outliner.h" />
     <ClInclude Include="PrimitiveBatch.h" />
     <ClInclude Include="PrimitiveComponent.h" />
     <ClInclude Include="PropertyPanel.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="QuadTexture.h" />
+    <ClInclude Include="Quat.h" />
     <ClInclude Include="ResourceMgr.h" />
     <ClInclude Include="ScaleGizmoComponent.h" />
     <ClInclude Include="SceneComponent.h" />
@@ -247,6 +253,8 @@
     <ClInclude Include="UBillboardComponent.h" />
     <ClInclude Include="UClass.h" />
     <ClInclude Include="UTexture.h" />
+    <ClInclude Include="Vector.h" />
+    <ClInclude Include="Vector4.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
