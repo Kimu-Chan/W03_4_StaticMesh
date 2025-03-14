@@ -4,6 +4,7 @@
 #include "QuadTexture.h"
 
 #include <DirectXMath.h>
+
 UBillboardComponent::UBillboardComponent() : UPrimitiveComponent("Quad")
 {
 }
@@ -29,7 +30,7 @@ void UBillboardComponent::Update(double deltaTime)
 	static int index = 0;
 	static float second = 0;
 	second += deltaTime;
-	if (second >= 1000)
+	if (second >= 75)
 	{
 		index ++;
 		second = 0;
@@ -69,6 +70,7 @@ void UBillboardComponent::Release()
 void UBillboardComponent::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
+
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
 

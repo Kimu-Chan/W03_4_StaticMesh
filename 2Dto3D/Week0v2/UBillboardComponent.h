@@ -25,12 +25,12 @@ private:
 	UINT numIndices;
 
 private:
-	int CellsPerRow = 16;
-	int CellsPerColumn = 16;
-	int CellWidth = 32;
-	int CellHeight = 32;
-	int BitmapWidth = 512;
-	int BitmapHeight = 512;
+	int CellsPerRow = 6;
+	int CellsPerColumn = 6;
+	float CellWidth = 341.3;
+	float CellHeight = 341.3;
+	int BitmapWidth = 2048;
+	int BitmapHeight = 2048;
 
 	float u = 0;
 	float v = 0;
