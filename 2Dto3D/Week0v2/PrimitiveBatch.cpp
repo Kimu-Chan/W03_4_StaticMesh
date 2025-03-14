@@ -21,6 +21,16 @@ void UPrimitiveBatch::AddLine(const FVector& start, const FVector& end, const FV
 						 color.x, color.y, color.z, 1 });
 }
 
+void UPrimitiveBatch::AddGridLine(const FVector& start, const FVector& end, const FVector4& color)
+{
+
+    GridVertices.push_back({ start.x, start.y, start.z,
+                         color.x, color.y, color.z, 1 });
+
+    GridVertices.push_back({ end.x, end.y, end.z,
+                         color.x, color.y, color.z, 1 });
+}
+
 void UPrimitiveBatch::Begin()
 {
 	Vertices.clear();
@@ -28,16 +38,18 @@ void UPrimitiveBatch::Begin()
 
 void UPrimitiveBatch::AddGrid(int gridSize)
 {
-    for (int i = -gridSize; i <= gridSize; i++)
-    {
-        float pos = i * Spacing;
+    if (Spacing != PreSpacing) {
+        for (int i = -gridSize; i <= gridSize; i++) {
+            float pos = i * Spacing;
         
-        // y-up 기준
-        // 세로선
-        AddLine({ pos, -gridSize * Spacing, 0 }, { pos, gridSize * Spacing, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+            // y-up 기준
+            // 세로선
+            AddGridLine({ pos, -gridSize * Spacing, 0 }, { pos, gridSize * Spacing, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
 
-        // 가로선
-        AddLine({ -gridSize * Spacing,  pos, 0 }, { gridSize * Spacing,  pos, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+            // 가로선
+            AddGridLine({ -gridSize * Spacing,  pos, 0 }, { gridSize * Spacing,  pos, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
+        }
+        PreSpacing = Spacing;
     }
 }
 void UPrimitiveBatch::SetSpacing(float spacing)
@@ -47,13 +59,14 @@ void UPrimitiveBatch::SetSpacing(float spacing)
 
 void UPrimitiveBatch::End(const FMatrix& View, const FMatrix& Projection)
 {
+    Vertices.insert(Vertices.end(), GridVertices.begin(), GridVertices.end());
     if (Vertices.empty()) return; // 렌더링할 데이터가 없으면 패스
 
     if (Vertices.size() > allocatedCapacity) {
         if (vertexBuffer) {
             vertexBuffer->Release();
         }
-        allocatedCapacity = Vertices.size();
+        allocatedCapacity = Vertices.size() * 2;
         vertexBuffer = FEngineLoop::renderer.CreateDynamicBatchBuffer(allocatedCapacity);
     }
 
@@ -67,8 +80,6 @@ void UPrimitiveBatch::End(const FMatrix& View, const FMatrix& Projection)
     FMatrix MVP = Model * View * Projection;
     FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
     FEngineLoop::renderer.RenderBatch(vertexBuffer, Vertices.size(), stride, offset);
-
-    Vertices.clear();
 }
 
 void UPrimitiveBatch::AddBox(const FVector& center, const FVector4& color, const FMatrix& modelMatrix)
@@ -85,29 +96,55 @@ void UPrimitiveBatch::AddBox(const FVector& center, const FVector4& color, const
         FVector(-half.x,  half.y,  half.z)
     };
 
-    // 모델 행렬을 통해 월드 좌표로 변환
+    // OBB의 월드 좌표 버텍스 계산
     FVector worldVertices[8];
     for (int i = 0; i < 8; i++) {
         worldVertices[i] = center + FMatrix::TransformVector(localVertices[i], modelMatrix);
     }
 
+    // AABB의 최소, 최대값 계산 (삼항 연산자 사용)
+    FVector min = worldVertices[0];
+    FVector max = worldVertices[0];
+    for (int i = 1; i < 8; i++) {
+        min.x = (worldVertices[i].x < min.x) ? worldVertices[i].x : min.x;
+        min.y = (worldVertices[i].y < min.y) ? worldVertices[i].y : min.y;
+        min.z = (worldVertices[i].z < min.z) ? worldVertices[i].z : min.z;
+
+        max.x = (worldVertices[i].x > max.x) ? worldVertices[i].x : max.x;
+        max.y = (worldVertices[i].y > max.y) ? worldVertices[i].y : max.y;
+        max.z = (worldVertices[i].z > max.z) ? worldVertices[i].z : max.z;
+    }
+
+    // AABB의 8개 버텍스 구성
+    FVector aabbVertices[8] = {
+        FVector(min.x, min.y, min.z),
+        FVector(max.x, min.y, min.z),
+        FVector(max.x, max.y, min.z),
+        FVector(min.x, max.y, min.z),
+        FVector(min.x, min.y, max.z),
+        FVector(max.x, min.y, max.z),
+        FVector(max.x, max.y, max.z),
+        FVector(min.x, max.y, max.z)
+    };
+
     // 밑면 에지: 0-1, 1-2, 2-3, 3-0
-    AddLine(worldVertices[0], worldVertices[1], color);
-    AddLine(worldVertices[1], worldVertices[2], color);
-    AddLine(worldVertices[2], worldVertices[3], color);
-    AddLine(worldVertices[3], worldVertices[0], color);
+    AddLine(aabbVertices[0], aabbVertices[1], color);
+    AddLine(aabbVertices[1], aabbVertices[2], color);
+    AddLine(aabbVertices[2], aabbVertices[3], color);
+    AddLine(aabbVertices[3], aabbVertices[0], color);
 
     // 윗면 에지: 4-5, 5-6, 6-7, 7-4
-    AddLine(worldVertices[4], worldVertices[5], color);
-    AddLine(worldVertices[5], worldVertices[6], color);
-    AddLine(worldVertices[6], worldVertices[7], color);
-    AddLine(worldVertices[7], worldVertices[4], color);
+    AddLine(aabbVertices[4], aabbVertices[5], color);
+    AddLine(aabbVertices[5], aabbVertices[6], color);
+    AddLine(aabbVertices[6], aabbVertices[7], color);
+    AddLine(aabbVertices[7], aabbVertices[4], color);
 
     // 측면 에지: 0-4, 1-5, 2-6, 3-7
-    AddLine(worldVertices[0], worldVertices[4], color);
-    AddLine(worldVertices[1], worldVertices[5], color);
-    AddLine(worldVertices[2], worldVertices[6], color);
-    AddLine(worldVertices[3], worldVertices[7], color);
+    AddLine(aabbVertices[0], aabbVertices[4], color);
+    AddLine(aabbVertices[1], aabbVertices[5], color);
+    AddLine(aabbVertices[2], aabbVertices[6], color);
+    AddLine(aabbVertices[3], aabbVertices[7], color);
+
 }
 
 
