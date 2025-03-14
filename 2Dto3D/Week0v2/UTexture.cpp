@@ -1,12 +1,14 @@
 #include "UTexture.h"
 #include <wincodec.h>
 
-void UTexture::init()
+
+
+void UTexture::init(FWString _fileName)
 {
 
     LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"Assets/Texture/T_Explosion_SubUV.PNG");
+        _fileName.c_str());
     CreateSampler(FEngineLoop::graphicDevice.Device);
 
     if (!m_TextureSRV || !m_SamplerState) {

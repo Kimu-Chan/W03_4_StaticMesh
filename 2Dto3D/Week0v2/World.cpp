@@ -48,6 +48,8 @@ void UWorld::CreateBaseObject()
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
+	UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
+	castBillboard->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
 	GUObjectArray.push_back(billboard);
 }
 

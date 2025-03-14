@@ -5,11 +5,13 @@
 
 #include <DirectXMath.h>
 
-UBillboardComponent::UBillboardComponent() : UPrimitiveComponent("Quad")
+UBillboardComponent::UBillboardComponent() : 
+	UPrimitiveComponent("Quad")
 {
 }
 
-UBillboardComponent::UBillboardComponent(FString _Type) : UPrimitiveComponent(_Type)
+UBillboardComponent::UBillboardComponent(FString _Type)
+	: UPrimitiveComponent(_Type)
 {
 }
 
@@ -21,21 +23,34 @@ void UBillboardComponent::Initialize()
 {
     Super::Initialize();
 	CreateQuadTextureVertexBuffer();
-	m_texture.init();
 }
+
+
 
 void UBillboardComponent::Update(double deltaTime)
 {
 
-	static int index = 0;
+	static int indexU = 0;
+	static int indexV = 0;
 	static float second = 0;
 	second += deltaTime;
 	if (second >= 75)
 	{
-		index ++;
+		indexU ++;
 		second = 0;
 	}
-	if (index >= 16 ) index = 0;
+	if (indexU >= 6)
+	{
+		indexU = 0;
+		indexV++;
+	}
+	if (indexU >= 6 && indexV >= 6)
+	{
+
+		indexU = 0;
+		indexV = 0;
+	}
+
 
 
 	int charIndex = 'A' - ' ';
@@ -43,8 +58,8 @@ void UBillboardComponent::Update(double deltaTime)
 	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
 	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
 
-	float u1 = float(index)*normalWidthOffset;
-	float v1 = float(index)*normalHeightOffset;
+	float u1 = float(indexU)*normalWidthOffset;
+	float v1 = float(indexV)*normalHeightOffset;
 	float u2 = u1+normalWidthOffset;
 	float v2 = v1+normalHeightOffset;
 
@@ -88,6 +103,11 @@ void UBillboardComponent::Render()
 	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();
+}
+
+void UBillboardComponent::SetTexture(FWString _fileName)
+{
+	m_texture.init(_fileName);
 }
 
 FMatrix UBillboardComponent::CreateBillboardMatrix()

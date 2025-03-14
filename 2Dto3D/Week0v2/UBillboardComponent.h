@@ -14,10 +14,11 @@ public:
 	virtual void		Update(double deltaTime)	override;
 	virtual void		Release()					override;
 	virtual void		Render()					override;
-private:
+	void SetTexture(FWString _fileName);
+protected:
+	UTexture m_texture;
 	FMatrix CreateBillboardMatrix();
 	void CreateQuadTextureVertexBuffer();
-	UTexture m_texture;
 
 	ID3D11Buffer* vertexTextureBuffer;
 	ID3D11Buffer* indexTextureBuffer;
