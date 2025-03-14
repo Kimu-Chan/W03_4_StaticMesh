@@ -35,8 +35,7 @@ private:
 	float u = 0;
 	float v = 0;
 
-	void UpdateVertexBuffer(const TArray<FVertexTexture>& vertices,
-		const TArray<uint32>& indices);
+	void UpdateVertexBuffer(const TArray<FVertexTexture>& vertices);
 
 
 

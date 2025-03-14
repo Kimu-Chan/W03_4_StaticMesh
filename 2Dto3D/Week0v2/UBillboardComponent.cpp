@@ -25,26 +25,29 @@ void UBillboardComponent::Initialize()
 
 void UBillboardComponent::Update(double deltaTime)
 {
-	TArray<FVertexTexture> vertices;
-	TArray<uint32> indices;
-	uint32 indexOffset = 0;
+
+	static int index = 0;
+	static float second = 0;
+	second += deltaTime;
+	if (second >= 1000)
+	{
+		index ++;
+		second = 0;
+	}
+	if (index >= 16 ) index = 0;
+
 
 	int charIndex = 'A' - ' ';
-	int col = charIndex % 16;
-	int row = charIndex / 16;
 
-	float u1 = 1 * (32.0f / 512.0f);
-	float v1 = 4 * (32.0f / 512.0f);
-	float u2 = u1 + (32.0f / 512.0f);
-	float v2 = v1 + (32.0f / 512.0f);
+	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
+	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
 
-	uint32 localQuadTextureInices[] =
-	{
-		0,1,2,
-		1,3,2
-	};
+	float u1 = float(index)*normalWidthOffset;
+	float v1 = float(index)*normalHeightOffset;
+	float u2 = u1+normalWidthOffset;
+	float v2 = v1+normalHeightOffset;
 
-	FVertexTexture localQuadTextureVertices[] =
+	TArray<FVertexTexture> vertices =
 	{
 		{-1.0f,1.0f,0.0f,u1,v1},
 		{ 1.0f,1.0f,0.0f,u2,v1},
@@ -52,19 +55,8 @@ void UBillboardComponent::Update(double deltaTime)
 		{ 1.0f,-1.0f,0.0f,u2,v2}
 	};
 
-	vertices.push_back(localQuadTextureVertices[0]);
-	vertices.push_back(localQuadTextureVertices[1]);
-	vertices.push_back(localQuadTextureVertices[2]);
-	vertices.push_back(localQuadTextureVertices[3]);
 
-	indices.push_back(localQuadTextureInices[0]);
-	indices.push_back(localQuadTextureInices[1]);
-	indices.push_back(localQuadTextureInices[2]);
-	indices.push_back(localQuadTextureInices[3]);
-	indices.push_back(localQuadTextureInices[4]);
-	indices.push_back(localQuadTextureInices[5]);
-
-	UpdateVertexBuffer(vertices, indices);
+	UpdateVertexBuffer(vertices);
 
 
     Super::Update(deltaTime);
@@ -132,7 +124,7 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	numVertices = vCount;
 	numIndices = iCount;
 	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexTextureBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
-	indexTextureBuffer = FEngineLoop::renderer.CreateIndexTextureBuffer(quadTextureInices, iCount * sizeof(UINT));
+	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, iCount * sizeof(UINT));
 
 	if (!vertexTextureBuffer) {
 		Console::GetInstance().AddLog(LogLevel::Warning, "Buffer Error");
@@ -142,7 +134,7 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	}
 }
 
-void UBillboardComponent::UpdateVertexBuffer(const TArray<FVertexTexture>& vertices, const TArray<uint32>& indices)
+void UBillboardComponent::UpdateVertexBuffer(const TArray<FVertexTexture>& vertices)
 {
 	ID3D11DeviceContext* context = FEngineLoop::graphicDevice.DeviceContext;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -151,7 +143,4 @@ void UBillboardComponent::UpdateVertexBuffer(const TArray<FVertexTexture>& verti
 	memcpy(mappedResource.pData, vertices.data(), vertices.size() * sizeof(FVertexTexture));
 	context->Unmap(vertexTextureBuffer, 0);
 
-	context->Map(indexTextureBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	memcpy(mappedResource.pData, indices.data(), indices.size() * sizeof(uint32));
-	context->Unmap(indexTextureBuffer, 0);
 }
