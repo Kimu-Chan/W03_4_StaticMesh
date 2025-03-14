@@ -16,6 +16,7 @@ public:
 	virtual void		Initialize();
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
+	virtual void		Render();
 
 	TArray<UArrowComp*>& GetArrowArr() { return ArrowArr; }
 	TArray<UDiscHollowComponent*>& GetDiscArr() { return HollowDiscArr; }

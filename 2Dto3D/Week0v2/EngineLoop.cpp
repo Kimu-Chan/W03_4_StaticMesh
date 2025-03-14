@@ -104,7 +104,9 @@ void FEngineLoop::Tick()
 		GWorld->Tick(elapsedTime);
 
 		UCameraComponent* Camera = static_cast<UCameraComponent*>(GWorld->GetCamera());
-		View = JungleMath::CreateViewMatrix(Camera->GetWorldLocation(), Camera->GetWorldLocation() + Camera->GetForwardVector(), { 0, 0, 1 });
+		View = JungleMath::CreateViewMatrix(GWorld->GetCamera()->GetWorldLocation(),
+			GWorld->GetCamera()->GetWorldLocation() + GWorld->GetCamera()->GetForwardVector(),
+			{ 0, 0, 1 });
 		Projection = JungleMath::CreateProjectionMatrix(
 			Camera->GetFov() * (3.141592f / 180.0f),
 			GetAspectRatio(graphicDevice.SwapChain), 
@@ -126,6 +128,8 @@ void FEngineLoop::Tick()
 		Outliner::GetInstance().Draw(GetWorld());
 		UIMgr->EndFrame();
 
+		GWorld->CleanUp();
+
 		graphicDevice.SwapBuffer();
 		do
 		{
@@ -137,19 +141,15 @@ void FEngineLoop::Tick()
 }
 void FEngineLoop::Render()
 {
-	/*
-	for (auto iter : GetWorld()->GetObjectArr())
-	{
-		iter->Render();
-	}
-	*/
+	
 
 	UPrimitiveBatch::GetInstance().Begin();
 	UPrimitiveBatch::GetInstance().AddGrid(50);
-	for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
-	{
-		GetWorld()->GetObjectArr()[i]->Render();
-	}
+	GWorld->Render();
+	//for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
+	//{
+	//	GetWorld()->GetObjectArr()[i]->Render();
+	//}
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 }
 float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)

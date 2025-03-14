@@ -10,6 +10,7 @@
 #include "ArrowComp.h"
 #include "LocalGizmoComponent.h"
 #include "UBillboardComponent.h"
+
 UWorld::UWorld()
 {
 }
@@ -27,22 +28,22 @@ void UWorld::Initialize()
 void UWorld::CreateBaseObject()
 {
 	UObject* player = FObjectFactory::ConstructObject<UPlayer>("LocalPlayer");
-	GUObjectArray.push_back(player);
+	//GUObjectArray.push_back(player);
 	localPlayer = static_cast<UPlayer*>(player);
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
 	camera->SetLocation(FVector(0.0f, 10.0f, 0.f));
-	GUObjectArray.push_back(camera);
+	//GUObjectArray.push_back(camera);
 
 	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>("WorldGizmo");
 	static_cast<UGizmoComponent*>(gizmo)->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
-	GUObjectArray.push_back(gizmo);
-
+	worldGizmo = gizmo;
+	//GUObjectArray.push_back(gizmo);
 
 	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>("LocalGizmo");
 	LocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
-	GUObjectArray.push_back(tmp);
+	//GUObjectArray.push_back(tmp);
 
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
@@ -50,10 +51,25 @@ void UWorld::CreateBaseObject()
 	GUObjectArray.push_back(billboard);
 }
 
+void UWorld::ReleaseBaseObject()
+{
+	delete LocalGizmo;
+	delete worldGizmo;
+	delete camera;
+	delete localPlayer;
+	LocalGizmo = nullptr;
+	worldGizmo = nullptr;
+	camera = nullptr;
+	localPlayer = nullptr;
+}
+
 void UWorld::Tick(double deltaTime)
 {
 	Input();
-
+	camera->Update(deltaTime);
+	localPlayer->Update(deltaTime);
+	worldGizmo->Update(deltaTime);
+	LocalGizmo->Update(deltaTime);
 	for (auto iter : GUObjectArray)
 	{
 		iter->Update(deltaTime);
@@ -70,20 +86,21 @@ void UWorld::Release()
 		delete iter;
 	}
 	GUObjectArray.clear();
-	LocalGizmo = nullptr;
 	pickingObj = nullptr;
 	pickingGizmo = nullptr;
-	worldGizmo = nullptr;
-	camera = nullptr;
-	localPlayer = nullptr;
+
 }
 
 void UWorld::Render()
 {
+
+
 	for (auto iter : GUObjectArray)
 	{
 		iter->Render();
 	}
+	worldGizmo->Render();
+	LocalGizmo->Render();
 }
 
 void UWorld::Input()
@@ -136,7 +153,9 @@ SceneData UWorld::SaveData()
 		}
 		if (Primitive)
 		{
-			if (Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ") {
+			if (Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ" &&
+				Primitive->GetType() != "DiscX" && Primitive->GetType() != "DiscY" && Primitive->GetType() != "DiscZ"&&
+				Primitive->GetType() != "ScaleX" && Primitive->GetType() != "ScaleY" && Primitive->GetType() != "ScaleZ") {
 				Save.Primitives[Count] = iter;
 				Count++;
 			}
@@ -162,7 +181,8 @@ void UWorld::SetPickingObj(UObject* _Obj)
 void UWorld::DeleteObj(UObject* _Obj)
 {
 	UObject* tmpObj = _Obj;
-	GUObjectArray.erase(std::find(GUObjectArray.begin(),GUObjectArray.end(), _Obj));
+	/*GUObjectArray.erase(std::remove(GUObjectArray.begin(),GUObjectArray.end(),));*/
+	Trashbin.erase(std::find(GUObjectArray.begin(), GUObjectArray.end(), _Obj));
 	delete tmpObj;
 }
 
@@ -173,11 +193,16 @@ void UWorld::ThrowAwayObj(UObject* _Obj)
 
 void UWorld::CleanUp()
 {
-	for (auto it : Trashbin)
+	if (Trashbin.empty())
+		return;
+
+	for (auto it = Trashbin.begin(); it != Trashbin.end();)
 	{
-		DeleteObj(it);
+		/*DeleteObj(it);*/
+		GUObjectArray.erase(std::remove(GUObjectArray.begin(), GUObjectArray.end(), (*it)), GUObjectArray.end());
+		delete (*it);
+		it = Trashbin.erase(it);
 	}
-	Trashbin.clear();
 }
 
 void UWorld::SetPickingGizmo(UObject* _Obj)

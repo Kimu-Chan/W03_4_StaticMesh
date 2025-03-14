@@ -16,6 +16,7 @@ public:
 
 	void Initialize();
 	void CreateBaseObject();
+	void ReleaseBaseObject();
 	void Tick(double deltaTime);
 	void Release();
 	void Render();
@@ -28,6 +29,7 @@ public:
 	void	DeleteObj(UObject* _Obj);
 	void	ThrowAwayObj(UObject* _Obj);
 	void	CleanUp();
+	
 private:
 
 	TArray<UObject*> GUObjectArray;
@@ -35,10 +37,10 @@ private:
 
 	USceneComponent* pickingObj = nullptr;
 	USceneComponent* pickingGizmo = nullptr;
-	UObject* worldGizmo = nullptr;
 	UCameraComponent* camera = nullptr;
 	UPlayer* localPlayer = nullptr;
 public:
+	UObject* worldGizmo = nullptr;
 	TArray<UObject*>& GetObjectArr() { return GUObjectArray; }
 
 	ULocalGizmoComponent* LocalGizmo = nullptr;

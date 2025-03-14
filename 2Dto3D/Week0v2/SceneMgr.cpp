@@ -6,6 +6,7 @@
 #include "ArrowComp.h"
 #include "ObjectFactory.h"
 #include <fstream>
+#include "UBillboardComponent.h"
 using json = nlohmann::json;
 
 SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
@@ -38,6 +39,10 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
                 else if (value["Type"].get<FString>() == "Arrow")
                 {
                     obj = FObjectFactory::ConstructObject<UArrowComp>();
+                }
+                else if (value["Type"].get<FString>() == "Quad")
+                {
+                    obj = FObjectFactory::ConstructObject<UBillboardComponent>();
                 }
             }
             USceneComponent* sceneComp = static_cast<USceneComponent*>(obj);

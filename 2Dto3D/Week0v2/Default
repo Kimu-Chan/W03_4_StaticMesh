@@ -1,10 +1,28 @@
 {
-    "NextUUID": 1,
+    "NextUUID": 2,
     "Primitives": {
         "0": {
             "Location": [
                 0.0,
                 0.0,
+                0.0
+            ],
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Type": "Quad"
+        },
+        "1": {
+            "Location": [
+                0.0,
+                4.820000171661377,
                 0.0
             ],
             "Rotation": [

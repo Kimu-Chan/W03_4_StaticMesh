@@ -12,7 +12,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowX->SetType("ArrowX");
 	ArrowX->SetParent(this);
 	AttachChildren.push_back(ArrowX);
-	GetWorld()->GetObjectArr().push_back(ArrowX);
+	//GetWorld()->GetObjectArr().push_back(ArrowX);
 	ArrowArr.push_back(ArrowX);
 
 	obj = FObjectFactory::ConstructObject<UArrowComp>();
@@ -22,7 +22,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowY->SetParent(this);
 	ArrowY->SetDir(ARROW_DIR::AD_Y);
 	AttachChildren.push_back(ArrowY);
-	GetWorld()->GetObjectArr().push_back(ArrowY);
+	//GetWorld()->GetObjectArr().push_back(ArrowY);
 	ArrowArr.push_back(ArrowY);
 
 
@@ -33,7 +33,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowZ->SetParent(this);
 	ArrowZ->SetDir(ARROW_DIR::AD_Z);
 	AttachChildren.push_back(ArrowZ);
-	GetWorld()->GetObjectArr().push_back(ArrowZ);
+	//GetWorld()->GetObjectArr().push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
 
 	UDiscHollowComponent* disc = new UDiscHollowComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
@@ -41,14 +41,14 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	disc->SetRotation(FVector(0.0f,0.0f,90.0f));
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
-	GetWorld()->GetObjectArr().push_back(disc);
+	//GetWorld()->GetObjectArr().push_back(disc);
 	HollowDiscArr.push_back(disc);
 
 	disc = new UDiscHollowComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
 	disc->SetType("DiscY");
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
-	GetWorld()->GetObjectArr().push_back(disc);
+	//GetWorld()->GetObjectArr().push_back(disc);
 	HollowDiscArr.push_back(disc);
 
 
@@ -57,7 +57,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	disc->SetParent(this);
 	disc->SetRotation(FVector(90.0f,0.0f,0.0f));
 	AttachChildren.push_back(disc);
-	GetWorld()->GetObjectArr().push_back(disc);
+	//GetWorld()->GetObjectArr().push_back(disc);
 	HollowDiscArr.push_back(disc);
 
 	for (auto i : HollowDiscArr)
@@ -71,7 +71,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ScaleX->SetType("ScaleX");
 	ScaleX->SetParent(this);
 	AttachChildren.push_back(ScaleX);
-	GetWorld()->GetObjectArr().push_back(ScaleX);
+	//GetWorld()->GetObjectArr().push_back(ScaleX);
 	ScaleArr.push_back(ScaleX);
 
 	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
@@ -80,7 +80,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ScaleY->SetType("ScaleY");
 	ScaleY->SetParent(this);
 	AttachChildren.push_back(ScaleY);
-	GetWorld()->GetObjectArr().push_back(ScaleY);
+	//GetWorld()->GetObjectArr().push_back(ScaleY);
 	ScaleArr.push_back(ScaleY);
 
 	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
@@ -89,7 +89,7 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ScaleZ->SetType("ScaleZ");
 	ScaleZ->SetParent(this);
 	AttachChildren.push_back(ScaleZ);
-	GetWorld()->GetObjectArr().push_back(ScaleZ);
+	//GetWorld()->GetObjectArr().push_back(ScaleZ);
 	ScaleArr.push_back(ScaleZ);
 
 
@@ -111,20 +111,29 @@ void ULocalGizmoComponent::Update(double deltaTime)
 	Super::Update(deltaTime);
 	if (GetWorld()->GetPickingObj()) {
 		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
-		if(GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+	if(GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
 			SetRotation(GetWorld()->GetPickingObj()->GetWorldRotation());
-		else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
+	else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
 			SetRotation(FVector(0.0f,0.0f,0.0f));
-
-		//float scaleMax = 0.3f;
-		
-	/*	scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().x) / 2);
-		scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().y) / 2);
-		scaleMax = max(scaleMax, abs(GetWorld()->GetPickingObj()->GetWorldScale().z) / 2);
-		SetScale({ scaleMax ,scaleMax ,scaleMax });*/
+	}
+	for (int i = 0;i < 3;i++)
+	{
+		ArrowArr[i]->Update(deltaTime);
+		HollowDiscArr[i]->Update(deltaTime);
+		ScaleArr[i]->Update(deltaTime);
 	}
 }
 
 void ULocalGizmoComponent::Release()
 {
+}
+
+void ULocalGizmoComponent::Render()
+{
+	for (int i = 0;i < 3;i++)
+	{
+		ArrowArr[i]->Render();
+		HollowDiscArr[i]->Render();
+		ScaleArr[i]->Render();
+	}
 }
