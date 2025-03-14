@@ -63,6 +63,12 @@ void UWorld::ReleaseBaseObject()
 	localPlayer = nullptr;
 }
 
+void UWorld::RenderBaseObject()
+{
+	LocalGizmo->Render();
+	worldGizmo->Render();
+}
+
 void UWorld::Tick(double deltaTime)
 {
 	Input();
@@ -88,19 +94,16 @@ void UWorld::Release()
 	GUObjectArray.clear();
 	pickingObj = nullptr;
 	pickingGizmo = nullptr;
-
+	ReleaseBaseObject();
 }
 
 void UWorld::Render()
 {
-
-
 	for (auto iter : GUObjectArray)
 	{
 		iter->Render();
 	}
-	worldGizmo->Render();
-	LocalGizmo->Render();
+
 }
 
 void UWorld::Input()

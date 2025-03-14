@@ -352,6 +352,8 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
+	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
+	
 	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
 	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
 	
@@ -377,23 +379,60 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 			else
 				pObj->AddLocation(pObj->GetUpVector() * deltaY * -0.01f * zdir);
 		}
-
 	}
 	else if (cdMode == CDM_WORLD)
 	{
+		//if (Gizmo->GetType() == "ArrowX")
+		//{
+		//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+		//	else
+		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
+		//}
+		//else if (Gizmo->GetType() == "ArrowY")
+		//{
+		//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
+		//	else
+		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+		//}	
+		//else if (Gizmo->GetType() == "ArrowZ")
+		//{
+		//	pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
+		//}
 		if (Gizmo->GetType() == "ArrowX")
 		{
-			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
-			else
+			vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
+			float dotResult = vecObjToCamera.Dot(FVector(1.0f, 0.0f, 0.0f));
+			dotResult = dotResult / vecObjToCamera.Magnitude();
+			float rad = acosf(dotResult);
+			float degree = JungleMath::RadToDeg(rad);
+			FVector crossResult = vecObjToCamera.Cross(FVector(1.0f, 0.0f, 0.0f));
+			if (crossResult.z > 0)
+				degree *= -1.0f;
+			//UE_LOG(LogLevel::Error, "%f", degree);
+
+			if ( 0 < degree && degree <  180.0f)
 				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
+			else if (degree < 0 && degree > -180.0f) {
+				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+			}
 		}
 		else if (Gizmo->GetType() == "ArrowY")
 		{
-			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
-			else
+			vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
+			float dotResult = vecObjToCamera.Dot(FVector(0.0f, 1.0f, 0.0f));
+			dotResult = dotResult / vecObjToCamera.Magnitude();
+			float rad = acosf(dotResult);
+			float degree = JungleMath::RadToDeg(rad);
+			FVector crossResult = vecObjToCamera.Cross(FVector(0.0f, 1.0f, 0.0f));
+			if (crossResult.z > 0)
+				degree *= -1.0f;
+			//UE_LOG(LogLevel::Error, "%f", degree);
+			if (0 < degree && degree < 180)
 				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+			else
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
 		}	
 		else if (Gizmo->GetType() == "ArrowZ")
 		{

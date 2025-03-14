@@ -17,6 +17,7 @@ public:
 	void Initialize();
 	void CreateBaseObject();
 	void ReleaseBaseObject();
+	void RenderBaseObject();
 	void Tick(double deltaTime);
 	void Release();
 	void Render();

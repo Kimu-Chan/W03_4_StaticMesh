@@ -146,11 +146,8 @@ void FEngineLoop::Render()
 	UPrimitiveBatch::GetInstance().Begin();
 	UPrimitiveBatch::GetInstance().AddGrid(50);
 	GWorld->Render();
-	//for (int i = GetWorld()->GetObjectArr().size() - 1; i >= 0; i--)
-	//{
-	//	GetWorld()->GetObjectArr()[i]->Render();
-	//}
 	UPrimitiveBatch::GetInstance().End(View, Projection);
+	GWorld->RenderBaseObject();
 }
 float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)
 {
