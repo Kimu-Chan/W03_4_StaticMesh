@@ -423,6 +423,7 @@ void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVert
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+//폰트 배치랜더링
 void FRenderer::RenderTextPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
 {
     if (!_TextureSRV || !_SamplerState) {

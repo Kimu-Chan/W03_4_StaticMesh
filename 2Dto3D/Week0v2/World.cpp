@@ -58,7 +58,7 @@ void UWorld::CreateBaseObject()
 	text = static_cast<UText*>(text);
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
-	castText->SetText(L"HELLO");
+	castText->SetText(L"HELLOJUNGLE");
 	GUObjectArray.push_back(text);
 	
 }

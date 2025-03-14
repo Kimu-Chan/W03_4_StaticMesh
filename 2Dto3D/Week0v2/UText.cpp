@@ -38,8 +38,7 @@ void UText::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-
-	Console::GetInstance().AddLog(LogLevel::Warning, "NumVertices is %d", numVertices);
+	
 	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numVertices,
 		m_texture.m_TextureSRV, m_texture.m_SamplerState);
 	//Super::Render();
@@ -59,25 +58,6 @@ void UText::SetText(FWString _text)
 
 	float nTexelUOffset = CellWidth / BitmapWidth;
 	float nTexelVOffset = CellHeight/ BitmapHeight;
-
-	/*
-	FVertexTexture leftUP = { -1.0f,1.0f,0.0f,0.0f,0.0f };
-	FVertexTexture rightUP = { 1.0f,1.0f,0.0f,1.0f,0.0f };
-	FVertexTexture leftDown = { -1.0f,-1.0f,0.0f,0.0f,1.0f };
-	FVertexTexture rightDown = { 1.0f,-1.0f,0.0f,1.0f,1.0f };
-	rightUP.u /= CellWdith;
-	leftDown.v /= CellHeight;
-	rightDown.u /= CellWdith;
-	rightDown.v /= CellHeight;
-
-
-	vertexTextureArr.push_back(leftUP);
-	vertexTextureArr.push_back(rightUP);
-	vertexTextureArr.push_back(leftDown);
-	vertexTextureArr.push_back(rightUP);
-	vertexTextureArr.push_back(rightDown);
-	vertexTextureArr.push_back(leftDown);
-	*/
 
 	for (int i = 0; i < _text.size(); i++)
 	{
@@ -118,7 +98,6 @@ void UText::SetText(FWString _text)
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
 
-	Console::GetInstance().AddLog(LogLevel::Warning, "NumVertices is %d", numVertices);
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
 
 }
