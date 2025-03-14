@@ -16,7 +16,10 @@ cbuffer LightingBuffer : register(b1)
     float pad4; // 16바이트 정렬 맞춤 추가 패딩
     float pad5; // 16바이트 정렬 맞춤 추가 패딩
 };
-
+cbuffer FNormalConstants : register(b2)
+{
+    row_major float4x4 MInverseTranspose;
+};
 struct VS_INPUT
 {
     float4 position : POSITION; // 버텍스 위치
@@ -51,7 +54,7 @@ PS_INPUT mainVS(VS_INPUT input)
     else
     {
         //output.normal = normalize(input.normal);
-        output.normal = mul(input.normal, MVP);
+        output.normal = mul(input.normal, MInverseTranspose);
         output.normalFlag = 1.0;
     }
     

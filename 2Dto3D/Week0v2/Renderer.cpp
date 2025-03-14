@@ -79,8 +79,9 @@ void FRenderer::PrepareShader()
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
-        Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &LightingBuffer);
+        //Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &LightingBuffer);
         Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &LightingBuffer);
+        Graphics->DeviceContext->VSSetConstantBuffers(2, 1, &NormalConstantBuffer);
 
     }
 }
@@ -155,7 +156,7 @@ void FRenderer::InitLightBuffer()
     lightingData.lightColorX = 10.0f;
     lightingData.lightColorY = 0.0f;
     lightingData.lightColorZ = 0.0f;
-    lightingData.AmbientFactor = 0.5f;
+    lightingData.AmbientFactor = 1.f;
 }
 
 
@@ -276,6 +277,10 @@ void FRenderer::CreateConstantBuffer()
 
     constantbufferdesc.ByteWidth = sizeof(FSubUVConstant) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &SubUVConstantBuffer);
+
+    // create FNormalConstans buffer 
+    constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
 }
 
 void FRenderer::CreateLightingBuffer()
@@ -308,9 +313,9 @@ void FRenderer::UpdateLightBuffer()
         constants->lightDirY = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightDirZ = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightColorX = 1.0f;
-        constants->lightColorY = 1.0f;
-        constants->lightColorZ = 1.0f;
-        constants->AmbientFactor = .05;
+        constants->lightColorY = .0f;
+        constants->lightColorZ = .0f;
+        constants->AmbientFactor = .1;
     }
     Graphics->DeviceContext->Unmap(LightingBuffer, 0);
 
@@ -343,6 +348,26 @@ void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }
 }
+
+void FRenderer::UpdateNormalConstantBuffer(FMatrix _Model)
+{
+    if (NormalConstantBuffer)
+    {
+        D3D11_MAPPED_SUBRESOURCE constantbufferMSR; // GPU 의 메모리 주소 매핑
+
+        Graphics->DeviceContext->Map(NormalConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant buffer every frame
+
+        FMatrix NormalMatrix = FMatrix::Transpose(FMatrix::Inverse(_Model));
+
+        FNormalConstants* constants = (FNormalConstants*)constantbufferMSR.pData; //GPU 메모리 직접 접근
+        {
+            constants->ModelMatrixInverseTranspose = NormalMatrix;
+        }
+        Graphics->DeviceContext->Unmap(NormalConstantBuffer, 0); // GPU 가 다시 사용가능하게 만들기. 
+
+    }
+}
+
 void FRenderer::CreateTextureShader()
 {
     ID3DBlob* vertextextureshaderCSO;

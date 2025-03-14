@@ -29,6 +29,7 @@ void UCubeComp::Render()
 
 	// 최종 MVP 행렬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
+	FEngineLoop::renderer.UpdateNormalConstantBuffer(Model);
 	if (this == GetWorld()->GetPickingObj()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
 	}

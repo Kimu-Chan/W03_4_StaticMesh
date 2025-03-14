@@ -53,9 +53,16 @@ public:
    
     struct FConstants
     {
-        FMatrix MVP;
-        float   Flag;
+        FMatrix MVP;      // 모델
+        float Flag;
     };
+    struct FNormalConstants
+    {
+        FMatrix ModelMatrixInverseTranspose;
+    };
+    ID3D11Buffer* NormalConstantBuffer = nullptr;
+    void UpdateNormalConstantBuffer(FMatrix _Model);
+
 public://텍스쳐용 기능 추가
     ID3D11VertexShader* VertexTextureShader = nullptr;
     ID3D11PixelShader* PixelTextureShader = nullptr;
