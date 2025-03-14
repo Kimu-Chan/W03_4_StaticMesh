@@ -130,7 +130,7 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 
 	UE_LOG(LogLevel::Error, "Arrow Vertex Size : %d", vertices.size());
 	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, vertices.size() * sizeof(FVertexSimple));
-	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
+	ID3D11Buffer* indexBuffer = nullptr;//(indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
 	if (!vertexBuffer) {
 		UE_LOG(LogLevel::Error, "Error: Failed to create buffers for OBJ: %s", filepath.c_str());
 		delete[] vertexArray;

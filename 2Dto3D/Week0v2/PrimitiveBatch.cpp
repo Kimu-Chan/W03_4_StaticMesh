@@ -15,20 +15,20 @@ UPrimitiveBatch::~UPrimitiveBatch()
 void UPrimitiveBatch::AddLine(const FVector& start, const FVector& end, const FVector4& color)
 {
 	Vertices.push_back({ start.x, start.y, start.z, 
-						 color.x, color.y, color.z, 1 });
+						 color.x, color.y, color.z, 1,0,0,0 });
 
 	Vertices.push_back({ end.x, end.y, end.z,
-						 color.x, color.y, color.z, 1 });
+						 color.x, color.y, color.z, 1,0,0,0 });
 }
 
 void UPrimitiveBatch::AddGridLine(const FVector& start, const FVector& end, const FVector4& color)
 {
 
     GridVertices.push_back({ start.x, start.y, start.z,
-                         color.x, color.y, color.z, 1 });
+                         color.x, color.y, color.z, 1,0,0,1 });
 
     GridVertices.push_back({ end.x, end.y, end.z,
-                         color.x, color.y, color.z, 1 });
+                         color.x, color.y, color.z, 1,0,0,1 });
 }
 
 void UPrimitiveBatch::Begin()

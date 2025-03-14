@@ -80,6 +80,7 @@ void FRenderer::PrepareShader()
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
         Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &LightingBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &LightingBuffer);
 
     }
 }
@@ -148,15 +149,13 @@ void FRenderer::RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT 
 
 void FRenderer::InitLightBuffer()
 {
-     lightingData.lightDirX = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightDirY = -1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightDirZ = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightColorX = 1.0f;
-    lightingData.lightColorY = 1.0f;
-    lightingData.lightColorZ = 1.0f;
-    lightingData.AmbientFactor = 0.1f;
-
-
+     lightingData.lightDirX = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightDirY = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightDirZ = -1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+    lightingData.lightColorX = 10.0f;
+    lightingData.lightColorY = 0.0f;
+    lightingData.lightColorZ = 0.0f;
+    lightingData.AmbientFactor = 0.5f;
 }
 
 
@@ -299,10 +298,18 @@ void FRenderer::UpdateLightBuffer()
     if (!LightingBuffer) return;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     HRESULT result = Graphics->DeviceContext->Map(LightingBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(result)) {
-        memcpy(mappedResource.pData, &lightingData, sizeof(FLighting));
-        Graphics->DeviceContext->Unmap(LightingBuffer, 0);
+    FLighting* constants = (FLighting*)mappedResource.pData;
+    {
+        constants->lightDirX = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+        constants->lightDirY = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+        constants->lightDirZ = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
+        constants->lightColorX = 1.0f;
+        constants->lightColorY = 1.0f;
+        constants->lightColorZ = 1.0f;
+        constants->AmbientFactor = .05;
     }
+    Graphics->DeviceContext->Unmap(LightingBuffer, 0);
+
 }
 void FRenderer::UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices)
 {

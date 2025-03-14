@@ -51,7 +51,9 @@ struct FLighting
 	float lightColorX, lightColorY, lightColorZ;    // 조명 색상
 	float pad2;                      // 16바이트 정렬용 패딩
 	float AmbientFactor;             // ambient 계수
-	float pad3[3];                   // 추가 패딩 (16바이트 정렬)
+	float pad3; // 16바이트 정렬 맞춤 추가 패딩
+	float pad4; // 16바이트 정렬 맞춤 추가 패딩
+	float pad5; // 16바이트 정렬 맞춤 추가 패딩
 };
 
 struct FVector
