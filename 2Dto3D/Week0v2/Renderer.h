@@ -29,7 +29,6 @@ public:
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
     void RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT stride, UINT offset);
-    void InitLightBuffer();
     void CreateShader();
     void CreateConstantBuffer();
     void CreateLightingBuffer();

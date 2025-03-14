@@ -5,7 +5,6 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
     CreateShader();
     CreateTextureShader();
     CreateConstantBuffer();
-    InitLightBuffer();
     CreateLightingBuffer();
 }
 
@@ -147,18 +146,6 @@ void FRenderer::RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT 
     Graphics->DeviceContext->Draw(numVertices, 0);
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
-
-void FRenderer::InitLightBuffer()
-{
-     lightingData.lightDirX = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightDirY = 0.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightDirZ = -1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
-    lightingData.lightColorX = 10.0f;
-    lightingData.lightColorY = 0.0f;
-    lightingData.lightColorZ = 0.0f;
-    lightingData.AmbientFactor = 1.f;
-}
-
 
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {

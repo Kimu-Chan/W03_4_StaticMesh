@@ -25,10 +25,10 @@ void UPrimitiveBatch::AddGridLine(const FVector& start, const FVector& end, cons
 {
 
     GridVertices.push_back({ start.x, start.y, start.z,
-                         color.x, color.y, color.z, 1,0,0,1 });
+                         color.x, color.y, color.z, 1,0,0,0 });
 
     GridVertices.push_back({ end.x, end.y, end.z,
-                         color.x, color.y, color.z, 1,0,0,1 });
+                         color.x, color.y, color.z, 1,0,0,0 });
 }
 
 void UPrimitiveBatch::Begin()
