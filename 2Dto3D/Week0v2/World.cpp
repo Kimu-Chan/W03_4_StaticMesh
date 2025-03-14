@@ -27,17 +27,14 @@ void UWorld::Initialize()
 void UWorld::CreateBaseObject()
 {
 	UObject* player = FObjectFactory::ConstructObject<UPlayer>("LocalPlayer");
-	//GUObjectArray.push_back(player);
 	localPlayer = static_cast<UPlayer*>(player);
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
 	camera->SetLocation(FVector(0.0f, 10.0f, 0.f));
-	//GUObjectArray.push_back(camera);
 
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
-	//GUObjectArray.push_back(tmp);
 
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
