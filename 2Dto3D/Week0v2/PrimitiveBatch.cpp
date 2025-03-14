@@ -39,6 +39,7 @@ void UPrimitiveBatch::Begin()
 void UPrimitiveBatch::AddGrid(int gridSize)
 {
     if (Spacing != PreSpacing) {
+        GridVertices.clear();
         for (int i = -gridSize; i <= gridSize; i++) {
             float pos = i * Spacing;
         

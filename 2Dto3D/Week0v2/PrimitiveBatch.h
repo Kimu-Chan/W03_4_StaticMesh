@@ -17,6 +17,7 @@ public:
 	void AddGrid(int gridSize);
 	void Begin();
 	void SetSpacing(float spacing);
+	float GetSpacing() { return Spacing; }
 	void End(const FMatrix& View, const FMatrix& Projection);
 	void AddBox(const FVector& center, const FVector4& color, const FMatrix& modelMatrix);
 	void AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatri);

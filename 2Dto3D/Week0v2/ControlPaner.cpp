@@ -37,7 +37,6 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Text("Hello Jungle World!");
 	double fps = 1000.0 / elapsedTime;
 	ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
-
 	ImGui::Separator();
 	static int32 primitiveType = 0;
 	const char* primitives[] = { "Sphere", "Cube", "Triangle" };
@@ -134,7 +133,12 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		SceneData LoadData = FSceneMgr::ParseSceneData(LoadJsonData);
 		world->LoadData(LoadData);
 	}
+	ImGui::Separator();
+	float sp = UPrimitiveBatch::GetInstance().GetSpacing();
 
+	ImGui::SliderFloat("Grid Spacing", &sp, 1.0f, 300.0f);
+
+	UPrimitiveBatch::GetInstance().SetSpacing(sp);
 	ImGui::Separator();
 
 	ImGui::Text("Orthogonal");
