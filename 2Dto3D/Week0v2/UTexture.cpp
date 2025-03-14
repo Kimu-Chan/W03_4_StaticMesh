@@ -6,7 +6,7 @@ void UTexture::init()
 
     LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"Assets/Texture/font.png");
+        L"Assets/Texture/T_Explosion_SubUV.PNG");
     CreateSampler(FEngineLoop::graphicDevice.Device);
 
     if (!m_TextureSRV || !m_SamplerState) {
