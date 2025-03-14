@@ -422,6 +422,23 @@ void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVert
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+void FRenderer::RenderTextPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
+{
+    if (!_TextureSRV || !_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Warning, "SRV, Sampler Error");
+    }
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &TextureStride, &offset);
+
+    // 입력 레이아웃 및 기본 설정
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
+
+    // 드로우 호출 (6개의 인덱스 사용)
+    Graphics->DeviceContext->Draw(numVertices, 0);
+}
+
 
 
 
