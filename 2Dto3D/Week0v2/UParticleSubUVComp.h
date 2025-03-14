@@ -11,18 +11,14 @@ public:
 	virtual void		Release()					override;
 	virtual void		Render()					override;
 
-
+	void SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn);
 private:
 	ID3D11Buffer* vertexSubUVBuffer;
 	UINT numTextVertices;
 
 
-	int CellsPerRow = 6;
-	int CellsPerColumn = 6;
-	float CellWidth = 341.3;
-	float CellHeight = 341.3;
-	int BitmapWidth = 2048;
-	int BitmapHeight = 2048;
+	int CellsPerRow;
+	int CellsPerColumn;
 
 	float finalIndexU = 0.0f;
 	float finalIndexV = 0.0f;

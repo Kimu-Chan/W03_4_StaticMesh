@@ -27,8 +27,8 @@ void UText::Release()
 void UText::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
-	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
-	FEngineLoop::renderer.PrepareSubUVConstant();
+	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	//FEngineLoop::renderer.PrepareSubUVConstant();
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
@@ -47,7 +47,11 @@ void UText::Render()
 
 	FEngineLoop::renderer.PrepareShader();
 }
-
+void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn) 
+{
+	RowCount = _cellsPerRow;
+	ColumnCount = _cellsPerColumn;
+}
 void UText::SetText(FWString _text)
 {
 	if (_text.empty())
@@ -57,6 +61,13 @@ void UText::SetText(FWString _text)
 
 	TArray<FVertexTexture> vertexTextureArr;
 	int textSize = _text.size();
+
+
+	float BitmapWidth = m_texture.m_width;
+	float BitmapHeight = m_texture.m_height;
+
+	float CellWidth = BitmapWidth/ColumnCount;
+	float CellHeight = BitmapHeight/RowCount;
 
 	float nTexelUOffset = CellWidth / BitmapWidth;
 	float nTexelVOffset = CellHeight/ BitmapHeight;
@@ -106,14 +117,43 @@ void UText::SetText(FWString _text)
 void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 {
 	//대문자만 받는중
-	int aStartU = 1;
-	int aStartV = 4;
-	int offset = alphabet - 'A';
-	int offsetV = (offset+aStartU) / ColumnCount;
-	int offsetU = (offset+aStartU) % ColumnCount;
+	int StartU=0;
+	int StartV=0;
+	int offset = -1;
+
+	if (alphabet == ' ') {
+		outStartU = 0;  // Space는 특별히 UV 좌표를 (0,0)으로 설정
+		outStartV = 0;
+		offset = 0;
+		return;
+	}
+	else if (alphabet >= 'A' && alphabet <= 'Z') {
+
+		StartU = 1;
+		StartV = 4;
+		offset = alphabet - 'A'; // 대문자 위치
+	}
+	else if (alphabet >= 'a' && alphabet <= 'z') {
+		StartU = 1;
+		StartV = 6;
+		offset = (alphabet - 'a'); // 소문자는 대문자 다음 위치
+	}
+	else if (alphabet >= '0' && alphabet <= '9') {
+		StartU = 0;
+		StartV = 3;
+		offset = (alphabet - '0'); // 숫자는 소문자 다음 위치
+	}
+
+	if (offset == -1)
+	{
+		Console::GetInstance().AddLog(LogLevel::Warning, "Text Error");
+	}
+
+	int offsetV = (offset + StartU) / ColumnCount;
+	int offsetU = (offset + StartU) % ColumnCount;
 
 	outStartU = offsetU;
-	outStartV = aStartV + offsetV;
+	outStartV = StartV + offsetV;
 
 }
 

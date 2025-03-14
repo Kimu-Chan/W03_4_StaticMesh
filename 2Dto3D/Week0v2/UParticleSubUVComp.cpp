@@ -12,15 +12,15 @@ void UParticleSubUVComp::Initialize()
 {
 	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
 	FEngineLoop::renderer.PrepareSubUVConstant();
-	CreateSubUVVertexBuffer();
 	Super::Initialize();
 }
 
 void UParticleSubUVComp::Update(double deltaTime)
 {
-	//Console::GetInstance().AddLog(LogLevel::Warning, "NumV %d, NumI %d", numVertices,numIndices);
-	
-	
+
+	float CellWidth = m_texture.m_width / CellsPerColumn;
+	float CellHeight = m_texture.m_height / CellsPerColumn;
+
 	static int indexU = 0;
 	static int indexV = 0;
 	static float second = 0;
@@ -42,13 +42,8 @@ void UParticleSubUVComp::Update(double deltaTime)
 		indexV = 0;
 	}
 
-	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
-	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
-
-	float u1 = float(indexU) * normalWidthOffset;
-	float v1 = float(indexV) * normalHeightOffset;
-	float u2 = u1 + normalWidthOffset;
-	float v2 = v1 + normalHeightOffset;
+	float normalWidthOffset = float(CellWidth) / float(m_texture.m_width);
+	float normalHeightOffset = float(CellHeight) / float(m_texture.m_height);
 
 	finalIndexU = float(indexU) * normalWidthOffset;
 	finalIndexV = float(indexV) * normalHeightOffset;
@@ -82,7 +77,17 @@ void UParticleSubUVComp::Render()
 		indexTextureBuffer, numIndices, m_texture.m_TextureSRV, m_texture.m_SamplerState);
 	//Super::Render();
 
+	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	FEngineLoop::renderer.PrepareSubUVConstant();
 	FEngineLoop::renderer.PrepareShader();
+}
+
+void UParticleSubUVComp::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
+{
+	CellsPerRow = _cellsPerRow;
+	CellsPerColumn = _cellsPerColumn;
+
+	CreateSubUVVertexBuffer();
 }
 
 void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertices)
@@ -101,8 +106,10 @@ void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertic
 void UParticleSubUVComp::CreateSubUVVertexBuffer()
 {
 
-	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
-	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
+	float CellWidth = m_texture.m_width/CellsPerColumn;
+	float CellHeight = m_texture.m_height/ CellsPerColumn;
+	float normalWidthOffset = float(CellWidth) / float(m_texture.m_width);
+	float normalHeightOffset = float(CellHeight) / float(m_texture.m_height);
 
 	TArray<FVertexTexture> vertices =
 	{

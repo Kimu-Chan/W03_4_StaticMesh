@@ -11,17 +11,14 @@ public:
 	virtual void		Release()					override;
 	virtual void		Render()					override;
 	void SetText(FWString _text);
+	void SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn);
 private:
 
 	ID3D11Buffer* vertexTextBuffer;
 	UINT numTextVertices;
 
-	int RowCount = 16;
-	int ColumnCount = 16;
-	float CellWidth = 32;
-	float CellHeight = 32;
-	float BitmapWidth = 512;
-	float BitmapHeight = 512;
+	int RowCount;
+	int ColumnCount;
 
 	float quadWidth = 2;
 	float quadHeight = 2;
