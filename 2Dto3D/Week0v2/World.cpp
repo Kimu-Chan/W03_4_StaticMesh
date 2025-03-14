@@ -9,6 +9,8 @@
 #include "GizmoArrowComponent.h"
 #include "TransformGizmo.h"
 #include "UBillboardComponent.h"
+#include "UText.h"
+#include "UParticleSubUVComp.h"
 
 UWorld::UWorld()
 {
@@ -39,7 +41,28 @@ void UWorld::CreateBaseObject()
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
+	UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
+	castBillboard->SetTexture(L"Assets/Texture/emart.png");
 	GUObjectArray.push_back(billboard);
+
+	//테스트용 텍스트
+	UObject* text = FObjectFactory::ConstructObject<UText>();
+	text = static_cast<UText*>(text);
+	UText* castText = static_cast<UText*>(text);
+	castText->SetTexture(L"Assets/Texture/font.png");
+	castText->SetRowColumnCount(16, 16);
+	castText->SetText(L"Hello Jungle 1234");
+	//SetText전에 RowColumn 반드시 설정
+	GUObjectArray.push_back(text);
+	
+	//테스트용 파티클
+	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+	particle = static_cast<UParticleSubUVComp*>(particle);
+	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+	castParticle->SetRowColumnCount(6, 6);
+	GUObjectArray.push_back(castParticle);
+
 }
 
 void UWorld::ReleaseBaseObject()

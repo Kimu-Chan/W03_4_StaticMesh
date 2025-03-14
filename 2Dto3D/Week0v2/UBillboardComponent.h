@@ -14,10 +14,10 @@ public:
 	virtual void		Update(double deltaTime)	override;
 	virtual void		Release()					override;
 	virtual void		Render()					override;
-private:
-	FMatrix CreateBillboardMatrix();
-	void CreateQuadTextureVertexBuffer();
+	void SetTexture(FWString _fileName);
+protected:
 	UTexture m_texture;
+	FMatrix CreateBillboardMatrix();
 
 	ID3D11Buffer* vertexTextureBuffer;
 	ID3D11Buffer* indexTextureBuffer;
@@ -25,17 +25,7 @@ private:
 	UINT numIndices;
 
 private:
-	int CellsPerRow = 6;
-	int CellsPerColumn = 6;
-	float CellWidth = 341.3;
-	float CellHeight = 341.3;
-	int BitmapWidth = 2048;
-	int BitmapHeight = 2048;
-
-	float u = 0;
-	float v = 0;
-
-	void UpdateVertexBuffer(const TArray<FVertexTexture>& vertices);
+	void CreateQuadTextureVertexBuffer();
 
 
 

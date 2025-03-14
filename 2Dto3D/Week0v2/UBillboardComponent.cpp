@@ -5,11 +5,13 @@
 
 #include <DirectXMath.h>
 
-UBillboardComponent::UBillboardComponent() : UPrimitiveComponent("Quad")
+UBillboardComponent::UBillboardComponent() : 
+	UPrimitiveComponent("Quad")
 {
 }
 
-UBillboardComponent::UBillboardComponent(FString _Type) : UPrimitiveComponent(_Type)
+UBillboardComponent::UBillboardComponent(FString _Type)
+	: UPrimitiveComponent(_Type)
 {
 }
 
@@ -21,44 +23,12 @@ void UBillboardComponent::Initialize()
 {
     Super::Initialize();
 	CreateQuadTextureVertexBuffer();
-	m_texture.init();
 }
+
+
 
 void UBillboardComponent::Update(double deltaTime)
 {
-
-	static int index = 0;
-	static float second = 0;
-	second += deltaTime;
-	if (second >= 75)
-	{
-		index ++;
-		second = 0;
-	}
-	if (index >= 16 ) index = 0;
-
-
-	int charIndex = 'A' - ' ';
-
-	float normalWidthOffset = float(CellWidth) / float(BitmapWidth);
-	float normalHeightOffset = float(CellHeight) / float(BitmapHeight);
-
-	float u1 = float(index)*normalWidthOffset;
-	float v1 = float(index)*normalHeightOffset;
-	float u2 = u1+normalWidthOffset;
-	float v2 = v1+normalHeightOffset;
-
-	TArray<FVertexTexture> vertices =
-	{
-		{-1.0f,1.0f,0.0f,u1,v1},
-		{ 1.0f,1.0f,0.0f,u2,v1},
-		{-1.0f,-1.0f,0.0f,u1,v2},
-		{ 1.0f,-1.0f,0.0f,u2,v2}
-	};
-
-
-	UpdateVertexBuffer(vertices);
-
 
     Super::Update(deltaTime);
 }
@@ -70,6 +40,8 @@ void UBillboardComponent::Release()
 void UBillboardComponent::Render()
 {
 	FEngineLoop::renderer.PrepareTextureShader();
+	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	//FEngineLoop::renderer.PrepareSubUVConstant();
 
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
@@ -88,6 +60,11 @@ void UBillboardComponent::Render()
 	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();
+}
+
+void UBillboardComponent::SetTexture(FWString _fileName)
+{
+	m_texture.init(_fileName);
 }
 
 FMatrix UBillboardComponent::CreateBillboardMatrix()
@@ -125,7 +102,7 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	uint32 iCount = sizeof(quadTextureInices) / sizeof(uint32);
 	numVertices = vCount;
 	numIndices = iCount;
-	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexTextureBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
+	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
 	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, iCount * sizeof(UINT));
 
 	if (!vertexTextureBuffer) {
@@ -134,15 +111,4 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	if (!indexTextureBuffer) {
 		Console::GetInstance().AddLog(LogLevel::Warning, "Buffer Error");
 	}
-}
-
-void UBillboardComponent::UpdateVertexBuffer(const TArray<FVertexTexture>& vertices)
-{
-	ID3D11DeviceContext* context = FEngineLoop::graphicDevice.DeviceContext;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-	context->Map(vertexTextureBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	memcpy(mappedResource.pData, vertices.data(), vertices.size() * sizeof(FVertexTexture));
-	context->Unmap(vertexTextureBuffer, 0);
-
 }

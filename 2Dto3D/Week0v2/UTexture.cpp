@@ -1,12 +1,14 @@
 #include "UTexture.h"
 #include <wincodec.h>
 
-void UTexture::init()
+
+
+void UTexture::init(FWString _fileName)
 {
 
     LoadTextureFromFile(FEngineLoop::graphicDevice.Device,
         FEngineLoop::graphicDevice.DeviceContext,
-        L"Assets/Texture/T_Explosion_SubUV.PNG");
+        _fileName.c_str());
     CreateSampler(FEngineLoop::graphicDevice.Device);
 
     if (!m_TextureSRV || !m_SamplerState) {
@@ -47,6 +49,8 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     // 이미지 크기 가져오기
     UINT width, height;
     frame->GetSize(&width, &height);
+    m_width = width;
+    m_height = height;
 
     // 픽셀 데이터 로드
     BYTE* imageData = new BYTE[width * height * 4];

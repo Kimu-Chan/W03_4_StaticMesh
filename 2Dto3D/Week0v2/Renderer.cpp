@@ -272,6 +272,10 @@ void FRenderer::CreateConstantBuffer()
     constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &ConstantBuffer);
+
+
+    constantbufferdesc.ByteWidth = sizeof(FSubUVConstant) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &SubUVConstantBuffer);
 }
 
 void FRenderer::CreateLightingBuffer()
@@ -407,7 +411,8 @@ void FRenderer::PrepareTextureShader()
 }
 
 ID3D11Buffer* FRenderer::CreateVertexTextureBuffer(FVertexTexture* vertices, UINT byteWidth)
-{    // 2. Create a vertex buffer
+{   
+    // 2. Create a vertex buffer
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = byteWidth;
     vertexbufferdesc.Usage = D3D11_USAGE_DYNAMIC; // will never be updated 
@@ -469,7 +474,69 @@ void FRenderer::RenderTexturePrimitive(ID3D11Buffer* pVertexBuffer, UINT numVert
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+//폰트 배치랜더링
+void FRenderer::RenderTextPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
+{
+    if (!_TextureSRV || !_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Warning, "SRV, Sampler Error");
+    }
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &TextureStride, &offset);
+
+    // 입력 레이아웃 및 기본 설정
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
+
+    // 드로우 호출 (6개의 인덱스 사용)
+    Graphics->DeviceContext->Draw(numVertices, 0);
+}
 
 
+
+ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexTexture* vertices, UINT byteWidth)
+{
+    // 2. Create a vertex buffer
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+    ID3D11Buffer* vertexBuffer;
+
+    HRESULT hr = Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+    if (FAILED(hr))
+    {
+        UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
+    }
+    return vertexBuffer;
+}
+
+void FRenderer::UpdateSubUVConstant(float _indexU, float _indexV)
+{
+    if (SubUVConstantBuffer)
+    {
+        D3D11_MAPPED_SUBRESOURCE constantbufferMSR;// GPU의 메모리 주소 매핑
+
+        Graphics->DeviceContext->Map(SubUVConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant buffer every frame
+        FSubUVConstant* constants = (FSubUVConstant*)constantbufferMSR.pData; //GPU 메모리 직접 접근
+        {
+            constants->indexU = _indexU;
+            constants->indexV = _indexV;
+        }
+        Graphics->DeviceContext->Unmap(SubUVConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
+    }
+}
+
+void FRenderer::PrepareSubUVConstant()
+{
+    if (SubUVConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &SubUVConstantBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &SubUVConstantBuffer);
+    }
+}
 
 
