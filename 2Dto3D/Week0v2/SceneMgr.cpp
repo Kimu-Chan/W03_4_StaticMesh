@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "SphereComp.h"
 #include "CubeComp.h"
-#include "ArrowComp.h"
+#include "GizmoArrowComponent.h"
 #include "ObjectFactory.h"
 #include <fstream>
 #include "UBillboardComponent.h"
@@ -38,7 +38,7 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
                 }
                 else if (value["Type"].get<FString>() == "Arrow")
                 {
-                    obj = FObjectFactory::ConstructObject<UArrowComp>();
+                    obj = FObjectFactory::ConstructObject<UGizmoArrowComponent>();
                 }
                 else if (value["Type"].get<FString>() == "Quad")
                 {

@@ -2,11 +2,11 @@
 #include "Define.h"
 #include "SceneMgr.h"
 class UObject;
-class UArrowComp;
+class UGizmoArrowComponent;
 class UCameraComponent;
 class UPlayer;
 class USceneComponent;
-class ULocalGizmoComponent;
+class UTransformGizmo;
 class UWorld
 {
 public:
@@ -44,7 +44,7 @@ public:
 	UObject* worldGizmo = nullptr;
 	TArray<UObject*>& GetObjectArr() { return GUObjectArray; }
 
-	ULocalGizmoComponent* LocalGizmo = nullptr;
+	UTransformGizmo* LocalGizmo = nullptr;
 	UCameraComponent* GetCamera() { return camera; }
 	UPlayer* GetPlayer() { return localPlayer; }
 

@@ -21,7 +21,7 @@ public:
 	void End(const FMatrix& View, const FMatrix& Projection);
 	void AddBox(const FVector& center, const FVector4& color, const FMatrix& modelMatrix);
 	void AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatri);
-
+	void AddWorldGizmo();
 	
 	// 복사 생성자 및 대입 연산자 삭제
 	UPrimitiveBatch(const UPrimitiveBatch&) = delete;

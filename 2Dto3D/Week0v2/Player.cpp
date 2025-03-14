@@ -7,11 +7,11 @@
 #include "PrimitiveComponent.h"
 #include "JungleMath.h"
 #include <DirectXMath.h>
-#include "ArrowComp.h"
+#include "GizmoArrowComponent.h"
 #include "CameraComponent.h"
-#include "LocalGizmoComponent.h"
-#include "DiscHellowComponent.h"
-#include "ScaleGizmoComponent.h"
+#include "TransformGizmo.h"
+#include "GizmoCircleComponent.h"
+#include "GizmoRectangleComponent.h"
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -166,9 +166,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 		}
 		else
 			continue;
-		if (pObj && pObj->GetType() != "ArrowX" && pObj->GetType() != "ArrowY" && pObj->GetType() != "ArrowZ"
-			&& pObj->GetType() != "DiscX"&& pObj->GetType() != "DiscY"&& pObj->GetType() != "DiscZ"
-			&& pObj->GetType() != "ScaleX" && pObj->GetType() != "ScaleY" && pObj->GetType() != "ScaleZ")
+		if (pObj && !pObj->IsA(UGizmoBaseComponent::StaticClass()))
 		{
 			float Distance = 0.0f;
 			int currentIntersectCount = 0;
@@ -198,10 +196,6 @@ void UPlayer::AddControlMode()
 void UPlayer::AddCoordiMode()
 {
 	cdMode = static_cast<CoordiMode>((cdMode + 1) % CoordiMode::CDM_END);
-	//if (cdMode == CoordiMode::CDM_WORLD)
-	//	cdMode = CoordiMode::CDM_LOCAL;
-	//else if (cdMode == CoordiMode::CDM_LOCAL)
-	//	cdMode = CoordiMode::CDM_WORLD;
 }
 
 void UPlayer::DeletePickedObj()

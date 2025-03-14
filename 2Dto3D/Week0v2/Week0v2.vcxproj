@@ -128,16 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ActorComponent.cpp" />
-    <ClCompile Include="ArrowComp.cpp" />
+    <ClCompile Include="GizmoArrowComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="ControlPaner.cpp" />
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
-    <ClCompile Include="DiscHellowComponent.cpp" />
+    <ClCompile Include="GizmoBaseComponent.cpp" />
+    <ClCompile Include="GizmoCircleComponent.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
     <ClCompile Include="EngineStatics.cpp" />
-    <ClCompile Include="GizmoComponent.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
@@ -147,7 +147,7 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="JungleMath.cpp" />
-    <ClCompile Include="LocalGizmoComponent.cpp" />
+    <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
     <ClCompile Include="GraphicDevice.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="PropertyPanel.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
-    <ClCompile Include="ScaleGizmoComponent.cpp" />
+    <ClCompile Include="GizmoRectangleComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SceneMgr.cpp" />
     <ClCompile Include="SphereComp.cpp" />
@@ -197,21 +197,21 @@
   <ItemGroup>
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Arrow.h" />
-    <ClInclude Include="ArrowComp.h" />
+    <ClInclude Include="GizmoArrowComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ControlPaner.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
-    <ClInclude Include="DiscHellowComponent.h" />
+    <ClInclude Include="GizmoCircleComponent.h" />
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="EngineStatics.h" />
     <ClInclude Include="Font\IconDefs.h" />
     <ClInclude Include="Font\RawFonts.h" />
     <ClInclude Include="Gizmo.h" />
-    <ClInclude Include="GizmoComponent.h" />
+    <ClInclude Include="GizmoBaseComponent.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
@@ -224,7 +224,7 @@
     <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
-    <ClInclude Include="LocalGizmoComponent.h" />
+    <ClInclude Include="TransformGizmo.h" />
     <ClInclude Include="NameTypes.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="Outliner.h" />
@@ -234,7 +234,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="QuadTexture.h" />
     <ClInclude Include="ResourceMgr.h" />
-    <ClInclude Include="ScaleGizmoComponent.h" />
+    <ClInclude Include="GizmoRectangleComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneMgr.h" />
     <ClInclude Include="Sphere.h" />

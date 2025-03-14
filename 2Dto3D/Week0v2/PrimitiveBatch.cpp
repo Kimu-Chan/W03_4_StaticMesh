@@ -183,3 +183,11 @@ void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height,
         AddLine(worldApex, basePoints[i], color);
     }
 }
+
+void UPrimitiveBatch::AddWorldGizmo()
+{
+    AddLine(FVector(0.0f, 0.0f, 0.01f), FVector(1000.0f, 0.0f, 0.01f), FVector4(1.0f, 0.0f, 0.0f, 1.0f));
+    AddLine(FVector(0.0f, 0.0f, 0.01f), FVector(0.0f, 1000.0f, 0.01f), FVector4(0.0f, 1.0f, 0.0f, 1.0f));
+    AddLine(FVector(0.0f, 0.0f, 0.00f), FVector(0.0f, 0.0f, 1000.0f), FVector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+}
