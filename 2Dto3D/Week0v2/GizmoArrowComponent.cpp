@@ -1,29 +1,29 @@
-#include "ScaleGizmoComponent.h"
+#include "GizmoArrowComponent.h"
 #include "JungleMath.h"
 #include "Player.h"
-UScaleGizmoComponent::UScaleGizmoComponent() : UPrimitiveComponent("Scale")
+UGizmoArrowComponent::UGizmoArrowComponent()
 {
 }
 
-UScaleGizmoComponent::~UScaleGizmoComponent()
+UGizmoArrowComponent::~UGizmoArrowComponent()
 {
 }
 
-void UScaleGizmoComponent::Initialize()
+void UGizmoArrowComponent::Initialize()
 {
 	Super::Initialize();
 }
 
-void UScaleGizmoComponent::Update(double deltaTime)
+void UGizmoArrowComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
 }
 
-void UScaleGizmoComponent::Release()
+void UGizmoArrowComponent::Release()
 {
 }
 
-void UScaleGizmoComponent::Render()
+void UGizmoArrowComponent::Render()
 {
 #pragma region GizmoDepth
 	static ID3D11DepthStencilState* gizmoDepthState = nullptr;
@@ -47,7 +47,7 @@ void UScaleGizmoComponent::Render()
 	FEngineLoop::graphicDevice.DeviceContext->OMSetDepthStencilState(gizmoDepthState, 0);
 #pragma endregion GizmoDepth
 
-	if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_SCALE)
+	if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_TRANSLATION)
 		return;
 	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 

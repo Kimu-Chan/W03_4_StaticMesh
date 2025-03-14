@@ -145,6 +145,7 @@ void FEngineLoop::Render()
 
 	UPrimitiveBatch::GetInstance().Begin();
 	UPrimitiveBatch::GetInstance().AddGrid(50);
+	UPrimitiveBatch::GetInstance().AddWorldGizmo();
 	GWorld->Render();
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();

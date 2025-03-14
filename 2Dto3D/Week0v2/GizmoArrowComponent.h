@@ -1,12 +1,12 @@
 #pragma once
-#include "PrimitiveComponent.h"
-class UArrowComp : public UPrimitiveComponent
+#include "GizmoBaseComponent.h"
+class UGizmoArrowComponent : public UGizmoBaseComponent
 {
-	DECLARE_CLASS(UArrowComp, UPrimitiveComponent)
+	DECLARE_CLASS(UGizmoArrowComponent, UPrimitiveComponent)
 
 public:
-	UArrowComp();
-	~UArrowComp();
+	UGizmoArrowComponent();
+	~UGizmoArrowComponent();
 
 	virtual void		Initialize()				override;
 	virtual void		Update(double deltaTime)	override;

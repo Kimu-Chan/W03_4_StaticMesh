@@ -1,11 +1,11 @@
 #pragma once
 #include "Object.h"
-class UArrowComp;
+class UGizmoArrowComponent;
 class USceneComponent;
 class UPrimitiveComponent;
 class UPlayer : public UObject
 {
-	DECLARE_CLASS(ULocalGizmoComponent, UObject)
+	DECLARE_CLASS(UTransformGizmo, UObject)
 
 public:
 	UPlayer();

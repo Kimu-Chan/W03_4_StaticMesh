@@ -4,11 +4,10 @@
 #include "CubeComp.h"
 #include <DirectXMath.h>
 #include "JungleMath.h"
-#include "GizmoComponent.h"
 #include "ObjectFactory.h"
 #include "Player.h"
-#include "ArrowComp.h"
-#include "LocalGizmoComponent.h"
+#include "GizmoArrowComponent.h"
+#include "TransformGizmo.h"
 #include "UBillboardComponent.h"
 
 UWorld::UWorld()
@@ -36,13 +35,8 @@ void UWorld::CreateBaseObject()
 	camera->SetLocation(FVector(0.0f, 10.0f, 0.f));
 	//GUObjectArray.push_back(camera);
 
-	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>("WorldGizmo");
-	static_cast<UGizmoComponent*>(gizmo)->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
-	worldGizmo = gizmo;
-	//GUObjectArray.push_back(gizmo);
-
-	UObject* tmp = FObjectFactory::ConstructObject<ULocalGizmoComponent>("LocalGizmo");
-	LocalGizmo = static_cast<ULocalGizmoComponent*>(tmp);
+	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
+	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
 	//GUObjectArray.push_back(tmp);
 
 	//테스트용 빌보드. 필요없으면 삭제
@@ -58,7 +52,6 @@ void UWorld::ReleaseBaseObject()
 	delete camera;
 	delete localPlayer;
 	LocalGizmo = nullptr;
-	worldGizmo = nullptr;
 	camera = nullptr;
 	localPlayer = nullptr;
 }
@@ -66,7 +59,6 @@ void UWorld::ReleaseBaseObject()
 void UWorld::RenderBaseObject()
 {
 	LocalGizmo->Render();
-	worldGizmo->Render();
 }
 
 void UWorld::Tick(double deltaTime)
@@ -74,7 +66,6 @@ void UWorld::Tick(double deltaTime)
 	Input();
 	camera->Update(deltaTime);
 	localPlayer->Update(deltaTime);
-	worldGizmo->Update(deltaTime);
 	LocalGizmo->Update(deltaTime);
 	for (auto iter : GUObjectArray)
 	{
@@ -156,12 +147,8 @@ SceneData UWorld::SaveData()
 		}
 		if (Primitive)
 		{
-			if (Primitive->GetType() != "ArrowX" && Primitive->GetType() != "ArrowY" && Primitive->GetType() != "ArrowZ" &&
-				Primitive->GetType() != "DiscX" && Primitive->GetType() != "DiscY" && Primitive->GetType() != "DiscZ"&&
-				Primitive->GetType() != "ScaleX" && Primitive->GetType() != "ScaleY" && Primitive->GetType() != "ScaleZ") {
 				Save.Primitives[Count] = iter;
 				Count++;
-			}
 		}
 	}
 	Save.Version = 1;

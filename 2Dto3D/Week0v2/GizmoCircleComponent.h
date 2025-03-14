@@ -1,13 +1,14 @@
 #pragma once
-#include "PrimitiveComponent.h"
+#include "GizmoBaseComponent.h"
 
-class UDiscHollowComponent :
-    public UPrimitiveComponent
+class UGizmoCircleComponent :
+    public UGizmoBaseComponent
 {
+    DECLARE_CLASS(UGizmoCircleComponent, UGizmoBaseComponent)
 public:
-    UDiscHollowComponent(EPrimitiveColor color, float innerRadius =0.95f, FString type = "Disc");
-    UDiscHollowComponent();
-    ~UDiscHollowComponent();
+    UGizmoCircleComponent(EPrimitiveColor color, float innerRadius =0.95f, FString type = "Disc");
+    UGizmoCircleComponent();
+    ~UGizmoCircleComponent();
     //virtual void Update();
     //virtual bool Intersects(const FVector& rayOrigin, const FVector& rayDir, float& dist);
     //virtual bool PickObjectByRayIntersection(const FVector& pickPosition, const FMatrix& viewMatrix, float* hitDistance) override;

@@ -1,4 +1,4 @@
-﻿#include "DiscHellowComponent.h"
+﻿#include "GizmoCircleComponent.h"
 #include "JungleMath.h"
 #include "Player.h"
 #define DISC_RESOLUTION 128
@@ -9,7 +9,7 @@ static const FVector Colors[] = {
     FVector(0.0f, 0.0f, 1.0f)   // Z��: �Ķ�
 };
 
-UDiscHollowComponent::UDiscHollowComponent(EPrimitiveColor color, float innerRadius, FString type) : UPrimitiveComponent(type), inner(innerRadius)
+UGizmoCircleComponent::UGizmoCircleComponent(EPrimitiveColor color, float innerRadius, FString type) : inner(innerRadius)
 {
     inner = innerRadius;
     FVector color3 = Colors[color];
@@ -60,7 +60,7 @@ UDiscHollowComponent::UDiscHollowComponent(EPrimitiveColor color, float innerRad
 
 }
 
-UDiscHollowComponent::UDiscHollowComponent()
+UGizmoCircleComponent::UGizmoCircleComponent()
 {
     inner = 0.5;
     TArray<FVertexSimple> vertices;
@@ -101,11 +101,11 @@ UDiscHollowComponent::UDiscHollowComponent()
 
 }
 
-UDiscHollowComponent::~UDiscHollowComponent()
+UGizmoCircleComponent::~UGizmoCircleComponent()
 {
 }
 
-bool UDiscHollowComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist)
+bool UGizmoCircleComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist)
 {
     if (rayDir.y == 0) return false; // normal to normal vector of plane
 
@@ -117,7 +117,7 @@ bool UDiscHollowComponent::IntersectsRay(const FVector& rayOrigin, const FVector
     return (inner * inner < intersectionToDiscCenterSquared && intersectionToDiscCenterSquared < 1);
 }
 
-void UDiscHollowComponent::Render()
+void UGizmoCircleComponent::Render()
 {
 #pragma region GizmoDepth
     static ID3D11DepthStencilState* gizmoDepthState = nullptr;

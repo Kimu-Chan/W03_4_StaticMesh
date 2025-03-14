@@ -1,22 +1,22 @@
-#include "LocalGizmoComponent.h"
-#include "ArrowComp.h"
+#include "TransformGizmo.h"
+#include "GizmoArrowComponent.h"
 #include "Define.h"
 #include "ObjectFactory.h"
-#include "DiscHellowComponent.h"
+#include "GizmoCircleComponent.h"
 #include "Player.h"
-#include "ScaleGizmoComponent.h"
-ULocalGizmoComponent::ULocalGizmoComponent()
+#include "GizmoRectangleComponent.h"
+UTransformGizmo::UTransformGizmo()
 {
-	UObject* obj = FObjectFactory::ConstructObject<UArrowComp>();
-	UArrowComp* ArrowX = static_cast<UArrowComp*>(obj);
+	UObject* obj = FObjectFactory::ConstructObject<UGizmoArrowComponent>();
+	UGizmoArrowComponent* ArrowX = static_cast<UGizmoArrowComponent*>(obj);
 	ArrowX->SetType("ArrowX");
 	ArrowX->SetParent(this);
 	AttachChildren.push_back(ArrowX);
 	//GetWorld()->GetObjectArr().push_back(ArrowX);
 	ArrowArr.push_back(ArrowX);
 
-	obj = FObjectFactory::ConstructObject<UArrowComp>();
-	UArrowComp* ArrowY = static_cast<UArrowComp*>(obj);
+	obj = FObjectFactory::ConstructObject<UGizmoArrowComponent>();
+	UGizmoArrowComponent* ArrowY = static_cast<UGizmoArrowComponent*>(obj);
 	ArrowY->SetType("ArrowY");
 
 	ArrowY->SetParent(this);
@@ -26,8 +26,8 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	ArrowArr.push_back(ArrowY);
 
 
-	obj = FObjectFactory::ConstructObject<UArrowComp>();
-	UArrowComp* ArrowZ = static_cast<UArrowComp*>(obj);
+	obj = FObjectFactory::ConstructObject<UGizmoArrowComponent>();
+	UGizmoArrowComponent* ArrowZ = static_cast<UGizmoArrowComponent*>(obj);
 	AttachChildren.push_back(ArrowZ);
 	ArrowZ->SetType("ArrowZ");
 	ArrowZ->SetParent(this);
@@ -36,77 +36,77 @@ ULocalGizmoComponent::ULocalGizmoComponent()
 	//GetWorld()->GetObjectArr().push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
 
-	UDiscHollowComponent* disc = new UDiscHollowComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
+	UGizmoCircleComponent* disc = new UGizmoCircleComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
 	disc->SetType("DiscX");
 	disc->SetRotation(FVector(0.0f,0.0f,90.0f));
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
-	HollowDiscArr.push_back(disc);
+	CircleArr.push_back(disc);
 
-	disc = new UDiscHollowComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
+	disc = new UGizmoCircleComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
 	disc->SetType("DiscY");
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
-	HollowDiscArr.push_back(disc);
+	CircleArr.push_back(disc);
 
 
-	disc = new UDiscHollowComponent(EPrimitiveColor::BLUE_Z, 0.9, "DiscZ");
+	disc = new UGizmoCircleComponent(EPrimitiveColor::BLUE_Z, 0.9, "DiscZ");
 	disc->SetType("DiscZ");
 	disc->SetParent(this);
 	disc->SetRotation(FVector(90.0f,0.0f,0.0f));
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
-	HollowDiscArr.push_back(disc);
+	CircleArr.push_back(disc);
 
-	for (auto i : HollowDiscArr)
+	for (auto i : CircleArr)
 	{
 		i->SetScale({ 2.5f,2.5f,2.5f });
 	}
 
-	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
-	UScaleGizmoComponent* ScaleX = static_cast<UScaleGizmoComponent*>(obj);
+	obj = FObjectFactory::ConstructObject<UGizmoRectangleComponent>();
+	UGizmoRectangleComponent* ScaleX = static_cast<UGizmoRectangleComponent*>(obj);
 	AttachChildren.push_back(ScaleX);
 	ScaleX->SetType("ScaleX");
 	ScaleX->SetParent(this);
 	AttachChildren.push_back(ScaleX);
 	//GetWorld()->GetObjectArr().push_back(ScaleX);
-	ScaleArr.push_back(ScaleX);
+	RectangleArr.push_back(ScaleX);
 
-	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
-	UScaleGizmoComponent* ScaleY = static_cast<UScaleGizmoComponent*>(obj);
+	obj = FObjectFactory::ConstructObject<UGizmoRectangleComponent>();
+	UGizmoRectangleComponent* ScaleY = static_cast<UGizmoRectangleComponent*>(obj);
 	AttachChildren.push_back(ScaleY);
 	ScaleY->SetType("ScaleY");
 	ScaleY->SetParent(this);
 	AttachChildren.push_back(ScaleY);
 	//GetWorld()->GetObjectArr().push_back(ScaleY);
-	ScaleArr.push_back(ScaleY);
+	RectangleArr.push_back(ScaleY);
 
-	obj = FObjectFactory::ConstructObject<UScaleGizmoComponent>();
-	UScaleGizmoComponent* ScaleZ = static_cast<UScaleGizmoComponent*>(obj);
+	obj = FObjectFactory::ConstructObject<UGizmoRectangleComponent>();
+	UGizmoRectangleComponent* ScaleZ = static_cast<UGizmoRectangleComponent*>(obj);
 	AttachChildren.push_back(ScaleZ);
 	ScaleZ->SetType("ScaleZ");
 	ScaleZ->SetParent(this);
 	AttachChildren.push_back(ScaleZ);
 	//GetWorld()->GetObjectArr().push_back(ScaleZ);
-	ScaleArr.push_back(ScaleZ);
+	RectangleArr.push_back(ScaleZ);
 
 
 
 }
 
-ULocalGizmoComponent::~ULocalGizmoComponent()
+UTransformGizmo::~UTransformGizmo()
 {
 
 }
 
-void ULocalGizmoComponent::Initialize()
+void UTransformGizmo::Initialize()
 {
 	Super::Initialize();
 }
 
-void ULocalGizmoComponent::Update(double deltaTime)
+void UTransformGizmo::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
 	if (GetWorld()->GetPickingObj()) {
@@ -119,21 +119,21 @@ void ULocalGizmoComponent::Update(double deltaTime)
 	for (int i = 0;i < 3;i++)
 	{
 		ArrowArr[i]->Update(deltaTime);
-		HollowDiscArr[i]->Update(deltaTime);
-		ScaleArr[i]->Update(deltaTime);
+		CircleArr[i]->Update(deltaTime);
+		RectangleArr[i]->Update(deltaTime);
 	}
 }
 
-void ULocalGizmoComponent::Release()
+void UTransformGizmo::Release()
 {
 }
 
-void ULocalGizmoComponent::Render()
+void UTransformGizmo::Render()
 {
 	for (int i = 0;i < 3;i++)
 	{
 		ArrowArr[i]->Render();
-		HollowDiscArr[i]->Render();
-		ScaleArr[i]->Render();
+		CircleArr[i]->Render();
+		RectangleArr[i]->Render();
 	}
 }
