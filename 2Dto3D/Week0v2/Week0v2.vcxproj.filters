@@ -108,13 +108,7 @@
     <ClCompile Include="CubeComp.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
-    <ClCompile Include="GizmoComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="LocalGizmoComponent.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
     <ClCompile Include="ObjectFactory.cpp">
@@ -141,9 +135,6 @@
     <ClCompile Include="SceneMgr.cpp">
       <Filter>소스 파일\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="ArrowComp.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
     <ClCompile Include="EngineStatics.cpp">
       <Filter>소스 파일\Engine</Filter>
     </ClCompile>
@@ -151,12 +142,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ActorComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="DiscHellowComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="ScaleGizmoComponent.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
     <ClCompile Include="Outliner.cpp">
@@ -169,6 +154,30 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UTexture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoArrowComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoBaseComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoCircleComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformGizmo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoRectangleComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UParticleSubUVComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UHangulText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,9 +252,6 @@
     <ClInclude Include="CubeComp.h">
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
-    <ClInclude Include="GizmoComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
     <ClInclude Include="Gizmo.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
@@ -253,9 +259,6 @@
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="LocalGizmoComponent.h">
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
@@ -285,9 +288,6 @@
     <ClInclude Include="SceneMgr.h">
       <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="ArrowComp.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
     <ClInclude Include="EngineStatics.h">
       <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
@@ -309,13 +309,7 @@
     <ClInclude Include="IWindowToggleable.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="DiscHellowComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
     <ClInclude Include="ActorComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ScaleGizmoComponent.h">
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="NameTypes.h">
@@ -339,28 +333,28 @@
     <ClInclude Include="UTexture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CoreTypes.h">
+    <ClInclude Include="GizmoArrowComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MathDefines.h">
+    <ClInclude Include="GizmoCircleComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectMacros.h">
+    <ClInclude Include="GizmoBaseComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
+    <ClInclude Include="TransformGizmo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Vector4.h">
+    <ClInclude Include="GizmoRectangleComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
+    <ClInclude Include="UParticleSubUVComp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Quat.h">
+    <ClInclude Include="UText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectTypes.h">
+    <ClInclude Include="UHangulText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

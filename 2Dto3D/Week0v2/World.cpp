@@ -11,6 +11,7 @@
 #include "UBillboardComponent.h"
 #include "UText.h"
 #include "UParticleSubUVComp.h"
+#include "UHangulText.h"
 
 UWorld::UWorld()
 {
@@ -50,10 +51,19 @@ void UWorld::CreateBaseObject()
 	text = static_cast<UText*>(text);
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
-	castText->SetRowColumnCount(16, 16);
-	castText->SetText(L"Hello Jungle 1234");
+	castText->SetRowColumnCount(106, 106);
+	castText->SetText(L"Jungle HELLOW 1234 안 녕 하 세 요");
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(text);
+
+	UObject* hangulText = FObjectFactory::ConstructObject<UHangulText>();
+	hangulText = static_cast<UHangulText*>(hangulText);
+	UText* castHangulText = static_cast<UHangulText*>(hangulText);
+	castHangulText->SetTexture(L"Assets/Texture/NanumMyeongjo.png");
+	castHangulText->SetRowColumnCount(107, 107);
+	castHangulText->SetText(L"안녕하세요");
+	//SetText전에 RowColumn 반드시 설정
+	GUObjectArray.push_back(hangulText);
 	
 	//테스트용 파티클
 	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
