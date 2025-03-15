@@ -70,13 +70,6 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		selectedMode = CM_TRANSLATION;
 		player->SetMode(CM_TRANSLATION); // 현재 모드를 TRANSLATION 으로 변경
-
-		//propPanel->SetMode(CM_TRANSLATION);
-
-		//if (PrimaryGizmo)
-		//{
-		//	PrimaryGizmo->SetGizmoType(EGizmoType::Translation);
-		//}
 	}
 	
 	ImGui::SameLine();
@@ -85,10 +78,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		selectedMode = CM_ROTATION;
 		player->SetMode(CM_ROTATION);
-		//if (PrimaryGizmo)
-		//{
-		//	PrimaryGizmo->SetGizmoType(EGizmoType::Rotation);
-		//}
+
 	}
 	
 	ImGui::SameLine();
@@ -105,12 +95,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;
 	}
-	/// Toggle Control Panel
-	//if (ImGui::Button(ICON_MONITOR))
-	//{
-	//	Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
-	//}
-
+	
 	ImGui::PopFont();
 
 	ImGui::Separator();
