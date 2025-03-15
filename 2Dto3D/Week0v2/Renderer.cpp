@@ -6,12 +6,17 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
     CreateTextureShader();
     CreateConstantBuffer();
     CreateLightingBuffer();
+    CreateLitUnlitBuffer();
+    UpdateLitUnlitConstantBuffer(1);
 }
 
 void FRenderer::Release() {
     ReleaseShader();
     ReleaseTextureShader();
     if (ConstantBuffer) ConstantBuffer->Release();
+    if (LightingBuffer) LightingBuffer->Release();
+    if (NormalConstantBuffer) NormalConstantBuffer->Release();
+    if (LitUnlitBuffer) LitUnlitBuffer->Release();
 
 }
 
@@ -78,9 +83,9 @@ void FRenderer::PrepareShader()
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
-        //Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &LightingBuffer);
         Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &LightingBuffer);
         Graphics->DeviceContext->VSSetConstantBuffers(2, 1, &NormalConstantBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(3, 1, &LitUnlitBuffer);
 
     }
 }
@@ -121,6 +126,19 @@ void FRenderer::SetPixelShader(const FWString filename, FString funcname, FStrin
     Graphics->Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &PixelShader);
 
     pixelshaderCSO->Release();
+}
+void FRenderer::ChangeViewMode(EViewModeIndex evi)
+{
+    switch (evi)
+    {
+    case EViewModeIndex::VMI_Lit:
+        UpdateLitUnlitConstantBuffer(1);
+        break;
+    case EViewModeIndex::VMI_Wireframe:
+    case EViewModeIndex::VMI_Unlit:
+        UpdateLitUnlitConstantBuffer(0);
+        break;
+    }
 }
 void FRenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
     UINT offset = 0;
@@ -281,6 +299,16 @@ void FRenderer::CreateLightingBuffer()
 
 }
 
+void FRenderer::CreateLitUnlitBuffer()
+{
+    D3D11_BUFFER_DESC constantbufferdesc = {};
+    constantbufferdesc.ByteWidth = sizeof(FLitUnlitConstants);
+    constantbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
+    constantbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &LitUnlitBuffer);
+}
+
 void FRenderer::ReleaseConstantBuffer()
 {
     if (ConstantBuffer)
@@ -352,6 +380,18 @@ void FRenderer::UpdateNormalConstantBuffer(FMatrix _Model)
         }
         Graphics->DeviceContext->Unmap(NormalConstantBuffer, 0); // GPU 가 다시 사용가능하게 만들기. 
 
+    }
+}
+void FRenderer::UpdateLitUnlitConstantBuffer(int isLit)
+{
+    if (LitUnlitBuffer) {
+        D3D11_MAPPED_SUBRESOURCE constantbufferMSR; // GPU 의 메모리 주소 매핑
+        Graphics->DeviceContext->Map(LitUnlitBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
+        FLitUnlitConstants* constants = (FLitUnlitConstants*)constantbufferMSR.pData; //GPU 메모리 직접 접근
+        {
+            constants->isLit = isLit;
+        }
+        Graphics->DeviceContext->Unmap(LitUnlitBuffer, 0);
     }
 }
 

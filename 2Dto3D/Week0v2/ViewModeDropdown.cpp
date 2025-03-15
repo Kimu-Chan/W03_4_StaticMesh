@@ -32,6 +32,7 @@ void ViewModeDropdown::Draw(UWorld* world)
                 {
                     currentViewMode = (EViewModeIndex)i;
                     FEngineLoop::graphicDevice.ChangeRasterizer(currentViewMode);
+                    FEngineLoop::renderer.ChangeViewMode(currentViewMode);
                 }
 
                 if (isSelected)
