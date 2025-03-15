@@ -17,6 +17,8 @@ void UGizmoArrowComponent::Initialize()
 void UGizmoArrowComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
+	UE_LOG(LogLevel::Warning, "Rotation %f %f %f", GetWorldRotation().x, GetWorldRotation().y, GetWorldRotation().z);
+	//UE_LOG(LogLevel::Warning, "Rotation %f %f %f", GetWorld()->GetPickingObj()->GetWorldRotation().x, RelativeRotation.y, RelativeRotation.z);
 }
 
 void UGizmoArrowComponent::Release()

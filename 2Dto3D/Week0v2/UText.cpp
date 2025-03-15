@@ -30,7 +30,7 @@ void UText::Update(double deltaTime)
 	if (vtmp.z < 0)
 		degree *= -1;
 	RelativeRotation.z = degree + 90;
-	UE_LOG(LogLevel::Error, "%f", degree);
+	//UE_LOG(LogLevel::Error, "%f", degree);
 }
 
 void UText::Release()

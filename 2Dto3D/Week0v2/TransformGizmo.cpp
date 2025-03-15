@@ -111,8 +111,11 @@ void UTransformGizmo::Update(double deltaTime)
 	Super::Update(deltaTime);
 	if (GetWorld()->GetPickingObj()) {
 		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
-	if(GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+	if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+	{
+		
 			SetRotation(GetWorld()->GetPickingObj()->GetWorldRotation());
+	}
 	else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
 			SetRotation(FVector(0.0f,0.0f,0.0f));
 	}
