@@ -1,5 +1,6 @@
 #include "UText.h"
-
+#include "CameraComponent.h"
+#include "JungleMath.h"
 UText::UText() : UBillboardComponent("Quad")
 {
 }
@@ -18,6 +19,18 @@ void UText::Update(double deltaTime)
 {
 
 	Super::Update(deltaTime);
+
+	FVector newCamera = GetWorld()->GetCamera()->GetForwardVector();
+	newCamera.z = 0;
+	newCamera = newCamera.Normalize();
+	float tmp = FVector(1.0f, 0.0f, 0.0f).Dot(newCamera);
+	float rad = acosf(tmp);
+	float degree = JungleMath::RadToDeg(rad);
+	FVector vtmp = FVector(1.0f, 0.0f, 0.0f).Cross(GetWorld()->GetCamera()->GetForwardVector());
+	if (vtmp.z < 0)
+		degree *= -1;
+	RelativeRotation.z = degree + 90;
+	UE_LOG(LogLevel::Error, "%f", degree);
 }
 
 void UText::Release()
@@ -52,6 +65,79 @@ void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
 	RowCount = _cellsPerRow;
 	ColumnCount = _cellsPerColumn;
 }
+int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
+{
+	int nIntersections = 0;
+	
+	TArray<FVertexSimple> verArr;
+	FMatrix CameraView = GetEngine().View;
+
+	CameraView.M[0][3] = 0.0f;
+	CameraView.M[1][3] = 0.0f;
+	CameraView.M[2][3] = 0.0f;
+
+
+	CameraView.M[3][0] = 0.0f;
+	CameraView.M[3][1] = 0.0f;
+	CameraView.M[3][2] = 0.0f;
+	CameraView.M[3][3] = 1.0f;
+
+
+	CameraView.M[0][2] = -CameraView.M[0][2];
+	CameraView.M[1][2] = -CameraView.M[1][2];
+	CameraView.M[2][2] = -CameraView.M[2][2];
+	FMatrix LookAtCamera = FMatrix::Transpose(CameraView);
+
+	for (auto it : vertexTextureArr)
+	{
+		FVector vtmp = FVector(it.x, it.y, it.z);
+		FMatrix::TransformVector(vtmp,LookAtCamera);
+		FVertexSimple tmp ;
+		tmp.x = vtmp.x ;tmp.y = vtmp.y; tmp.z = vtmp.z;
+		//UE_LOG(LogLevel::Warning, "Text x : %f y: %f z : %f", tmp.x, tmp.y, tmp.z);
+		verArr.push_back(tmp);
+	}
+	FVertexSimple* vertices = verArr.data();
+	int vCount = verArr.size();
+	UINT* indices = nullptr;
+	int iCount = 0;
+
+	if (!vertices) return 0;
+	BYTE* pbPositions = reinterpret_cast<BYTE*>(vertices);
+
+	int nPrimitives = (!indices) ? (vCount / 3) : (iCount / 3);
+	float fNearHitDistance = FLT_MAX;
+	for (int i = 0; i < nPrimitives; i++) {
+		int idx0, idx1, idx2;
+		if (!indices) {
+			idx0 = i * 3;
+			idx1 = i * 3 + 1;
+			idx2 = i * 3 + 2;
+		}
+		else {
+			idx0 = indices[i * 3];
+			idx2 = indices[i * 3 + 1];
+			idx1 = indices[i * 3 + 2];
+		}
+
+		// 각 삼각형의 버텍스 위치를 FVector로 불러옵니다.
+		uint32 stride = sizeof(FVertexSimple);
+		FVector v0 = *reinterpret_cast<FVector*>(pbPositions + idx0 * stride);
+		FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);
+		FVector v2 = *reinterpret_cast<FVector*>(pbPositions + idx2 * stride);
+
+		float fHitDistance;
+		if (IntersectRayTriangle(rayOrigin, rayDirection, v0, v1, v2, fHitDistance)) {
+			if (fHitDistance < fNearHitDistance) {
+				pfNearHitDistance = fNearHitDistance = fHitDistance;
+	UE_LOG(LogLevel::Error, "Primitives : %d", nPrimitives);
+			}
+			nIntersections++;
+		}
+
+	}
+	return nIntersections;
+}
 void UText::SetText(FWString _text)
 {
 	if (_text.empty())
@@ -59,7 +145,6 @@ void UText::SetText(FWString _text)
 		Console::GetInstance().AddLog(LogLevel::Warning, "Text is empty");
 	}
 
-	TArray<FVertexTexture> vertexTextureArr;
 	int textSize = _text.size();
 
 
@@ -107,7 +192,12 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightUP);
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
-
+		UE_LOG(LogLevel::Warning, "Left Up : %f, %f, %f", leftUP.x, leftUP.y, leftUP.z);
+		UE_LOG(LogLevel::Warning, "Right Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
+		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
+		UE_LOG(LogLevel::Warning, "Rigth Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
+		UE_LOG(LogLevel::Warning, "right Down : %f, %f, %f", rightDown.x, rightDown.y, rightDown.z);
+		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
 
@@ -176,6 +266,10 @@ void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,
 		UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
 	}
 	vertexTextBuffer = vertexBuffer;
+
+	//FEngineLoop::resourceMgr.RegisterMesh(&FEngineLoop::renderer, "JungleText", _vertex, _vertex.size() * sizeof(FVertexTexture),
+	//	nullptr, 0);
+
 }
 
 

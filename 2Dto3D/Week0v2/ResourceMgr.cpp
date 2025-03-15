@@ -290,3 +290,22 @@ std::shared_ptr<FStaticMesh> FResourceMgr::GetMesh(const FString& name) const
     auto it = meshMap.find(name);
     return (it != meshMap.end()) ? it->second : nullptr;
 }
+
+void FResourceMgr::RegisterMesh(FRenderer* renderer, const std::string& name, TArray<FVertexTexture>& vertices, uint32 vCount, TArray<uint32>& indices, uint32 iCount)
+{
+	INT numVertices = vCount;
+	UINT numIndices = iCount;
+
+	FVertexSimple* vertexArray = new FVertexSimple[vertices.size()];
+	std::memcpy(vertexArray, vertices.data(), vertices.size() * sizeof(FVertexSimple));
+
+	UINT* indexArray = nullptr;
+	if (!indices.empty()) {
+		indexArray = new UINT[indices.size()];
+		std::memcpy(indexArray, indices.data(), indices.size() * sizeof(UINT));
+	}
+
+	ID3D11Buffer* vertexBuffer = renderer->CreateVertexTextureBuffer(vertices.data(), vCount * sizeof(FVertexTexture));
+	ID3D11Buffer* indexBuffer = (!indices.empty() && iCount > 0) ? renderer->CreateIndexBuffer(indices, iCount * sizeof(UINT)) : nullptr;
+	meshMap[name] = std::make_shared<FStaticMesh>(vertexBuffer, vCount, vertexArray, indexBuffer, iCount, indexArray);
+}

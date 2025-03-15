@@ -12,19 +12,21 @@ public:
 	virtual void		Render()					override;
 	void SetText(FWString _text);
 	void SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn);
+	virtual int			CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance);
+
 private:
 
 	ID3D11Buffer* vertexTextBuffer;
+	TArray<FVertexTexture> vertexTextureArr;
 	UINT numTextVertices;
 
 	int RowCount;
 	int ColumnCount;
 
-	float quadWidth = 2;
-	float quadHeight = 2;
+	float quadWidth = 1.0f;
+	float quadHeight = 1.0f;
 
 	void setStartUV(char alphabet, float& outStartU, float& outStartV);
 	void CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth);
-
 };
 

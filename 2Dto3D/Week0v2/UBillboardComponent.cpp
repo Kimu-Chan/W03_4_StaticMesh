@@ -67,6 +67,7 @@ void UBillboardComponent::SetTexture(FWString _fileName)
 	m_texture.init(_fileName);
 }
 
+
 FMatrix UBillboardComponent::CreateBillboardMatrix()
 {
 	FMatrix CameraView = GetEngine().View;
