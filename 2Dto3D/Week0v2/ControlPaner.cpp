@@ -5,12 +5,13 @@
 #include "ImGuiManager.h"
 #include "SceneMgr.h"
 #include "Player.h"
-
+#include "EditorViewportClient.h"
 #include "EditorWindow.h"
 // #include "ImGUI\imgui.h"
 #include "IWindowToggleable.h"
 //#include "Font\IconDefs.h"
 //#include "Font/RawFonts.h"
+extern FEngineLoop GEngineLoop;
 ControlPanel::ControlPanel()
 {
 	
@@ -134,11 +135,15 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->LoadData(LoadData);
 	}
 	ImGui::Separator();
+
 	float sp = UPrimitiveBatch::GetInstance().GetSpacing();
-
 	ImGui::SliderFloat("Grid Spacing", &sp, 1.0f, 300.0f);
-
 	UPrimitiveBatch::GetInstance().SetSpacing(sp);
+
+	sp = GEngineLoop.GetViewportClient()->GetCameraSpeedScalar();
+	ImGui::SliderFloat("Camera Speed", &sp, 0.198f, 192.0f);
+	GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(sp);
+
 	ImGui::Separator();
 
 	ImGui::Text("Orthogonal");

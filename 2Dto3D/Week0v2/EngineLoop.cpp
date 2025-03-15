@@ -6,6 +6,7 @@
 #include "ControlPaner.h"
 #include "PropertyPanel.h"
 #include "Outliner.h"
+#include "EditorViewportClient.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -15,13 +16,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		return true;
 	}
+	int zDelta = 0;
 	switch (message)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	case WM_SIZE:
-
 		if (wParam != SIZE_MINIMIZED) {
 			//UGraphicsDevice 객체의 OnResize 함수 호출
 			if (FEngineLoop::graphicDevice.SwapChain) {
@@ -32,6 +33,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ControlPanel::GetInstance().OnResize(hWnd);
 		PropertyPanel::GetInstance().OnResize(hWnd);
 		Outliner::GetInstance().OnResize(hWnd);
+		break;
+	case WM_MOUSEWHEEL:
+		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // 휠 회전 값 (+120 / -120)
+		if (zDelta > 0) {
+			UE_LOG(LogLevel::Warning, "Wheel Up");
+
+		}
+		else if (zDelta < 0) {
+			UE_LOG(LogLevel::Warning, "Wheel Down");
+
+		}
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -64,11 +76,18 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	graphicDevice.Initialize(hWnd);
 	renderer.Initialize(&graphicDevice);
 
+	
+	
 	UIMgr = new UImGuiManager;
 	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
+	
 	resourceMgr.Initialize(&renderer);
+	
+	viewportClient = std::make_shared<FEditorViewportClient>();
+
 	GWorld = new UWorld;
 	GWorld->Initialize();
+
 	return 0;
 }
 

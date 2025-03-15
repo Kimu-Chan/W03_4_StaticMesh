@@ -130,7 +130,6 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 		if (IntersectRayTriangle(rayOrigin, rayDirection, v0, v1, v2, fHitDistance)) {
 			if (fHitDistance < fNearHitDistance) {
 				pfNearHitDistance = fNearHitDistance = fHitDistance;
-	UE_LOG(LogLevel::Error, "Primitives : %d", nPrimitives);
 			}
 			nIntersections++;
 		}
@@ -192,12 +191,7 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightUP);
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
-		UE_LOG(LogLevel::Warning, "Left Up : %f, %f, %f", leftUP.x, leftUP.y, leftUP.z);
-		UE_LOG(LogLevel::Warning, "Right Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
-		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
-		UE_LOG(LogLevel::Warning, "Rigth Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
-		UE_LOG(LogLevel::Warning, "right Down : %f, %f, %f", rightDown.x, rightDown.y, rightDown.z);
-		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
+
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
 

@@ -11,9 +11,9 @@ public:
 	UCameraComponent();
 	~UCameraComponent();
 
-	virtual void		Initialize()	override;
+	virtual void		Initialize()					override;
 	virtual void		Update(double deltaTime)		override;
-	virtual void		Release()					override;
+	virtual void		Release()						override;
 
 	void				Input();
 	void				MoveForward(float _Value);
@@ -21,10 +21,9 @@ public:
 	void				MoveUp(float _Value);
 	void				RotateYaw(float _Value);
 	void				RotatePitch(float _Value);
-
 private:
-	float m_mouseSpeed = 0.25f;
-	POINT m_LastMousePos;
+	float mouseSpeed = 0.25f;
+	POINT lastMousePos;
 	bool bRightMouseDown = false;
 	FVector zAxis;  // DirectX는 LH이므로 -z가 아니라 +z 사용
 	FVector xAxis;
@@ -33,6 +32,10 @@ private:
 public:
 	void SetFov(float _fov) { fov = _fov; }
 	float& GetFov() { return fov; }
+
+	void				SetMouseSpeed(float _Value) { mouseSpeed = _Value; }
+	float				GetMouseSpeed() { return  mouseSpeed; }
+
 
 };
 

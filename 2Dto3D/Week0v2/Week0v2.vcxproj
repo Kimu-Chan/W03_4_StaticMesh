@@ -128,6 +128,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ActorComponent.cpp" />
+    <ClCompile Include="EditorViewportClient.cpp" />
+    <ClCompile Include="GameUserSettings.cpp" />
     <ClCompile Include="GizmoArrowComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -199,6 +201,8 @@
   <ItemGroup>
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Arrow.h" />
+    <ClInclude Include="EditorViewportClient.h" />
+    <ClInclude Include="GameUserSettings.h" />
     <ClInclude Include="GizmoArrowComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Console.h" />
