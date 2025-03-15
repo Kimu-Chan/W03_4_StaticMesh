@@ -21,13 +21,8 @@ public:
 	void End(const FMatrix& View, const FMatrix& Projection);
 	void AddBoxForCube(const FVector& center, const FVector4& color, const FMatrix& modelMatrix);
 	void AddBox(const FVector& minPoint, const FVector& maxPoint, const FVector4& color);
-	void AddBoxForSphere(const FVector& center, float radius, const FMatrix& modelMatrix, const FVector4& color);
-	bool IsUniformScale(const FMatrix& modelMatrix)
-	{
-		FVector scale = modelMatrix.GetScale();
-		return (fabs(scale.x - scale.y) < 1e-6f) &&
-			(fabs(scale.y - scale.z) < 1e-6f);
-	}
+	void AddBoxForSphere(const FVector& center,bool isUniform, float radius, const FMatrix& modelMatrix, const FVector4& color);
+	
 
 	void AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatri);
 	void AddWorldGizmo();

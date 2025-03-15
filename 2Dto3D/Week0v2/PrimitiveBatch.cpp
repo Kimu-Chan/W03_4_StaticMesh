@@ -131,15 +131,15 @@ void UPrimitiveBatch::AddBox(const FVector& minPoint, const FVector& maxPoint, c
     AddLine({ minPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, maxPoint.y, maxPoint.z }, color);
 }
 
-void UPrimitiveBatch::AddBoxForSphere(const FVector& center, float radius, const FMatrix& modelMatrix, const FVector4& color)
+void UPrimitiveBatch::AddBoxForSphere(const FVector& center,bool isUniform, float radius, const FMatrix& modelMatrix, const FVector4& color)
 {
     FVector minPoint, maxPoint;
-
-    if (IsUniformScale(modelMatrix))
+    float r = radius;
+    if (isUniform)
     {
         // 균일 스케일: 반지름 그대로 사용
-        minPoint = FVector(center.x - radius, center.y - radius, center.z - radius);
-        maxPoint = FVector(center.x + radius, center.y + radius, center.z + radius);
+        minPoint = FVector(center.x - r, center.y - r, center.z - r);
+        maxPoint = FVector(center.x + r, center.y + r, center.z + r);
     }
     else
     {
@@ -148,11 +148,11 @@ void UPrimitiveBatch::AddBoxForSphere(const FVector& center, float radius, const
             { -1, -1,  1 }, { 1, -1,  1 }, { -1,  1,  1 }, { 1,  1,  1 }
         };
 
-        minPoint = maxPoint = center  + FMatrix::TransformVector(localOffsets[0] * radius, modelMatrix);
+        minPoint = maxPoint = center  + FMatrix::TransformVector(localOffsets[0] * r, modelMatrix);
 
         for (int i = 1; i < 8; ++i)
         {
-            FVector transformed = center + FMatrix::TransformVector(localOffsets[i] * radius, modelMatrix);
+            FVector transformed = center + FMatrix::TransformVector(localOffsets[i] * r, modelMatrix);
 
             minPoint.x = (transformed.x < minPoint.x) ? transformed.x : minPoint.x;
             minPoint.y = (transformed.y < minPoint.y) ? transformed.y : minPoint.y;
