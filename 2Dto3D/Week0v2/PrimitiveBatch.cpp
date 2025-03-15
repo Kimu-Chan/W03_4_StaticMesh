@@ -83,30 +83,23 @@ void UPrimitiveBatch::End(const FMatrix& View, const FMatrix& Projection)
     FEngineLoop::renderer.RenderBatch(vertexBuffer, Vertices.size(), stride, offset);
 }
 
-void UPrimitiveBatch::AddBox(const FVector& center, const FVector4& color, const FMatrix& modelMatrix)
-{  
-    FVector half = {1,1,1};
+void UPrimitiveBatch::AddBoxForCube(const FVector& center, const FVector4& color, const FMatrix& modelMatrix)
+{
     FVector localVertices[8] = {
-        FVector(-half.x, -half.y, -half.z),
-        FVector(half.x, -half.y, -half.z),
-        FVector(half.x,  half.y, -half.z),
-        FVector(-half.x,  half.y, -half.z),
-        FVector(-half.x, -half.y,  half.z),
-        FVector(half.x, -half.y,  half.z),
-        FVector(half.x,  half.y,  half.z),
-        FVector(-half.x,  half.y,  half.z)
+        { -1, -1, -1 }, { 1, -1, -1 }, { 1, 1, -1 }, { -1, 1, -1 },
+        { -1, -1,  1 }, { 1, -1,  1 }, { 1, 1,  1 }, { -1, 1,  1 }
     };
 
-    // OBB의 월드 좌표 버텍스 계산
     FVector worldVertices[8];
-    for (int i = 0; i < 8; i++) {
-        worldVertices[i] = center + FMatrix::TransformVector(localVertices[i], modelMatrix);
-    }
+    worldVertices[0] = center + FMatrix::TransformVector(localVertices[0], modelMatrix);
 
-    // AABB의 최소, 최대값 계산 (삼항 연산자 사용)
-    FVector min = worldVertices[0];
-    FVector max = worldVertices[0];
-    for (int i = 1; i < 8; i++) {
+    FVector min = worldVertices[0], max = worldVertices[0];
+
+    // 첫 번째 값을 제외한 나머지 버텍스를 변환하고 min/max 계산
+    for (int i = 1; i < 8; ++i)
+    {
+        worldVertices[i] = center + FMatrix::TransformVector(localVertices[i], modelMatrix);
+
         min.x = (worldVertices[i].x < min.x) ? worldVertices[i].x : min.x;
         min.y = (worldVertices[i].y < min.y) ? worldVertices[i].y : min.y;
         min.z = (worldVertices[i].z < min.z) ? worldVertices[i].z : min.z;
@@ -116,38 +109,63 @@ void UPrimitiveBatch::AddBox(const FVector& center, const FVector4& color, const
         max.z = (worldVertices[i].z > max.z) ? worldVertices[i].z : max.z;
     }
 
-    // AABB의 8개 버텍스 구성
-    FVector aabbVertices[8] = {
-        FVector(min.x, min.y, min.z),
-        FVector(max.x, min.y, min.z),
-        FVector(max.x, max.y, min.z),
-        FVector(min.x, max.y, min.z),
-        FVector(min.x, min.y, max.z),
-        FVector(max.x, min.y, max.z),
-        FVector(max.x, max.y, max.z),
-        FVector(min.x, max.y, max.z)
-    };
-
-    // 밑면 에지: 0-1, 1-2, 2-3, 3-0
-    AddLine(aabbVertices[0], aabbVertices[1], color);
-    AddLine(aabbVertices[1], aabbVertices[2], color);
-    AddLine(aabbVertices[2], aabbVertices[3], color);
-    AddLine(aabbVertices[3], aabbVertices[0], color);
-
-    // 윗면 에지: 4-5, 5-6, 6-7, 7-4
-    AddLine(aabbVertices[4], aabbVertices[5], color);
-    AddLine(aabbVertices[5], aabbVertices[6], color);
-    AddLine(aabbVertices[6], aabbVertices[7], color);
-    AddLine(aabbVertices[7], aabbVertices[4], color);
-
-    // 측면 에지: 0-4, 1-5, 2-6, 3-7
-    AddLine(aabbVertices[0], aabbVertices[4], color);
-    AddLine(aabbVertices[1], aabbVertices[5], color);
-    AddLine(aabbVertices[2], aabbVertices[6], color);
-    AddLine(aabbVertices[3], aabbVertices[7], color);
-
+    AddBox(min, max, color);
 }
 
+void UPrimitiveBatch::AddBox(const FVector& minPoint, const FVector& maxPoint, const FVector4& color)
+{
+    // `FVector` 배열 없이 직접 `AddLine` 호출
+    AddLine({ minPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, minPoint.y, minPoint.z }, color);
+    AddLine({ maxPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, maxPoint.y, minPoint.z }, color);
+    AddLine({ maxPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, maxPoint.y, minPoint.z }, color);
+    AddLine({ minPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, minPoint.y, minPoint.z }, color);
+
+    AddLine({ minPoint.x, minPoint.y, maxPoint.z }, { maxPoint.x, minPoint.y, maxPoint.z }, color);
+    AddLine({ maxPoint.x, minPoint.y, maxPoint.z }, { maxPoint.x, maxPoint.y, maxPoint.z }, color);
+    AddLine({ maxPoint.x, maxPoint.y, maxPoint.z }, { minPoint.x, maxPoint.y, maxPoint.z }, color);
+    AddLine({ minPoint.x, maxPoint.y, maxPoint.z }, { minPoint.x, minPoint.y, maxPoint.z }, color);
+
+    AddLine({ minPoint.x, minPoint.y, minPoint.z }, { minPoint.x, minPoint.y, maxPoint.z }, color);
+    AddLine({ maxPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, minPoint.y, maxPoint.z }, color);
+    AddLine({ maxPoint.x, maxPoint.y, minPoint.z }, { maxPoint.x, maxPoint.y, maxPoint.z }, color);
+    AddLine({ minPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, maxPoint.y, maxPoint.z }, color);
+}
+
+void UPrimitiveBatch::AddBoxForSphere(const FVector& center, float radius, const FMatrix& modelMatrix, const FVector4& color)
+{
+    FVector minPoint, maxPoint;
+
+    if (IsUniformScale(modelMatrix))
+    {
+        // 균일 스케일: 반지름 그대로 사용
+        minPoint = FVector(center.x - radius, center.y - radius, center.z - radius);
+        maxPoint = FVector(center.x + radius, center.y + radius, center.z + radius);
+    }
+    else
+    {
+        FVector localOffsets[8] = {
+            { -1, -1, -1 }, { 1, -1, -1 }, { -1,  1, -1 }, { 1,  1, -1 },
+            { -1, -1,  1 }, { 1, -1,  1 }, { -1,  1,  1 }, { 1,  1,  1 }
+        };
+
+        minPoint = maxPoint = center  + FMatrix::TransformVector(localOffsets[0] * radius, modelMatrix);
+
+        for (int i = 1; i < 8; ++i)
+        {
+            FVector transformed = center + FMatrix::TransformVector(localOffsets[i] * radius, modelMatrix);
+
+            minPoint.x = (transformed.x < minPoint.x) ? transformed.x : minPoint.x;
+            minPoint.y = (transformed.y < minPoint.y) ? transformed.y : minPoint.y;
+            minPoint.z = (transformed.z < minPoint.z) ? transformed.z : minPoint.z;
+
+            maxPoint.x = (transformed.x > maxPoint.x) ? transformed.x : maxPoint.x;
+            maxPoint.y = (transformed.y > maxPoint.y) ? transformed.y : maxPoint.y;
+            maxPoint.z = (transformed.z > maxPoint.z) ? transformed.z : maxPoint.z;
+        }
+    }
+
+    AddBox(minPoint, maxPoint, color);
+}
 
 void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatrix)
 {

@@ -36,6 +36,6 @@ void UCubeComp::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	UPrimitiveBatch::GetInstance().AddBox(GetWorldLocation(), { 1,1,1,1 }, Model);
+	UPrimitiveBatch::GetInstance().AddBoxForCube(GetWorldLocation(), { 1,1,1,1 }, Model);
 	Super::Render();
 }

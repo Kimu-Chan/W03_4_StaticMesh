@@ -21,7 +21,7 @@ void ViewModeDropdown::Draw(UWorld* world)
 
     if (ImGui::Begin("View Mode"))
     {
-        const char* viewModeNames[] = { "Lit", "Unlit", "Wireframe", "Normals" };
+        const char* viewModeNames[] = { "Lit", "Unlit", "Wireframe"};
 
         if (ImGui::BeginCombo("##ViewModeCombo", viewModeNames[(int)currentViewMode]))
         {
