@@ -15,6 +15,7 @@ public:
 	void AddLine(const FVector& start, const FVector& end, const FVector4& color);
 	void AddGridLine(const FVector& start, const FVector& end, const FVector4& color);
 	void AddGrid(int gridSize);
+	void ClearGrid();
 	void Begin();
 	void SetSpacing(float spacing);
 	float GetSpacing() { return Spacing; }

@@ -16,11 +16,10 @@ ShowFlags& ShowFlags::GetInstance()
 	return instance;
 }
 
-
 void ShowFlags::Draw(UWorld* world)
 {
 	float controllWindowWidth = static_cast<float>(width) * 0.2f;
-	float controllWindowHeight = static_cast<float>(height) * 0.35f;
+	float controllWindowHeight = static_cast<float>(height) * 0.f;
 
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.45f;
 	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
@@ -31,7 +30,7 @@ void ShowFlags::Draw(UWorld* world)
 
 	if (ImGui::Begin("ShowFlags"))
 	{
-		const char* items[] = { "Item 1", "Item 2", "Item 3" };
+		const char* items[] = { "Grid", "AABB", "Primitves","BillBoardText"};
 		static bool selected[IM_ARRAYSIZE(items)] = { false, false, false };  // 각 항목의 체크 상태 저장
 
 		if (ImGui::BeginCombo("Select Items", "Select multiple"))
@@ -42,10 +41,25 @@ void ShowFlags::Draw(UWorld* world)
 			}
 			ImGui::EndCombo(); 
 		}
-
+		currentFlags = ConvertSelectionToFlags(selected);
 
 	}
 	ImGui::End(); // 윈도우 종료
+}
+uint64 ShowFlags::ConvertSelectionToFlags(const bool selected[])
+{
+	uint64 flags = static_cast<uint64>(EEngineShowFlags::None);
+
+	if (selected[0])
+		flags |= static_cast<uint64>(EEngineShowFlags::SF_Grid);
+	if (selected[1])
+		flags |= static_cast<uint64>(EEngineShowFlags::SF_AABB);
+	if (selected[2])
+		flags |= static_cast<uint64>(EEngineShowFlags::SF_Primitives);
+	if (selected[3])
+		flags |= static_cast<uint64>(EEngineShowFlags::SF_BillboardText);
+
+	return flags;
 }
 
 void ShowFlags::OnResize(HWND hWnd)

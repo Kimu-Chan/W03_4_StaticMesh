@@ -148,9 +148,12 @@ float a = 5;
 void FEngineLoop::Render()
 {
 	UPrimitiveBatch::GetInstance().Begin();
-	UPrimitiveBatch::GetInstance().AddGrid(50);
-	UPrimitiveBatch::GetInstance().AddWorldGizmo();
+	if(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Grid))
+		UPrimitiveBatch::GetInstance().AddGrid(50);
+	else
+		UPrimitiveBatch::GetInstance().ClearGrid();
 
+	UPrimitiveBatch::GetInstance().AddWorldGizmo();
 	GWorld->Render();
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();

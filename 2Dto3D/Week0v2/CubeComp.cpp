@@ -1,6 +1,7 @@
 #include "CubeComp.h"
 #include "JungleMath.h"
 #include "World.h"
+#include "ShowFlags.h"
 #include "PrimitiveBatch.h"
 UCubeComp::UCubeComp() : UPrimitiveComponent("Cube")
 {
@@ -36,6 +37,8 @@ void UCubeComp::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	UPrimitiveBatch::GetInstance().AddBoxForCube(GetWorldLocation(), { 1,1,1,1 }, Model);
-	Super::Render();
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB))
+		UPrimitiveBatch::GetInstance().AddBoxForCube(GetWorldLocation(), { 1,1,1,1 }, Model);
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
+		Super::Render();
 }

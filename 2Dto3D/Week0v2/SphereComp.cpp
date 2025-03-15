@@ -1,6 +1,8 @@
 #include "SphereComp.h"
 #include "JungleMath.h"
 #include "World.h"
+#include "ShowFlags.h"
+
 USphereComp::USphereComp() : UPrimitiveComponent("Sphere")
 {
 }
@@ -39,8 +41,12 @@ void USphereComp::Render()
 	float r = 1;
 	bool isUniform = (fabs(scale.x - scale.y) < 1e-6f) && (fabs(scale.y - scale.z) < 1e-6f);
 	r *= isUniform ? scale.x : 1;
-	UPrimitiveBatch::GetInstance().AddBoxForSphere(GetWorldLocation(), isUniform,r, Model,{ 1,1,1,1 });
 
-	UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 3, 5, 140, { 1,1,1,1 }, Model);
-	Super::Render();
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB)) {
+		UPrimitiveBatch::GetInstance().AddBoxForSphere(GetWorldLocation(), isUniform,r, Model,{ 1,1,1,1 });
+		UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 3, 5, 140, { 1,1,1,1 }, Model);
+	}
+
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
+		Super::Render();
 }

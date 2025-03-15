@@ -53,6 +53,11 @@ void UPrimitiveBatch::AddGrid(int gridSize)
         PreSpacing = Spacing;
     }
 }
+void UPrimitiveBatch::ClearGrid()
+{
+    PreSpacing = 0;
+    GridVertices.clear();
+}
 void UPrimitiveBatch::SetSpacing(float spacing)
 {
     Spacing = spacing;
