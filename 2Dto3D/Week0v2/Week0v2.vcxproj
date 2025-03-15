@@ -147,6 +147,7 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="JungleMath.cpp" />
+    <ClCompile Include="ShowFlags.cpp" />
     <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
     <ClCompile Include="GraphicDevice.cpp" />
@@ -200,6 +201,7 @@
   <ItemGroup>
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Arrow.h" />
+    <ClInclude Include="CoreTypes.h" />
     <ClInclude Include="EngineBaseTypes.h" />
     <ClInclude Include="GizmoArrowComponent.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -228,6 +230,8 @@
     <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Quat.h" />
     <ClInclude Include="ShowFlags.h" />
     <ClInclude Include="TransformGizmo.h" />
     <ClInclude Include="NameTypes.h" />
@@ -254,6 +258,8 @@
     <ClInclude Include="UParticleSubUVComp.h" />
     <ClInclude Include="UText.h" />
     <ClInclude Include="UTexture.h" />
+    <ClInclude Include="Vector.h" />
+    <ClInclude Include="Vector4.h" />
     <ClInclude Include="ViewModeDropdown.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

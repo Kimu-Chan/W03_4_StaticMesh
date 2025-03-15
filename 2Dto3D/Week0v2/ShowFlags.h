@@ -16,7 +16,7 @@ public:
 
 	static ShowFlags& GetInstance();
 
-	void Draw(UWorld& world);
+	void Draw(UWorld* world);
 	void OnResize(HWND hWnd);
 	void Toggle() override {
 		if (bWasOpen) {

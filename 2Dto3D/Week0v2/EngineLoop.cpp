@@ -6,6 +6,7 @@
 #include "ControlPaner.h"
 #include "PropertyPanel.h"
 #include "ViewModeDropdown.h"
+#include "ShowFlags.h"
 #include "Outliner.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -34,6 +35,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PropertyPanel::GetInstance().OnResize(hWnd);
 		Outliner::GetInstance().OnResize(hWnd);
 		ViewModeDropdown::GetInstance().OnResize(hWnd);
+		ShowFlags::GetInstance().OnResize(hWnd);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -127,6 +129,7 @@ void FEngineLoop::Tick()
 		ControlPanel::GetInstance().Draw(GetWorld(),elapsedTime);
 		PropertyPanel::GetInstance().Draw(GetWorld());
 		Outliner::GetInstance().Draw(GetWorld());
+		ShowFlags::GetInstance().Draw(GetWorld());
 		ViewModeDropdown::GetInstance().Draw(GetWorld());
 		UIMgr->EndFrame();
 
