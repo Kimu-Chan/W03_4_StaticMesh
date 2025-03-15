@@ -177,10 +177,7 @@
     <ClCompile Include="UText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ShowFlags.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewModeDropdown.cpp">
+    <ClCompile Include="UHangulText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,28 +354,7 @@
     <ClInclude Include="UText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ShowFlags.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBaseTypes.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewModeDropdown.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreTypes.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Quat.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
+    <ClInclude Include="UHangulText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

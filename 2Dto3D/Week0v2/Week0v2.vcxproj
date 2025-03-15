@@ -166,6 +166,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="UBillboardComponent.cpp" />
     <ClCompile Include="UClass.cpp" />
+    <ClCompile Include="UHangulText.cpp" />
     <ClCompile Include="UParticleSubUVComp.cpp" />
     <ClCompile Include="UText.cpp" />
     <ClCompile Include="UTexture.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="UBillboardComponent.h" />
     <ClInclude Include="UClass.h" />
+    <ClInclude Include="UHangulText.h" />
     <ClInclude Include="UParticleSubUVComp.h" />
     <ClInclude Include="UText.h" />
     <ClInclude Include="UTexture.h" />

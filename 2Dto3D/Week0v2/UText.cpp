@@ -192,17 +192,59 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightUP);
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
-		UE_LOG(LogLevel::Warning, "Left Up : %f, %f, %f", leftUP.x, leftUP.y, leftUP.z);
-		UE_LOG(LogLevel::Warning, "Right Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
-		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
-		UE_LOG(LogLevel::Warning, "Rigth Up : %f, %f, %f", rightUP.x, rightUP.y, rightUP.z);
-		UE_LOG(LogLevel::Warning, "right Down : %f, %f, %f", rightDown.x, rightDown.y, rightDown.z);
-		UE_LOG(LogLevel::Warning, "Left Down : %f, %f, %f", leftDown.x, leftDown.y, leftDown.z);
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
 
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
 }
+void UText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
+{
+	//´ë¹®ÀÚ¸¸ ¹Þ´ÂÁß
+	int StartU = 0;
+	int StartV = 0;
+	int offset = -1;
+
+	if (hangul == L' ') {
+		outStartU = 0;  // Space´Â Æ¯º°È÷ UV ÁÂÇ¥¸¦ (0,0)À¸·Î ¼³Á¤
+		outStartV = 0;
+		offset = 0;
+		return;
+	}
+	else if (hangul >= L'A' && hangul <= L'Z') {
+
+		StartU = 11;
+		StartV = 0;
+		offset = hangul - L'A'; // ´ë¹®ÀÚ À§Ä¡
+	}
+	else if (hangul >= L'a' && hangul <= L'z') {
+		StartU = 37;
+		StartV = 0;
+		offset = (hangul - L'a'); // ¼Ò¹®ÀÚ´Â ´ë¹®ÀÚ ´ÙÀ½ À§Ä¡
+	}
+	else if (hangul >= L'0' && hangul <= L'9') {
+		StartU = 1;
+		StartV = 0;
+		offset = (hangul - L'0'); // ¼ýÀÚ´Â ¼Ò¹®ÀÚ ´ÙÀ½ À§Ä¡
+	}
+	else if (hangul >= L'°¡' && hangul <= L'ÆR')
+	{
+		StartU = 63;
+		StartV = 0;
+		offset = hangul - L'°¡'; // ´ë¹®ÀÚ À§Ä¡
+	}
+
+	if (offset == -1)
+	{
+		Console::GetInstance().AddLog(LogLevel::Warning, "Text Error");
+	}
+
+	int offsetV = (offset + StartU) / ColumnCount;
+	int offsetU = (offset + StartU) % ColumnCount;
+
+	outStartU = offsetU;
+	outStartV = StartV + offsetV;
+}
+
 
 void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 {
@@ -210,6 +252,7 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 	int StartU=0;
 	int StartV=0;
 	int offset = -1;
+
 
 	if (alphabet == ' ') {
 		outStartU = 0;  // Space´Â Æ¯º°È÷ UV ÁÂÇ¥¸¦ (0,0)À¸·Î ¼³Á¤
@@ -246,6 +289,7 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 	outStartV = StartV + offsetV;
 
 }
+
 
 void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth)
 {
