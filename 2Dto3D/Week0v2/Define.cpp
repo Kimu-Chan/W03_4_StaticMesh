@@ -63,16 +63,6 @@ const float* FMatrix::operator[](int row) const
     return M[row];
 }
 
-FVector FMatrix::GetScale() const
-{
-    return FVector(
-        sqrt(M[0][0] * M[0][0] + M[0][1] * M[0][1] + M[0][2] * M[0][2]), // X축 벡터 길이
-        sqrt(M[1][0] * M[1][0] + M[1][1] * M[1][1] + M[1][2] * M[1][2]), // Y축 벡터 길이
-        sqrt(M[2][0] * M[2][0] + M[2][1] * M[2][1] + M[2][2] * M[2][2])  // Z축 벡터 길이
-    );
-}
-
-
 // 전치 행렬
 FMatrix FMatrix::Transpose(const FMatrix& Mat) {
     FMatrix Result;

@@ -15,8 +15,7 @@ struct FMatrix
 	FMatrix operator/(float Scalar) const;
 	float* operator[](int row);
 	const float* operator[](int row) const;
-	FVector GetScale() const;
-
+	
 	// 유틸리티 함수
 	static FMatrix Transpose(const FMatrix& Mat);
 	static float Determinant(const FMatrix& Mat);

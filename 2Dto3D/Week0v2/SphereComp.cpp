@@ -35,7 +35,7 @@ void USphereComp::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	FVector scale =GetWorldScale();
+	FVector scale = GetWorldScale();
 	float r = 1;
 	bool isUniform = (fabs(scale.x - scale.y) < 1e-6f) && (fabs(scale.y - scale.z) < 1e-6f);
 	r *= isUniform ? scale.x : 1;
