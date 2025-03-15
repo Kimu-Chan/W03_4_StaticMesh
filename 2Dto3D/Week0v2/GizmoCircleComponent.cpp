@@ -153,7 +153,9 @@ void UGizmoCircleComponent::Render()
     else
         FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
+    FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.RasterizerStateSOLID); // fill solid로 렌더링.
     Super::Render();
+    FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.GetCurrentRasterizer());
 
 #pragma region GizmoDepth
     ID3D11DepthStencilState* currentState = nullptr;

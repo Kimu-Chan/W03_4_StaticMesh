@@ -34,7 +34,6 @@ void UGizmoArrowComponent::Render()
 		depthStencilDesc.DepthEnable = FALSE;  // 깊이 테스트 유지
 		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;  // 깊이 버퍼에 쓰지 않음
 		depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;  // 깊이 비교를 항상 통과
-
 		HRESULT hr = FEngineLoop::graphicDevice.Device->CreateDepthStencilState(&depthStencilDesc, &gizmoDepthState);
 		if (FAILED(hr))
 		{
@@ -53,13 +52,17 @@ void UGizmoArrowComponent::Render()
 
 	// 최종 MVP 행렬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
+	
+	
 	if (this == GetWorld()->GetPickingGizmo()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
+	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.RasterizerStateSOLID); // fill solid로 렌더링.
 	Super::Render();
+	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.GetCurrentRasterizer()); // 이전 레스터라이저 재설정.
 
 #pragma region GizmoDepth
 	ID3D11DepthStencilState* currentState = nullptr;
