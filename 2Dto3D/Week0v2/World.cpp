@@ -52,7 +52,7 @@ void UWorld::CreateBaseObject()
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
 	castText->SetRowColumnCount(106, 106);
-	castText->SetText(L"Jungle HELLOW 1234 안 녕 하 세 요");
+	castText->SetText(L"Jungle HELLOW 1234 안녕하세요");
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(text);
 

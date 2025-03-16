@@ -71,6 +71,8 @@ void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
 
 int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
+	/*
+	
 	int nIntersections = 0;
 	
 	TArray<FVertexSimple> verArr;
@@ -141,6 +143,15 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 
 	}
 	return nIntersections;
+	*/
+	
+	for (int i = 0; i < vertexTextureArr.size(); i++)
+	{
+		quad.push_back(FVector(vertexTextureArr[i].x,
+			vertexTextureArr[i].y, vertexTextureArr[i].z));
+	}
+
+	return CheckPickingOnNDC(quad);
 }
 
 
@@ -200,6 +211,12 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(leftDown);
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
+
+	float lastX = -1.0f + quadSize* _text.size();
+	quad.push_back(FVector(-1.0f,1.0f,0.0f));
+	quad.push_back(FVector(-1.0f,-1.0f,0.0f));
+	quad.push_back(FVector(lastX,1.0f,0.0f));
+	quad.push_back(FVector(lastX,-1.0f,0.0f));
 
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
 }

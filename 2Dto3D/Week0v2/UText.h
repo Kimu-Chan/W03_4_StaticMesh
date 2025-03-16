@@ -20,11 +20,15 @@ protected:
 	TArray<FVertexTexture> vertexTextureArr;
 	UINT numTextVertices;
 
+	TArray<FVector> quad;
+
+	const int quadSize = 2;
+
 	int RowCount;
 	int ColumnCount;
 
-	float quadWidth = 1.0f;
-	float quadHeight = 1.0f;
+	float quadWidth = 2.0f;
+	float quadHeight = 2.0f;
 
 	void setStartUV(char alphabet, float& outStartU, float& outStartV);
 	void setStartUV(wchar_t hangul, float& outStartU, float& outStartV);

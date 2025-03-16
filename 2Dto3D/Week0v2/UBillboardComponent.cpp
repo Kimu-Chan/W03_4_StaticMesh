@@ -107,7 +107,14 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
 	return Super::CheckRayIntersection(pickRayOrigin, _rayDirection, pfNearHitDistance);
 	*/
-	return CheckPickingOnNDC();
+	
+	TArray<FVector> quad;
+	for (int i = 0; i < 4; i++)
+	{
+		quad.push_back(FVector(quadTextureVertices[i].x, 
+			quadTextureVertices[i].y, quadTextureVertices[i].z));
+	}
+	return CheckPickingOnNDC(quad);
 
 }
 
@@ -162,7 +169,7 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	}
 }
 
-bool UBillboardComponent::CheckPickingOnNDC()
+bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad)
 {
 	bool result = false;
 	POINT mousePos;
@@ -188,19 +195,17 @@ bool UBillboardComponent::CheckPickingOnNDC()
 	FMatrix P = projectionMatrix;
 	FMatrix MVP = M * V * P;
 
-	FVector4 transformedVerts[4];
-	//TODO 하드코딩
-	for (int i = 0; i < 4; i++)
+	TArray<FVector4> transformedVerts;
+	for (int i = 0; i < checkQuad.size(); i++)
 	{
-		FVector4 v = FVector4(quadTextureVertices[i].x, quadTextureVertices[i].y, quadTextureVertices[i].z, 1.0f);
+		FVector4 v = FVector4(checkQuad[i].x, checkQuad[i].y, checkQuad[i].z, 1.0f);
 		FVector4 clipPos = FMatrix::TransformVector(v, MVP);
 		
 		if (clipPos.a != 0)
-			transformedVerts[i] = clipPos / clipPos.a;
+			transformedVerts.push_back((clipPos / clipPos.a));
 		else
-			transformedVerts[i] = clipPos;
+			transformedVerts.push_back(clipPos);
 	}
-	float yCorrection = 1.0f / transformedVerts[0].a;
 	float minX = min(min(transformedVerts[0].x, transformedVerts[1].x), min(transformedVerts[2].x, transformedVerts[3].x));
 	float maxX = max(max(transformedVerts[0].x, transformedVerts[1].x), max(transformedVerts[2].x, transformedVerts[3].x));
 	float minY = min(min(transformedVerts[0].y, transformedVerts[1].y), min(transformedVerts[2].y, transformedVerts[3].y));

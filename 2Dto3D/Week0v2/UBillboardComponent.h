@@ -27,9 +27,9 @@ protected:
 	UINT numVertices;
 	UINT numIndices;
 
+	bool CheckPickingOnNDC(const TArray<FVector>& checkQuad);
 private:
 	void CreateQuadTextureVertexBuffer();
-	bool CheckPickingOnNDC();
 
 
 };
