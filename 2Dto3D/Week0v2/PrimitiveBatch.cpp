@@ -5,6 +5,7 @@ extern FEngineLoop GEngineLoop;
 
 UPrimitiveBatch::UPrimitiveBatch()
 {
+
 }
 
 UPrimitiveBatch::~UPrimitiveBatch()

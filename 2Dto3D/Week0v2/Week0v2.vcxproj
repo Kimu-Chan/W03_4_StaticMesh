@@ -149,6 +149,7 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="JungleMath.cpp" />
+    <ClCompile Include="ShowFlags.cpp" />
     <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
     <ClCompile Include="GraphicDevice.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="UParticleSubUVComp.cpp" />
     <ClCompile Include="UText.cpp" />
     <ClCompile Include="UTexture.cpp" />
+    <ClCompile Include="ViewModeDropdown.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +233,7 @@
     <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
+    <ClInclude Include="ShowFlags.h" />
     <ClInclude Include="TransformGizmo.h" />
     <ClInclude Include="NameTypes.h" />
     <ClInclude Include="ObjectFactory.h" />
@@ -257,6 +260,7 @@
     <ClInclude Include="UParticleSubUVComp.h" />
     <ClInclude Include="UText.h" />
     <ClInclude Include="UTexture.h" />
+    <ClInclude Include="ViewModeDropdown.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -41,7 +41,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEWHEEL:
 		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // ÈÙ È¸Àü °ª (+120 / -120)
-		UE_LOG(LogLevel::Warning, "Wheel %f", zDelta*0.01f);
 		GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta *0.01);
 		break;
 	default:
