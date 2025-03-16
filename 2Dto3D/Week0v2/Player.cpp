@@ -350,53 +350,30 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
 	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
-	
-	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
-	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
-	
+	FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+	FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
+	FVector worldMoveDir = (cameraRight * deltaX + cameraUp * -deltaY) * 0.01f;
+
 	if (cdMode == CDM_LOCAL) {
-		if (Gizmo->GetType() == "ArrowX")
-		{
-			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f);
-			else
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f);
+		if (Gizmo->GetType() == "ArrowX") {
+			// 이동 벡터를 로컬 X 축에 투영하여 X 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetForwardVector());
+			pObj->AddLocation(pObj->GetForwardVector() * moveAmount);
 		}
-		else if (Gizmo->GetType() == "ArrowY")
-		{
-			if (pObj->GetUpVector().y >= 0)
-				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f) * -1);
-			else
-				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f));
+		else if (Gizmo->GetType() == "ArrowY") {
+			// 이동 벡터를 로컬 Y 축에 투영하여 Y 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetRightVector());
+			pObj->AddLocation(pObj->GetRightVector() * moveAmount);
 		}
-		else if (Gizmo->GetType() == "ArrowZ")
-		{
-			if (GetWorld()->GetCamera()->GetUpVector().x <= 0)
-				pObj->AddLocation(pObj->GetUpVector() * deltaY * 0.01f * zdir);
-			else
-				pObj->AddLocation(pObj->GetUpVector() * deltaY * -0.01f * zdir);
+		else if (Gizmo->GetType() == "ArrowZ") {
+			// 이동 벡터를 로컬 Z 축에 투영하여 Z 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetUpVector());
+			pObj->AddLocation(pObj->GetUpVector() * moveAmount);
 		}
 	}
 	else if (cdMode == CDM_WORLD)
 	{
-		//if (Gizmo->GetType() == "ArrowX")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
-		//	else
-		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
-		//}
-		//else if (Gizmo->GetType() == "ArrowY")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
-		//	else
-		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
-		//}	
-		//else if (Gizmo->GetType() == "ArrowZ")
-		//{
-		//	pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
-		//}
+
 		if (Gizmo->GetType() == "ArrowX")
 		{
 			vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
