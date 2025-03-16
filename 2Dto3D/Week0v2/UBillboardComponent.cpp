@@ -17,6 +17,16 @@ UBillboardComponent::UBillboardComponent(FString _Type)
 
 UBillboardComponent::~UBillboardComponent()
 {
+	if (vertexTextureBuffer)
+	{
+		vertexTextureBuffer->Release();
+		vertexTextureBuffer = nullptr;
+	}
+	if (indexTextureBuffer)
+	{
+		indexTextureBuffer->Release();
+		indexTextureBuffer = nullptr;
+	}
 }
 
 void UBillboardComponent::Initialize()
@@ -29,7 +39,6 @@ void UBillboardComponent::Initialize()
 
 void UBillboardComponent::Update(double deltaTime)
 {
-
     Super::Update(deltaTime);
 }
 
@@ -99,9 +108,8 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 	return Super::CheckRayIntersection(pickRayOrigin, _rayDirection, pfNearHitDistance);
 	*/
 	return CheckPickingOnNDC();
+
 }
-
-
 
 
 void UBillboardComponent::SetTexture(FWString _fileName)
@@ -141,12 +149,10 @@ FMatrix UBillboardComponent::CreateBillboardMatrix()
 
 void UBillboardComponent::CreateQuadTextureVertexBuffer()
 {
-	uint32 vCount = sizeof(quadTextureVertices)/sizeof(FVertexTexture);
-	uint32 iCount = sizeof(quadTextureInices) / sizeof(uint32);
-	numVertices = vCount;
-	numIndices = iCount;
-	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexBuffer(quadTextureVertices, vCount * sizeof(FVertexTexture));
-	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, iCount * sizeof(UINT));
+	numVertices = sizeof(quadTextureVertices) / sizeof(FVertexTexture);
+	numIndices = sizeof(quadTextureInices) / sizeof(uint32);
+	vertexTextureBuffer = FEngineLoop::renderer.CreateVertexBuffer(quadTextureVertices, sizeof(quadTextureVertices));
+	indexTextureBuffer = FEngineLoop::renderer.CreateIndexBuffer(quadTextureInices, sizeof(quadTextureInices));
 
 	if (!vertexTextureBuffer) {
 		Console::GetInstance().AddLog(LogLevel::Warning, "Buffer Error");
@@ -175,7 +181,6 @@ bool UBillboardComponent::CheckPickingOnNDC()
 	FMatrix projectionMatrix = GetEngine().Projection;
 	pickPosition.x = ((2.0f * screenX / viewport.Width) - 1);
 	pickPosition.y = -((2.0f * screenY / viewport.Height) - 1);
-	//pickPosition.y = ((2.0f * (viewport.Height - screenY) / viewport.Height) - 1);
 	pickPosition.z = 1.0f; // Near Plane
 
 	FMatrix M = CreateBillboardMatrix();
@@ -189,8 +194,7 @@ bool UBillboardComponent::CheckPickingOnNDC()
 	{
 		FVector4 v = FVector4(quadTextureVertices[i].x, quadTextureVertices[i].y, quadTextureVertices[i].z, 1.0f);
 		FVector4 clipPos = FMatrix::TransformVector(v, MVP);
-		UE_LOG(LogLevel::Display, "ClipPos %f, %f, %f, %f", clipPos.x, clipPos.y, clipPos.z, clipPos.a);
-
+		
 		if (clipPos.a != 0)
 			transformedVerts[i] = clipPos / clipPos.a;
 		else
@@ -202,16 +206,6 @@ bool UBillboardComponent::CheckPickingOnNDC()
 	float minY = min(min(transformedVerts[0].y, transformedVerts[1].y), min(transformedVerts[2].y, transformedVerts[3].y));
 	float maxY = max(max(transformedVerts[0].y, transformedVerts[1].y), max(transformedVerts[2].y, transformedVerts[3].y));
 
-	//minY *= yCorrection;
-	//maxY *= yCorrection;
-
-	for (int i = 0; i < 4; i++)
-	{
-		UE_LOG(LogLevel::Display, "Quad %f, %f, %f, %f",
-		transformedVerts[i].x, transformedVerts[i].y, transformedVerts[i].z, transformedVerts[i].a);
-	}
-	UE_LOG(LogLevel::Display, "My Click %f, %f, %f", pickPosition.x, pickPosition.y, pickPosition.z);
-	
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
 	{

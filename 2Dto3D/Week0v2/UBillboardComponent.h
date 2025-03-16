@@ -27,9 +27,6 @@ protected:
 	UINT numVertices;
 	UINT numIndices;
 
-	float width;
-	float height;
-
 private:
 	void CreateQuadTextureVertexBuffer();
 	bool CheckPickingOnNDC();

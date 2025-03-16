@@ -7,11 +7,15 @@ UText::UText() : UBillboardComponent("Quad")
 
 UText::~UText()
 {
+	if (vertexTextBuffer)
+	{
+		vertexTextBuffer->Release();
+		vertexTextBuffer = nullptr;
+	}
 }
 
 void UText::Initialize()
 {
-
 	Super::Initialize();
 }
 
@@ -20,17 +24,16 @@ void UText::Update(double deltaTime)
 
 	Super::Update(deltaTime);
 
-	FVector newCamera = GetWorld()->GetCamera()->GetForwardVector();
-	newCamera.z = 0;
-	newCamera = newCamera.Normalize();
-	float tmp = FVector(1.0f, 0.0f, 0.0f).Dot(newCamera);
-	float rad = acosf(tmp);
-	float degree = JungleMath::RadToDeg(rad);
-	FVector vtmp = FVector(1.0f, 0.0f, 0.0f).Cross(GetWorld()->GetCamera()->GetForwardVector());
-	if (vtmp.z < 0)
-		degree *= -1;
-	RelativeRotation.z = degree + 90;
-	UE_LOG(LogLevel::Error, "%f", degree);
+	//FVector newCamera = GetWorld()->GetCamera()->GetForwardVector();
+	//newCamera.z = 0;
+	//newCamera = newCamera.Normalize();
+	//float tmp = FVector(1.0f, 0.0f, 0.0f).Dot(newCamera);
+	//float rad = acosf(tmp);
+	//float degree = JungleMath::RadToDeg(rad);
+	//FVector vtmp = FVector(1.0f, 0.0f, 0.0f).Cross(GetWorld()->GetCamera()->GetForwardVector());
+	//if (vtmp.z < 0)
+	//	degree *= -1;
+	//RelativeRotation.z = degree + 90;
 }
 
 void UText::Release()
@@ -65,6 +68,7 @@ void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
 	RowCount = _cellsPerRow;
 	ColumnCount = _cellsPerColumn;
 }
+
 int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
 	int nIntersections = 0;
@@ -138,6 +142,8 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 	}
 	return nIntersections;
 }
+
+
 void UText::SetText(FWString _text)
 {
 	if (_text.empty())

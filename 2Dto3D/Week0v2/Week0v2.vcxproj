@@ -170,6 +170,7 @@
     <ClCompile Include="UText.cpp" />
     <ClCompile Include="UTexture.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="QuadTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelTextureShader.hlsl">

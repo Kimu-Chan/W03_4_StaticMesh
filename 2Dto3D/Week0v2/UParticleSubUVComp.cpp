@@ -6,6 +6,11 @@ UParticleSubUVComp::UParticleSubUVComp() :UBillboardComponent("Quad")
 
 UParticleSubUVComp::~UParticleSubUVComp()
 {
+	if (vertexSubUVBuffer)
+	{
+		vertexSubUVBuffer->Release();
+		vertexSubUVBuffer = nullptr;
+	}
 }
 
 void UParticleSubUVComp::Initialize()
