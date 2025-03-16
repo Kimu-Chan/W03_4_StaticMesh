@@ -284,67 +284,59 @@ void UPlayer::PickedObjControl()
 void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
 		if (cdMode == CDM_LOCAL) {
-		//if (Gizmo->GetType() == "ArrowX")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-		//		pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
-		//	else
-		//		pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
-		//}
-		//else if (Gizmo->GetType() == "ArrowY")
-		//{
-		//	if (pObj->GetUpVector().y >= 0)
-		//		pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
-		//	else
-		//		pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
-		//}
-		//else if (Gizmo->GetType() == "ArrowZ")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-		//		pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
-		//	else
-		//		pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
-		//}
+			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
+			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
 
-	}
-	else if (cdMode == CDM_WORLD)
-	{
-		if (Gizmo->GetType() == "CircleX")
-		{
-				if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY);
-				}
-				else {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaX);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaY);
-				}
-		}
-		else if (Gizmo->GetType() == "CircleY")
-		{
-			if (pObj->GetUpVector().y >= 0)
+			if (Gizmo->GetType() == "CircleX")
 			{
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaY);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
-			}
-			else {
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX);
-			}
-		}
-		else if (Gizmo->GetType() == "CircleZ")
-		{
+				// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
+				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
 
-			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
+				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
 			}
-			else {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
-			};
+			else if (Gizmo->GetType() == "CircleY")
+			{
+				// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
+				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleZ")
+			{
+				// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
+				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
+			}
+
 		}
-	}
+
+		else if (cdMode == CDM_WORLD)
+		{
+			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
+			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
+
+			if (Gizmo->GetType() == "CircleX")
+			{
+				// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
+				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
+				//FMatrix rotMat = FMatrix::CreateRotation(-rotationAmount, 0.0f, 0.0f);
+				//FVector newRoc = FMatrix::TransformVector(pObj->GetWorldRotation(), rotMat);
+				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleY")
+			{
+				// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
+				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleZ")
+			{
+				// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
+				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
+			}
+		}
 }
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)

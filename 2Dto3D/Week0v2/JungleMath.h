@@ -11,5 +11,7 @@ public:
 	static FMatrix CreateRotationMatrix(FVector rotation);
 	static float   RadToDeg(float radian);
 	static float DegToRad(float degree);
+	static FQuat EulerToQuaternion(const FVector& eulerDegrees);
+	static FVector QuaternionToEuler(const FQuat& quat);
 };
 

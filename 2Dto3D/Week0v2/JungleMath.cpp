@@ -192,4 +192,57 @@ float JungleMath::DegToRad(float degree)
     return degree * (PI / 180.0f);
 }
 
+FQuat JungleMath::EulerToQuaternion(const FVector& eulerDegrees)
+{
+    float pitch = DegToRad(eulerDegrees.x);
+    float yaw = DegToRad(eulerDegrees.y);
+    float roll = DegToRad(eulerDegrees.z);
+
+    // 반각 계산
+    float halfPitch = pitch * 0.5f;
+    float halfYaw = yaw * 0.5f;
+    float halfRoll = roll * 0.5f;
+
+    // 코사인, 사인 값 미리 계산
+    float cosPitch = cos(halfPitch);
+    float sinPitch = sin(halfPitch);
+    float cosYaw = cos(halfYaw);
+    float sinYaw = sin(halfYaw);
+    float cosRoll = cos(halfRoll);
+    float sinRoll = sin(halfRoll);
+
+    FQuat quat;
+    // 표준 Euler->Quaternion 변환 공식 (Yaw-Pitch-Roll 순서)
+    quat.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+    quat.x = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
+    quat.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+    quat.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+
+    return quat;
+}
+
+FVector JungleMath::QuaternionToEuler(const FQuat& quat)
+{
+    FVector euler;
+
+    // Yaw (Z 축 회전)
+    float sinYaw = 2.0f * (quat.w * quat.z + quat.x * quat.y);
+    float cosYaw = 1.0f - 2.0f * (quat.y * quat.y + quat.z * quat.z);
+    euler.y = RadToDeg(atan2(sinYaw, cosYaw));
+
+    // Pitch (X 축 회전)
+    float sinPitch = 2.0f * (quat.w * quat.x - quat.y * quat.z);
+    if (fabs(sinPitch) >= 1.0f)
+        euler.x = RadToDeg(copysign(PI / 2, sinPitch)); // Gimbal Lock 처리
+    else
+        euler.x = RadToDeg(asin(sinPitch));
+
+    // Roll (Y 축 회전)
+    float sinRoll = 2.0f * (quat.w * quat.y + quat.z * quat.x);
+    float cosRoll = 1.0f - 2.0f * (quat.x * quat.x + quat.y * quat.y);
+    euler.z = RadToDeg(atan2(sinRoll, cosRoll));
+
+    return euler;
+}
+
 
