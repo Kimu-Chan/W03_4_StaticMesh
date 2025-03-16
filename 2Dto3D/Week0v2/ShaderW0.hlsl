@@ -68,12 +68,42 @@ PS_INPUT mainVS(VS_INPUT input)
     return output;
 }
 
-
-float4 mainPS(PS_INPUT input) : SV_TARGET
+float noise(float3 p)
 {
-    float3 color = input.color.rgb;
+    return frac(sin(dot(p, float3(12.9898, 78.233, 37.719))) * 43758.5453);
+}
 
-    if (isLit == 1) // normal이 유효할 때만 조명 연산
+float4 PaperTexture(float3 originalColor)
+{
+    // 입력 색상을 0~1 범위로 제한
+    float3 color = saturate(originalColor);
+    
+    // 원래 색상과 종이 색상을 혼합 (blendFactor 값을 조절하여 혼합 비율 결정)
+    float3 paperColor = float3(0.95, 0.85, 0.7);
+    float blendFactor = 0.5;
+    float3 mixedColor = lerp(color, paperColor, blendFactor);
+    
+    // 정적 grain 효과
+    float grain = noise(color * 10.0) * 0.1;
+    
+    // 거친 질감 효과: 두 단계의 노이즈 레이어를 결합
+    float rough1 = (noise(color * 20.0) - 0.5) * 0.25;  // 첫 번째 레이어: 큰 규모의 노이즈
+    float rough2 = (noise(color * 40.0) - 0.5) * 0.15;  // 두 번째 레이어: 세부 질감 추가
+    float rough = rough1 + rough2;
+    
+    // vignette 효과: 중앙에서 멀어질수록 어두워지는 효과
+    float vignetting = smoothstep(0.4, 1.0, length(color.xy - 0.5) * 2.0);
+    
+    // 최종 색상 계산
+    float3 finalColor = mixedColor + grain + rough - vignetting * 0.1;
+    return float4(saturate(finalColor), 1.0);
+}
+
+float4 mainPS(PS_INPUT input) : SV_Target
+{
+    float3 color = saturate(input.color.rgb);
+
+    if (isLit == 1) // 조명이 적용되는 경우
     {
         if (input.normalFlag > 0.5)
         {
@@ -82,17 +112,14 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
             float diffuse = saturate(dot(N, L));
             color = AmbientFactor * color + diffuse * LightColor * color;
         }
-        
+        return float4(color, 1.0);
     }
-    else
+    else // unlit 상태일 때 PaperTexture 효과 적용
     {
-        if (input.normalFlag > 0.5)
+        if (input.normalFlag < 0.5)
         {
-            float lv = 3.0;
-            color = floor(color * lv) / (lv - 1);
-            color = lerp(float3(0.5, 0.5, 0.5), color, 0.4); // 톤 다운
+            return float4(color, 1.0);
         }
+        return PaperTexture(color);
     }
-
-    return float4(color, 1.0);
 }
