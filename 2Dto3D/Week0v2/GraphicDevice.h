@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <d3d11.h>
 
+#include "EngineBaseTypes.h"
+
 class FGraphicsDevice {
 public:
     ID3D11Device* Device = nullptr;
@@ -13,7 +15,8 @@ public:
     IDXGISwapChain* SwapChain = nullptr;
     ID3D11Texture2D* FrameBuffer = nullptr;
     ID3D11RenderTargetView* FrameBufferRTV = nullptr;
-    ID3D11RasterizerState* RasterizerState = nullptr;
+    ID3D11RasterizerState* RasterizerStateSOLID = nullptr;
+    ID3D11RasterizerState* RasterizerStateWIREFRAME = nullptr;
 
     // Depth-Stencil 관련 변수
     ID3D11Texture2D* DepthStencilBuffer = nullptr;  // 깊이/스텐실 텍스처
@@ -27,6 +30,7 @@ public:
     void CreateDeviceAndSwapChain(HWND hWindow);
     void CreateDepthStencilBuffer(HWND hWindow);
     void CreateDepthStencilState();
+    void CreateRasterizerState();
     void ReleaseDeviceAndSwapChain();
     void CreateFrameBuffer();
     void ReleaseFrameBuffer();
@@ -36,5 +40,9 @@ public:
     void SwapBuffer();
     void Prepare();
     void OnResize(HWND hWindow);
+    ID3D11RasterizerState* GetCurrentRasterizer() { return CurrentRasterizer; }
+    void ChangeRasterizer(EViewModeIndex evi);
+private:
+    ID3D11RasterizerState* CurrentRasterizer = nullptr;
 };
 

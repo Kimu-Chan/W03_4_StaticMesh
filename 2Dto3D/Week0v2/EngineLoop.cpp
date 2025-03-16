@@ -5,6 +5,8 @@
 #include "JungleMath.h"
 #include "ControlPaner.h"
 #include "PropertyPanel.h"
+#include "ViewModeDropdown.h"
+#include "ShowFlags.h"
 #include "Outliner.h"
 #include "EditorViewportClient.h"
 
@@ -34,6 +36,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ControlPanel::GetInstance().OnResize(hWnd);
 		PropertyPanel::GetInstance().OnResize(hWnd);
 		Outliner::GetInstance().OnResize(hWnd);
+		ViewModeDropdown::GetInstance().OnResize(hWnd);
+		ShowFlags::GetInstance().OnResize(hWnd);
 		break;
 	case WM_MOUSEWHEEL:
 		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // ÈÙ È¸Àü °ª (+120 / -120)
@@ -139,6 +143,8 @@ void FEngineLoop::Tick()
 		ControlPanel::GetInstance().Draw(GetWorld(),elapsedTime);
 		PropertyPanel::GetInstance().Draw(GetWorld());
 		Outliner::GetInstance().Draw(GetWorld());
+		ShowFlags::GetInstance().Draw(GetWorld());
+		ViewModeDropdown::GetInstance().Draw(GetWorld());
 		UIMgr->EndFrame();
 
 		GWorld->CleanUp();
@@ -156,9 +162,12 @@ float a = 5;
 void FEngineLoop::Render()
 {
 	UPrimitiveBatch::GetInstance().Begin();
-	UPrimitiveBatch::GetInstance().AddGrid(50);
-	UPrimitiveBatch::GetInstance().AddWorldGizmo();
+	if(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Grid))
+		UPrimitiveBatch::GetInstance().AddGrid(50);
+	else
+		UPrimitiveBatch::GetInstance().ClearGrid();
 
+	UPrimitiveBatch::GetInstance().AddWorldGizmo();
 	GWorld->Render();
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();

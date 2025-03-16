@@ -1,5 +1,6 @@
 #include "UText.h"
 #include "CameraComponent.h"
+#include "ShowFlags.h"
 #include "JungleMath.h"
 UText::UText() : UBillboardComponent("Quad")
 {
@@ -54,8 +55,10 @@ void UText::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 	
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)){ 
 	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
 		m_texture.m_TextureSRV, m_texture.m_SamplerState);
+	}
 	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();
@@ -67,6 +70,9 @@ void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
 }
 int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
+	if (!(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText))) {
+		return 0;
+	}
 	int nIntersections = 0;
 	
 	TArray<FVertexSimple> verArr;

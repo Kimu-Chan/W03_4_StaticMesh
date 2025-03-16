@@ -1,3 +1,4 @@
+#include "ShowFlags.h"
 #include "UParticleSubUVComp.h"
 
 UParticleSubUVComp::UParticleSubUVComp() :UBillboardComponent("Quad")
@@ -72,9 +73,11 @@ void UParticleSubUVComp::Render()
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 
-	FEngineLoop::renderer.RenderTexturePrimitive(vertexSubUVBuffer, numTextVertices,
-		indexTextureBuffer, numIndices, m_texture.m_TextureSRV, m_texture.m_SamplerState);
+		FEngineLoop::renderer.RenderTexturePrimitive(vertexSubUVBuffer, numTextVertices,
+			indexTextureBuffer, numIndices, m_texture.m_TextureSRV, m_texture.m_SamplerState);
+	}	
 	//Super::Render();
 
 	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);

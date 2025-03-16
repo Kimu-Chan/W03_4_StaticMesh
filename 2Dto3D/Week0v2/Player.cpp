@@ -3,6 +3,7 @@
 #include "GraphicDevice.h"
 #include "World.h"
 #include "Define.h"
+#include "ShowFlags.h"
 #include "EngineLoop.h"
 #include "PrimitiveComponent.h"
 #include "JungleMath.h"
@@ -152,9 +153,10 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 		}
 	}
 }
-
 void UPlayer::PickObj(FVector& pickPosition)
 {
+	if (!(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))) return;
+
 	UObject* Possible = nullptr;
 	int maxIntersect = 0;
 			float minDistance = FLT_MAX;

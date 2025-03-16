@@ -63,7 +63,6 @@ const float* FMatrix::operator[](int row) const
     return M[row];
 }
 
-
 // 전치 행렬
 FMatrix FMatrix::Transpose(const FMatrix& Mat) {
     FMatrix Result;
