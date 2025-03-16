@@ -16,8 +16,8 @@ public:
 	void AddGridLine(const FVector& start, const FVector& end, const FVector4& color);
 	void AddGrid(int gridSize);
 	void Begin();
-	void SetSpacing(float spacing);
-	float GetSpacing() { return Spacing; }
+	//void SetSpacing(float spacing);
+	//float GetSpacing() { return Spacing; }
 	void End(const FMatrix& View, const FMatrix& Projection);
 	void AddBox(const FVector& center, const FVector4& color, const FMatrix& modelMatrix);
 	void AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatri);
@@ -31,7 +31,7 @@ private:
 	size_t allocatedCapacity;
 	TArray<FVertexSimple> Vertices;
 	TArray<FVertexSimple> GridVertices;
-	float Spacing = 5.f;
+	//float Spacing = 5.f;
 	float PreSpacing = 0.f;
 	
 };

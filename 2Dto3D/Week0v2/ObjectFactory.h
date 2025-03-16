@@ -8,7 +8,10 @@ public:
 	template<class T> 
 	static UObject* ConstructObject()
 	{
+		uint32 id = UEngineStatics::GenUUID();
+		FString Name = "DefualtObjectName_" + std::to_string(id);
 		UObject* obj = new T;
+		obj->SetName(Name);
 		obj->Initialize();
 		obj->UUID = UEngineStatics::GenUUID();
 
@@ -24,6 +27,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(Name);
 		obj->Initialize();
+		obj->UUID = UEngineStatics::GenUUID();
 
 		return obj;
 	}
@@ -37,6 +41,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(Name);
 		obj->Initialize();
+		obj->UUID = UEngineStatics::GenUUID();
 
 		return obj;
 	}
@@ -48,8 +53,8 @@ public:
 		UE_LOG(LogLevel::Display, "Created New Object : %s", newName.c_str());
 		UObject* obj = new T;
 		obj->SetName(newName);
-
 		obj->Initialize();
+		obj->UUID = UEngineStatics::GenUUID();
 
 		return obj;
 	}

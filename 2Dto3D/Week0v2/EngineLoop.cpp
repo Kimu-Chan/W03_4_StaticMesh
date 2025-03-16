@@ -9,6 +9,7 @@
 #include "EditorViewportClient.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+extern FEngineLoop GEngineLoop;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -36,14 +37,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEWHEEL:
 		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // ÈÙ È¸Àü °ª (+120 / -120)
-		if (zDelta > 0) {
-			UE_LOG(LogLevel::Warning, "Wheel Up");
-
-		}
-		else if (zDelta < 0) {
-			UE_LOG(LogLevel::Warning, "Wheel Down");
-
-		}
+		UE_LOG(LogLevel::Warning, "Wheel %f", zDelta*0.01f);
+		GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta *0.01);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

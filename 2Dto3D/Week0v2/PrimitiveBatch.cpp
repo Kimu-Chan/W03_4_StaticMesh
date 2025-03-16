@@ -1,5 +1,8 @@
 #include "PrimitiveBatch.h"
 #include "EngineLoop.h"
+#include "EditorViewportClient.h"
+extern FEngineLoop GEngineLoop;
+
 UPrimitiveBatch::UPrimitiveBatch()
 {
 }
@@ -38,6 +41,7 @@ void UPrimitiveBatch::Begin()
 
 void UPrimitiveBatch::AddGrid(int gridSize)
 {
+    float Spacing = GEngineLoop.GetViewportClient()->GetGridSize();
     if (Spacing != PreSpacing) {
         GridVertices.clear();
         for (int i = -gridSize; i <= gridSize; i++) {
@@ -53,10 +57,10 @@ void UPrimitiveBatch::AddGrid(int gridSize)
         PreSpacing = Spacing;
     }
 }
-void UPrimitiveBatch::SetSpacing(float spacing)
-{
-    Spacing = spacing;
-}
+//void UPrimitiveBatch::SetSpacing(float spacing)
+//{
+//    Spacing = spacing;
+//}
 
 void UPrimitiveBatch::End(const FMatrix& View, const FMatrix& Projection)
 {
