@@ -228,7 +228,8 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 		obj->GetWorldScale().z
 	);
 
-	FMatrix rotationMatrix = FMatrix::CreateRotation(
+	//FMatrix rotationMatrix = JungleMath::CreateRotationMatrix(obj->GetWorldRotation());
+		FMatrix rotationMatrix =FMatrix::CreateRotation(
 		obj->GetWorldRotation().x,
 		obj->GetWorldRotation().y,
 		obj->GetWorldRotation().z
@@ -308,7 +309,7 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 	}
 	else if (cdMode == CDM_WORLD)
 	{
-		if (Gizmo->GetType() == "DiscX")
+		if (Gizmo->GetType() == "CircleX")
 		{
 				if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
 					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX);
@@ -319,7 +320,7 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaY);
 				}
 		}
-		else if (Gizmo->GetType() == "DiscY")
+		else if (Gizmo->GetType() == "CircleY")
 		{
 			if (pObj->GetUpVector().y >= 0)
 			{
@@ -331,7 +332,7 @@ void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, 
 				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX);
 			}
 		}
-		else if (Gizmo->GetType() == "DiscZ")
+		else if (Gizmo->GetType() == "CircleZ")
 		{
 
 			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {

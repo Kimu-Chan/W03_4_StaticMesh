@@ -73,26 +73,26 @@ float4 mainPS(PS_INPUT input) : SV_TARGET
 {
     float3 color = input.color.rgb;
 
-    if (isLit == 1) // normal이 유효할 때만 조명 연산
-    {
-        if (input.normalFlag > 0.5)
-        {
-            float3 N = normalize(input.normal);
-            float3 L = normalize(LightDirection);
-            float diffuse = saturate(dot(N, L));
-            color = AmbientFactor * color + diffuse * LightColor * color;
-        }
+    //if (isLit == 1) // normal이 유효할 때만 조명 연산
+    //{
+    //    if (input.normalFlag > 0.5)
+    //    {
+    //        float3 N = normalize(input.normal);
+    //        float3 L = normalize(LightDirection);
+    //        float diffuse = saturate(dot(N, L));
+    //        color = AmbientFactor * color + diffuse * LightColor * color;
+    //    }
         
-    }
-    else
-    {
-        if (input.normalFlag > 0.5)
-        {
-            float lv = 3.0;
-            color = floor(color * lv) / (lv - 1);
-            color = lerp(float3(0.5, 0.5, 0.5), color, 0.4); // 톤 다운
-        }
-    }
+    //}
+    //else
+    //{
+    //    if (input.normalFlag > 0.5)
+    //    {
+    //        float lv = 3.0;
+    //        color = floor(color * lv) / (lv - 1);
+    //        color = lerp(float3(0.5, 0.5, 0.5), color, 0.4); // 톤 다운
+    //    }
+    //}
 
     return float4(color, 1.0);
 }

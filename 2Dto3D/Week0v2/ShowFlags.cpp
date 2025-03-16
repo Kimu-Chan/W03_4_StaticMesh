@@ -36,7 +36,7 @@ void ShowFlags::Draw(UWorld* world)
 	if (ImGui::Begin("ShowFlags"))
 	{
 		const char* items[] = { "Grid", "AABB", "Primitves","BillBoardText"};
-		static bool selected[IM_ARRAYSIZE(items)] = { false, false, false };  // 각 항목의 체크 상태 저장
+		static bool selected[IM_ARRAYSIZE(items)] = { true, true, true, true };  // 각 항목의 체크 상태 저장
 
 		if (ImGui::BeginCombo("Select Items", "Select multiple"))
 		{

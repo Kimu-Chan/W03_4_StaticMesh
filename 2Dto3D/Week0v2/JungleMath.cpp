@@ -16,36 +16,42 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
 {
     // 1. 스케일 행렬
-    XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+    //XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 
-    // 2. 회전 행렬 (쿼터니언 사용)
-    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
-    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
-    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
+    //// 2. 회전 행렬 (쿼터니언 사용)
+    //XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
+    //XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
+    //XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
 
-    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
-    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
+    //XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
+    //rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
 
-    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
+    //XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
 
-    // 3. 이동 행렬
-    XMMATRIX translationMatrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
+    //// 3. 이동 행렬
+    //XMMATRIX translationMatrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
 
-    // 최종 변환 행렬 (회전 -> 스케일 -> 이동 순서)
-    XMMATRIX finalMatrix = XMMatrixMultiply(XMMatrixMultiply(scaleMatrix,rotationMatrix), translationMatrix);
+    //// 최종 변환 행렬 (회전 -> 스케일 -> 이동 순서)
+    //XMMATRIX finalMatrix = XMMatrixMultiply(XMMatrixMultiply(scaleMatrix,rotationMatrix), translationMatrix);
+
+    FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
+    FMatrix Rotation = FMatrix::CreateRotation(rotation.x, rotation.y, rotation.z);
+    FMatrix Scale = FMatrix::CreateScale(scale.x, scale.y, scale.z);
+
+
 
     // XMMATRIX -> FMatrix 변환
-    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
+    //FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
 
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            result.M[i][j] = finalMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
-        }
-    }
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    for (int j = 0; j < 4; j++)
+    //    {
+    //        result.M[i][j] = finalMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
+    //    }
+    //}
 
-    return result;
+    return Scale * Rotation * Translation;
 }
 
 FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)
@@ -127,6 +133,52 @@ FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
 
     // 쿼터니언을 이용해 벡터 회전 적용
     return quaternion.RotateVector(origin);
+}
+//FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
+//{
+//    // 2. 회전 행렬 (쿼터니언 사용)
+//    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
+//    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
+//    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
+//
+//    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
+//    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
+//
+//    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
+//
+//    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
+//
+//    for (int i = 0; i < 4; i++)
+//    {
+//        for (int j = 0; j < 4; j++)
+//        {
+//            result.M[i][j] = rotationMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
+//        }
+//    }
+//    origin = FMatrix::TransformVector(origin, result);
+//    return origin;
+//}
+//
+FMatrix JungleMath::CreateRotationMatrix(FVector rotation)
+{
+    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
+    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
+    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
+
+    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
+    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
+
+    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
+    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            result.M[i][j] = rotationMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
+        }
+    }
+    return result;
 }
 
 
