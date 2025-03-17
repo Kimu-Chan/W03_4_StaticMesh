@@ -37,21 +37,21 @@ FVector USceneComponent::GetForwardVector()
 	FVector Forward = FVector(1.f, 0.f, 0.0f);
 	//FMatrix Rot =FMatrix::CreateRotation(GetWorldRotation().x, GetWorldRotation().y, GetWorldRotation().z);
 	//Forward = FMatrix::TransformVector(Forward, Rot);
-	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
+	Forward = JungleMath::FVectorRotate(Forward, QuatRotation);
 	return Forward;
 }
 
 FVector USceneComponent::GetRightVector()
 {
 	FVector Right = FVector(0.f, 1.f, 0.0f);
-	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
+	Right = JungleMath::FVectorRotate(Right, QuatRotation);
 	return Right;
 }
 
 FVector USceneComponent::GetUpVector()
 {
 	FVector Up = FVector(0.f, 0.f, 1.0f);
-	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
+	Up = JungleMath::FVectorRotate(Up, QuatRotation);
 	return Up;
 }
 
@@ -107,4 +107,15 @@ FVector USceneComponent::GetWorldLocation()
 	}
 	else
 		return GetLocalLocation();
+}
+
+FVector USceneComponent::GetLocalRotation()
+{
+	return JungleMath::QuaternionToEuler(QuatRotation);
+}
+
+void USceneComponent::SetRotation(FVector _newRot)
+{
+	FVector newRot = FVector(JungleMath::DegToRad(_newRot.x), JungleMath::DegToRad(_newRot.y), JungleMath::DegToRad(_newRot.z));
+	QuatRotation = JungleMath::EulerToQuaternion(_newRot);
 }

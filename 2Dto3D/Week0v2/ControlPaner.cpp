@@ -141,7 +141,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::InputFloat3("Camera Rotation", cameraRotation);
 
 	world->GetCamera()->SetLocation(FVector(cameraLocation[0], cameraLocation[1], cameraLocation[2]));
-	world->GetCamera()->SetRotation(FVector(cameraRotation[0], cameraRotation[1], cameraRotation[2]));
+	//world->GetCamera()->SetRotation(FVector(cameraRotation[0], cameraRotation[1], cameraRotation[2]));
 
 	ImGui::End();
 }

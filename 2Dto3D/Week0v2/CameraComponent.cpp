@@ -1,4 +1,4 @@
-#include "CameraComponent.h"
+ï»¿#include "CameraComponent.h"
 #include "JungleMath.h"
 #include "World.h"
 #include "EditorViewportClient.h"
@@ -32,35 +32,35 @@ void UCameraComponent::Release()
 
 void UCameraComponent::Input()
 {
-	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) // VK_RBUTTONÀº ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» ³ªÅ¸³¿
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) // VK_RBUTTONì€ ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ë²„íŠ¼ì„ ë‚˜íƒ€ëƒ„
 	{
 		if (!bRightMouseDown)
 		{
-			// ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» Ã³À½ ´­·¶À» ¶§, ¸¶¿ì½º À§Ä¡ ÃÊ±âÈ­
+			// ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ë²„íŠ¼ì„ ì²˜ìŒ ëˆŒë €ì„ ë•Œ, ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ì´ˆê¸°í™”
 			bRightMouseDown = true;
 			GetCursorPos(&lastMousePos);
 		}
 		else
 		{
-			// ¸¶¿ì½º ÀÌµ¿·® °è»ê
+			// ë§ˆìš°ìŠ¤ ì´ë™ëŸ‰ ê³„ì‚°
 			POINT currentMousePos;
 			GetCursorPos(&currentMousePos);
 
-			// ¸¶¿ì½º ÀÌµ¿ Â÷ÀÌ °è»ê
+			// ë§ˆìš°ìŠ¤ ì´ë™ ì°¨ì´ ê³„ì‚°
 			int32 deltaX = currentMousePos.x - lastMousePos.x;
 			int32 deltaY = currentMousePos.y - lastMousePos.y;
 
-			// Yaw(ÁÂ¿ì È¸Àü) ¹× Pitch(»óÇÏ È¸Àü) °ª º¯°æ
-			RotateYaw(deltaX * 0.1f);  // X ÀÌµ¿¿¡ µû¶ó ÁÂ¿ì È¸Àü
-			RotatePitch(deltaY * 0.1f);  // Y ÀÌµ¿¿¡ µû¶ó »óÇÏ È¸Àü
+			// Yaw(ì¢Œìš° íšŒì „) ë° Pitch(ìƒí•˜ íšŒì „) ê°’ ë³€ê²½
+			RotateYaw(deltaX * 0.1f);  // X ì´ë™ì— ë”°ë¼ ì¢Œìš° íšŒì „
+			RotatePitch(deltaY * 0.1f);  // Y ì´ë™ì— ë”°ë¼ ìƒí•˜ íšŒì „
 
-			// »õ·Î¿î ¸¶¿ì½º À§Ä¡ ÀúÀå
+			// ìƒˆë¡œìš´ ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ì €ì¥
 			lastMousePos = currentMousePos;
 		}
 	}
 	else
 	{
-		bRightMouseDown = false; // ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» ¶¼¸é »óÅÂ ÃÊ±âÈ­
+		bRightMouseDown = false; // ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ë²„íŠ¼ì„ ë–¼ë©´ ìƒíƒœ ì´ˆê¸°í™”
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
@@ -121,7 +121,7 @@ void UCameraComponent::MoveForward(float _Value)
 
 void UCameraComponent::MoveRight(float _Value)
 {
-	RelativeLocation = RelativeLocation + GetRightVector() * GetEngine().GetViewportClient()->GetCameraSpeedScalar() * _Value;
+	RelativeLocation = RelativeLocation + GetUpVector() * GetEngine().GetViewportClient()->GetCameraSpeedScalar() * _Value;
 }
 
 void UCameraComponent::MoveUp(float _Value)
@@ -131,17 +131,48 @@ void UCameraComponent::MoveUp(float _Value)
 
 void UCameraComponent::RotateYaw(float _Value)
 {
+	//// Yaw íšŒì „ìš© ì¿¼í„°ë‹ˆì–¸ (Zì¶• ê¸°ì¤€ íšŒì „)
+	//FQuat YawQuat = FQuat(FVector(0, 0, 1), _Value * 0.01f);
+
+	//// ê¸°ì¡´ íšŒì „ì— ìƒˆë¡œìš´ Yaw íšŒì „ ì ìš© (ëˆ„ì  íšŒì „)
+	//QuatRotation = YawQuat * QuatRotation; 
 	RelativeRotation.z += _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)
 {
+
 	RelativeRotation.y += _Value;
 	if (RelativeRotation.y < -90.0f)
 		RelativeRotation.y = -90.0f;
 	if (RelativeRotation.y > 90.0f)
 		RelativeRotation.y = 90.0f;
+}
 
+FVector UCameraComponent::GetForwardVector()
+{
+	FVector Forward = FVector(1.f, 0.f, 0.0f);
+	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
+	return Forward;
+}
+
+FVector UCameraComponent::GetUpVector()
+{
+	FVector Right = FVector(0.f, 1.f, 0.0f);
+	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
+	return Right;
+}
+
+FVector UCameraComponent::GetRightVector()
+{
+	FVector Up = FVector(0.f, 0.f, 1.0f);
+	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
+	return Up;
+}
+
+FVector UCameraComponent::GetWorldRotation()
+{
+	return RelativeRotation;
 }
 
 

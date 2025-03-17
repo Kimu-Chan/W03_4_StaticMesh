@@ -143,7 +143,7 @@ void UGizmoCircleComponent::Render()
 
     if (!GetWorld()->GetPickingObj() || GetWorld()->GetPlayer()->GetControlMode() != CM_ROTATION)
         return;
-    FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
+    FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetQuat(), GetWorldScale());
 
     // 최종 MVP 행렬
     FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
