@@ -3,6 +3,7 @@
 #include "GraphicDevice.h"
 #include "World.h"
 #include "Define.h"
+#include "ShowFlags.h"
 #include "EngineLoop.h"
 #include "PrimitiveComponent.h"
 #include "JungleMath.h"
@@ -152,9 +153,10 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 		}
 	}
 }
-
 void UPlayer::PickObj(FVector& pickPosition)
 {
+	if (!(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))) return;
+
 	UObject* Possible = nullptr;
 	int maxIntersect = 0;
 			float minDistance = FLT_MAX;
@@ -226,7 +228,8 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 		obj->GetWorldScale().z
 	);
 
-	FMatrix rotationMatrix = FMatrix::CreateRotation(
+	//FMatrix rotationMatrix = JungleMath::CreateRotationMatrix(obj->GetWorldRotation());
+		FMatrix rotationMatrix =FMatrix::CreateRotation(
 		obj->GetWorldRotation().x,
 		obj->GetWorldRotation().y,
 		obj->GetWorldRotation().z
@@ -281,119 +284,88 @@ void UPlayer::PickedObjControl()
 void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
 		if (cdMode == CDM_LOCAL) {
-		//if (Gizmo->GetType() == "ArrowX")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-		//		pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
-		//	else
-		//		pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
-		//}
-		//else if (Gizmo->GetType() == "ArrowY")
-		//{
-		//	if (pObj->GetUpVector().y >= 0)
-		//		pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
-		//	else
-		//		pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
-		//}
-		//else if (Gizmo->GetType() == "ArrowZ")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-		//		pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
-		//	else
-		//		pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
-		//}
+			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
+			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
 
-	}
-	else if (cdMode == CDM_WORLD)
-	{
-		if (Gizmo->GetType() == "DiscX")
-		{
-				if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY);
-				}
-				else {
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaX);
-					pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * -deltaY);
-				}
-		}
-		else if (Gizmo->GetType() == "DiscY")
-		{
-			if (pObj->GetUpVector().y >= 0)
+			if (Gizmo->GetType() == "CircleX")
 			{
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaY);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * -deltaX);
-			}
-			else {
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY);
-				pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX);
-			}
-		}
-		else if (Gizmo->GetType() == "DiscZ")
-		{
+				// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
+				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
 
-			if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
+				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
 			}
-			else {
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY);
-				pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX);
-			};
+			else if (Gizmo->GetType() == "CircleY")
+			{
+				// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
+				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleZ")
+			{
+				// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
+				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
+			}
+
 		}
-	}
+
+		else if (cdMode == CDM_WORLD)
+		{
+			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
+			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
+
+			if (Gizmo->GetType() == "CircleX")
+			{
+				// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
+				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
+				//FMatrix rotMat = FMatrix::CreateRotation(-rotationAmount, 0.0f, 0.0f);
+				//FVector newRoc = FMatrix::TransformVector(pObj->GetWorldRotation(), rotMat);
+				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleY")
+			{
+				// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
+				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
+			}
+			else if (Gizmo->GetType() == "CircleZ")
+			{
+				// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
+				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
+				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
+			}
+		}
 }
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
 	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
-	
-	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
-	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
-	
+	FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+	FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
+	FVector worldMoveDir = (cameraRight * deltaX + cameraUp * -deltaY) * 0.01f;
+
 	if (cdMode == CDM_LOCAL) {
-		if (Gizmo->GetType() == "ArrowX")
-		{
-			if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f);
-			else
-				pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f);
+		if (Gizmo->GetType() == "ArrowX") {
+			// 이동 벡터를 로컬 X 축에 투영하여 X 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetForwardVector());
+			pObj->AddLocation(pObj->GetForwardVector() * moveAmount);
 		}
-		else if (Gizmo->GetType() == "ArrowY")
-		{
-			if (pObj->GetUpVector().y >= 0)
-				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f) * -1);
-			else
-				pObj->AddLocation((pObj->GetRightVector() * deltaX * 0.01f));
+		else if (Gizmo->GetType() == "ArrowY") {
+			// 이동 벡터를 로컬 Y 축에 투영하여 Y 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetRightVector());
+			pObj->AddLocation(pObj->GetRightVector() * moveAmount);
 		}
-		else if (Gizmo->GetType() == "ArrowZ")
-		{
-			if (GetWorld()->GetCamera()->GetUpVector().x <= 0)
-				pObj->AddLocation(pObj->GetUpVector() * deltaY * 0.01f * zdir);
-			else
-				pObj->AddLocation(pObj->GetUpVector() * deltaY * -0.01f * zdir);
+		else if (Gizmo->GetType() == "ArrowZ") {
+			// 이동 벡터를 로컬 Z 축에 투영하여 Z 방향 이동 적용
+			float moveAmount = worldMoveDir.Dot(pObj->GetUpVector());
+			pObj->AddLocation(pObj->GetUpVector() * moveAmount);
 		}
 	}
 	else if (cdMode == CDM_WORLD)
 	{
-		//if (Gizmo->GetType() == "ArrowX")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
-		//	else
-		//		pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
-		//}
-		//else if (Gizmo->GetType() == "ArrowY")
-		//{
-		//	if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
-		//	else
-		//		pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
-		//}	
-		//else if (Gizmo->GetType() == "ArrowZ")
-		//{
-		//	pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
-		//}
+
 		if (Gizmo->GetType() == "ArrowX")
 		{
 			vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
@@ -437,27 +409,44 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 
 void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
-	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
-	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
+	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
+
 	if (Gizmo->GetType() == "ScaleX")
 	{
-		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f * xdir);
-		else
-			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f * xdir);
+		vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
+		float dotResult = vecObjToCamera.Dot(FVector(1.0f, 0.0f, 0.0f));
+		dotResult = dotResult / vecObjToCamera.Magnitude();
+		float rad = acosf(dotResult);
+		float degree = JungleMath::RadToDeg(rad);
+		FVector crossResult = vecObjToCamera.Cross(FVector(1.0f, 0.0f, 0.0f));
+		if (crossResult.z > 0)
+			degree *= -1.0f;
+		//UE_LOG(LogLevel::Error, "%f", degree);
+
+		if (0 < degree && degree < 180.0f)
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
+		else if (degree < 0 && degree > -180.0f) {
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+		}
 	}
 	else if (Gizmo->GetType() == "ScaleY")
 	{
-		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
-		else
+		vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
+		float dotResult = vecObjToCamera.Dot(FVector(0.0f, 1.0f, 0.0f));
+		dotResult = dotResult / vecObjToCamera.Magnitude();
+		float rad = acosf(dotResult);
+		float degree = JungleMath::RadToDeg(rad);
+		FVector crossResult = vecObjToCamera.Cross(FVector(0.0f, 1.0f, 0.0f));
+		if (crossResult.z > 0)
+			degree *= -1.0f;
+		//UE_LOG(LogLevel::Error, "%f", degree);
+		if (0 < degree && degree < 180)
 			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+		else
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
 	}
 	else if (Gizmo->GetType() == "ScaleZ")
 	{
-		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f * zdir);
-		else
-			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * 0.01f * -zdir);
+		pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
 	}
 }

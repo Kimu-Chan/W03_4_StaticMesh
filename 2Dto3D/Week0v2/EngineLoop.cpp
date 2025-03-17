@@ -5,9 +5,13 @@
 #include "JungleMath.h"
 #include "ControlPaner.h"
 #include "PropertyPanel.h"
+#include "ViewModeDropdown.h"
+#include "ShowFlags.h"
 #include "Outliner.h"
+#include "EditorViewportClient.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+extern FEngineLoop GEngineLoop;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -15,13 +19,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		return true;
 	}
+	int zDelta = 0;
 	switch (message)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	case WM_SIZE:
-
 		if (wParam != SIZE_MINIMIZED) {
 			//UGraphicsDevice 객체의 OnResize 함수 호출
 			if (FEngineLoop::graphicDevice.SwapChain) {
@@ -32,6 +36,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ControlPanel::GetInstance().OnResize(hWnd);
 		PropertyPanel::GetInstance().OnResize(hWnd);
 		Outliner::GetInstance().OnResize(hWnd);
+		ViewModeDropdown::GetInstance().OnResize(hWnd);
+		ShowFlags::GetInstance().OnResize(hWnd);
+		break;
+	case WM_MOUSEWHEEL:
+		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // 휠 회전 값 (+120 / -120)
+		GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta *0.01);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -64,11 +74,18 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	graphicDevice.Initialize(hWnd);
 	renderer.Initialize(&graphicDevice);
 
+	
+	
 	UIMgr = new UImGuiManager;
 	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
+	
 	resourceMgr.Initialize(&renderer);
+	
+	viewportClient = std::make_shared<FEditorViewportClient>();
+
 	GWorld = new UWorld;
 	GWorld->Initialize();
+
 	return 0;
 }
 
@@ -125,6 +142,8 @@ void FEngineLoop::Tick()
 		ControlPanel::GetInstance().Draw(GetWorld(),elapsedTime);
 		PropertyPanel::GetInstance().Draw(GetWorld());
 		Outliner::GetInstance().Draw(GetWorld());
+		ShowFlags::GetInstance().Draw(GetWorld());
+		ViewModeDropdown::GetInstance().Draw(GetWorld());
 		UIMgr->EndFrame();
 
 		GWorld->CleanUp();
@@ -142,9 +161,12 @@ float a = 5;
 void FEngineLoop::Render()
 {
 	UPrimitiveBatch::GetInstance().Begin();
-	UPrimitiveBatch::GetInstance().AddGrid(50);
-	UPrimitiveBatch::GetInstance().AddWorldGizmo();
+	if(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Grid))
+		UPrimitiveBatch::GetInstance().AddGrid(50);
+	else
+		UPrimitiveBatch::GetInstance().ClearGrid();
 
+	UPrimitiveBatch::GetInstance().AddWorldGizmo();
 	GWorld->Render();
 	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();

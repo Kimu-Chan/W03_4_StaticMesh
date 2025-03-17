@@ -35,6 +35,8 @@ void USceneComponent::Render()
 FVector USceneComponent::GetForwardVector()
 {
 	FVector Forward = FVector(1.f, 0.f, 0.0f);
+	//FMatrix Rot =FMatrix::CreateRotation(GetWorldRotation().x, GetWorldRotation().y, GetWorldRotation().z);
+	//Forward = FMatrix::TransformVector(Forward, Rot);
 	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
 	return Forward;
 }

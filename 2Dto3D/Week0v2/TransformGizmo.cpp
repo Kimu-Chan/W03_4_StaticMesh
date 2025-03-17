@@ -37,15 +37,15 @@ UTransformGizmo::UTransformGizmo()
 	ArrowArr.push_back(ArrowZ);
 
 	UGizmoCircleComponent* disc = new UGizmoCircleComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
-	disc->SetType("DiscX");
-	disc->SetRotation(FVector(0.0f,0.0f,90.0f));
+	disc->SetType("CircleX");
+	disc->SetRotation(FVector(0.0f,0.0f,0.0f));
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
 	CircleArr.push_back(disc);
 
 	disc = new UGizmoCircleComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
-	disc->SetType("DiscY");
+	disc->SetType("CircleY");
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
@@ -53,9 +53,9 @@ UTransformGizmo::UTransformGizmo()
 
 
 	disc = new UGizmoCircleComponent(EPrimitiveColor::BLUE_Z, 0.9, "DiscZ");
-	disc->SetType("DiscZ");
+	disc->SetType("CircleZ");
 	disc->SetParent(this);
-	disc->SetRotation(FVector(90.0f,0.0f,0.0f));
+	disc->SetRotation(FVector(0.0f,0.0f,0.0f));
 	AttachChildren.push_back(disc);
 	//GetWorld()->GetObjectArr().push_back(disc);
 	CircleArr.push_back(disc);
@@ -111,8 +111,11 @@ void UTransformGizmo::Update(double deltaTime)
 	Super::Update(deltaTime);
 	if (GetWorld()->GetPickingObj()) {
 		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
-	if(GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+	if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
+	{
+		
 			SetRotation(GetWorld()->GetPickingObj()->GetWorldRotation());
+	}
 	else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
 			SetRotation(FVector(0.0f,0.0f,0.0f));
 	}

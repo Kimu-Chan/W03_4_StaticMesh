@@ -10,8 +10,9 @@
 #include "Quad.h"
 void FResourceMgr::Initialize(FRenderer* renderer)
 {
-    RegisterMesh(renderer, "Sphere", sphere_vertices, sizeof(sphere_vertices) / sizeof(FVertexSimple), nullptr, 0);
-    //RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
+	//GenerateSphere();
+	//RegisterMesh(renderer, "Sphere", sphere_vertices, sizeof(sphere_vertices) / sizeof(FVertexSimple), nullptr, 0);
+	RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
     RegisterMesh(renderer, "Gizmo", gizmoVertices, sizeof(gizmoVertices) / sizeof(FVertexSimple), nullptr, 0);
     RegisterMesh(renderer, "Quad", quadVertices, sizeof(quadVertices) / sizeof(FVertexSimple), quadInices, sizeof(quadInices)/sizeof(uint32));
 
@@ -21,7 +22,14 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 	LoadObjAsset(renderer, "ScaleX", L"Assets/AxisScaleArrowX.obj");
 	LoadObjAsset(renderer, "ScaleY", L"Assets/AxisScaleArrowY.obj");
 	LoadObjAsset(renderer, "ScaleZ", L"Assets/AxisScaleArrowZ.obj");
+	LoadObjAsset(renderer, "CircleX", L"Assets/AxisCircleX.obj");
+	LoadObjAsset(renderer, "CircleY", L"Assets/AxisCircleY.obj");
+	LoadObjAsset(renderer, "CircleZ", L"Assets/AxisCircleZ.obj");
+
+
+
 	LoadObjNormalAsset(renderer, "Cube", L"Assets/Cube.obj");
+	LoadObjNormalAsset(renderer, "Sphere", L"Assets/Sphere.obj");
 }
 
 void FResourceMgr::Release(FRenderer* renderer) {
@@ -32,15 +40,25 @@ void FResourceMgr::Release(FRenderer* renderer) {
     }
 }
 
+#include <unordered_map>
+
+struct PairHash {
+	template <typename T1, typename T2>
+	std::size_t operator()(const std::pair<T1, T2>& pair) const {
+		return std::hash<T1>()(pair.first) ^ (std::hash<T2>()(pair.second) << 1);
+	}
+};
+
 void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshName, const FWString& filepath)
 {
 	std::ifstream objFile(filepath.c_str());
 
-	TArray<FVector> positions;   // 버텍스 좌표 (v)
-	TArray<FVector> normals;     // 노말 데이터 (vn)
-	TArray<FVertexSimple> vertices;  // 최종적으로 저장될 버텍스 리스트 (Position + Normal)
-	TArray<uint32> indices;      // 인덱스 리스트
+	TArray<FVector> positions;
+	TArray<FVector> normals;
+	TArray<FVertexSimple> vertices;
+	TArray<uint32> indices;
 	TArray<FVector4> Colors;
+
 	if (objFile)
 	{
 		FString line;
@@ -50,22 +68,22 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 			std::string type;
 			lineStream >> type;
 
-			if (type == "v") // 버텍스 좌표
+			if (type == "v")
 			{
 				FVector vertex;
 				FVector color;
 				lineStream >> vertex.x >> vertex.y >> vertex.z >> color.x >> color.y >> color.z;
 
 				positions.push_back(vertex);
-				Colors.push_back(FVector4(color.x, color.y, color.z, 1.0f));
+				Colors.push_back(FVector4(color.x,color.y,color.z, 1.0f));
 			}
-			else if (type == "vn") // 노말 데이터
+			else if (type == "vn")
 			{
 				FVector normal;
 				lineStream >> normal.x >> normal.y >> normal.z;
 				normals.push_back(normal);
 			}
-			else if (type == "f") // 페이스 (v//vn)
+			else if (type == "f")
 			{
 				std::vector<uint32> faceIndices;
 				std::vector<uint32> normalIndices;
@@ -73,7 +91,7 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 
 				while (lineStream >> vertexInfo)
 				{
-					size_t firstSlash = vertexInfo.find("//");  // v//vn 형식 찾기
+					size_t firstSlash = vertexInfo.find("//");
 					if (firstSlash != std::string::npos)
 					{
 						int vIdx = std::stoi(vertexInfo.substr(0, firstSlash)) - 1;
@@ -84,40 +102,59 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 					}
 				}
 
-				// 삼각형 인덱스 생성
+				std::unordered_map<std::pair<int, int>, uint32_t, PairHash> vertexCache;
+
 				for (size_t i = 1; i + 1 < faceIndices.size(); ++i)
 				{
-					indices.push_back(faceIndices[0]);
-					indices.push_back(faceIndices[i]);
-					indices.push_back(faceIndices[i + 1]);
-
-					// 해당 버텍스들의 노말을 설정
+					uint32 triangleIndices[3];
 					for (size_t j = 0; j < 3; j++)
 					{
-						FVector position = positions[faceIndices[j]];
-						FVector normal = normals[normalIndices[j]];
-						FVector4 color = Colors[faceIndices[j]];
-						FVertexSimple vertexSimple{
-							position.x, position.y, position.z, color.x, color.y,color.z, color.a,
-							normal.x, normal.y, normal.z
-						};
+						int vIdx = faceIndices[j];
+						int nIdx = normalIndices[j];
 
-						vertices.push_back(vertexSimple);
+						std::pair<int, int> key = { vIdx, nIdx };
+						auto it = vertexCache.find(key);
+
+						if (it != vertexCache.end())
+						{
+							triangleIndices[j] = it->second;
+						}
+						else
+						{
+							FVector position = positions[vIdx];
+							FVector normal = normals[nIdx];
+							FVector4 color = Colors[vIdx];
+
+							FVertexSimple vertexSimple{
+								position.x, position.y, position.z, color.x, color.y, color.z, color.a,
+								normal.x, normal.y, normal.z
+							};
+
+							uint32 newIndex = static_cast<uint32>(vertices.size());
+							vertices.push_back(vertexSimple);
+							vertexCache[key] = newIndex;
+							triangleIndices[j] = newIndex;
+						}
 					}
+
+					indices.push_back(triangleIndices[0]);
+					indices.push_back(triangleIndices[1]);
+					indices.push_back(triangleIndices[2]);
 				}
 			}
 		}
 	}
+
 	for (auto iter : vertices)
 	{
 		UE_LOG(LogLevel::Display, "%f %f %f %f %f %f %f %f %f %f ", iter.x, iter.y, iter.z, iter.r, iter.g, iter.b, iter.a, iter.nx, iter.ny, iter.nz);
 	}
+
 	if (vertices.empty()) {
 		UE_LOG(LogLevel::Error, "Error: OBJ file is empty or failed to parse!");
 		return;
 	}
 
-	// **버텍스 및 인덱스 데이터를 배열로 변환**
 	FVertexSimple* vertexArray = new FVertexSimple[vertices.size()];
 	std::memcpy(vertexArray, vertices.data(), vertices.size() * sizeof(FVertexSimple));
 
@@ -127,16 +164,17 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 		std::memcpy(indexArray, indices.data(), indices.size() * sizeof(UINT));
 	}
 
-
 	UE_LOG(LogLevel::Error, "Arrow Vertex Size : %d", vertices.size());
 	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, vertices.size() * sizeof(FVertexSimple));
-	ID3D11Buffer* indexBuffer = nullptr;//(indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
-	if (!vertexBuffer) {
+	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
+
+	if (!vertexBuffer || !indexBuffer) {
 		UE_LOG(LogLevel::Error, "Error: Failed to create buffers for OBJ: %s", filepath.c_str());
 		delete[] vertexArray;
 		delete[] indexArray;
 		return;
 	}
+
 	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
 
 	delete[] vertexArray;
@@ -144,7 +182,6 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 
 	UE_LOG(LogLevel::Error, "OBJ Loaded: %s - %d vertices, %d indices", meshName.c_str(), vertices.size(), indices.size());
 }
-
 
 void FResourceMgr::LoadObjAsset(FRenderer* renderer, const FString& meshName, const FWString& filepath)
 {

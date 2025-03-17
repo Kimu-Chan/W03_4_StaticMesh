@@ -5,12 +5,13 @@
 #include "ImGuiManager.h"
 #include "SceneMgr.h"
 #include "Player.h"
-
+#include "EditorViewportClient.h"
 #include "EditorWindow.h"
 // #include "ImGUI\imgui.h"
 #include "IWindowToggleable.h"
 //#include "Font\IconDefs.h"
 //#include "Font/RawFonts.h"
+extern FEngineLoop GEngineLoop;
 ControlPanel::ControlPanel()
 {
 	
@@ -70,13 +71,6 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		selectedMode = CM_TRANSLATION;
 		player->SetMode(CM_TRANSLATION); // 현재 모드를 TRANSLATION 으로 변경
-
-		//propPanel->SetMode(CM_TRANSLATION);
-
-		//if (PrimaryGizmo)
-		//{
-		//	PrimaryGizmo->SetGizmoType(EGizmoType::Translation);
-		//}
 	}
 	
 	ImGui::SameLine();
@@ -85,10 +79,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		selectedMode = CM_ROTATION;
 		player->SetMode(CM_ROTATION);
-		//if (PrimaryGizmo)
-		//{
-		//	PrimaryGizmo->SetGizmoType(EGizmoType::Rotation);
-		//}
+
 	}
 	
 	ImGui::SameLine();
@@ -105,12 +96,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	{
 		Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;
 	}
-	/// Toggle Control Panel
-	//if (ImGui::Button(ICON_MONITOR))
-	//{
-	//	Console::GetInstance().bWasOpen = !Console::GetInstance().bWasOpen;  //  직접 변경
-	//}
-
+	
 	ImGui::PopFont();
 
 	ImGui::Separator();
@@ -134,11 +120,15 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->LoadData(LoadData);
 	}
 	ImGui::Separator();
-	float sp = UPrimitiveBatch::GetInstance().GetSpacing();
 
+	float sp = GEngineLoop.GetViewportClient()->GetGridSize();
 	ImGui::SliderFloat("Grid Spacing", &sp, 1.0f, 300.0f);
+	GEngineLoop.GetViewportClient()->SetGridSize(sp);
 
-	UPrimitiveBatch::GetInstance().SetSpacing(sp);
+	sp = GEngineLoop.GetViewportClient()->GetCameraSpeedScalar();
+	ImGui::SliderFloat("Camera Speed", &sp, 0.198f, 192.0f);
+	GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(sp);
+
 	ImGui::Separator();
 
 	ImGui::Text("Orthogonal");

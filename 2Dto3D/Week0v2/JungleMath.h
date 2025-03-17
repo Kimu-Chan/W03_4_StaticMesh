@@ -8,8 +8,10 @@ public:
 	static FMatrix CreateViewMatrix(FVector eye, FVector target, FVector up);
 	static FMatrix CreateProjectionMatrix(float fov, float aspect, float nearPlane, float farPlane);
 	static FVector FVectorRotate(FVector& origin, const FVector& rotation);
-	
+	static FMatrix CreateRotationMatrix(FVector rotation);
 	static float   RadToDeg(float radian);
 	static float DegToRad(float degree);
+	static FQuat EulerToQuaternion(const FVector& eulerDegrees);
+	static FVector QuaternionToEuler(const FQuat& quat);
 };
 

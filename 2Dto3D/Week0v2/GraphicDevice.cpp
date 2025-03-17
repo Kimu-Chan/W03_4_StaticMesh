@@ -5,10 +5,8 @@ void FGraphicsDevice::Initialize(HWND hWindow) {
     CreateFrameBuffer();
     CreateDepthStencilBuffer(hWindow);
     CreateDepthStencilState();
-    D3D11_RASTERIZER_DESC rasterizerdesc = {};
-    rasterizerdesc.FillMode = D3D11_FILL_SOLID;
-    rasterizerdesc.CullMode = D3D11_CULL_BACK;
-    Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
+    CreateRasterizerState();
+    CurrentRasterizer = RasterizerStateSOLID;
 }
 void FGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow) {
     // 지원하는 Direct3D 기능 레벨을 정의
@@ -130,6 +128,18 @@ void FGraphicsDevice::CreateDepthStencilState()
     }
 }
 
+void FGraphicsDevice::CreateRasterizerState()
+{
+    D3D11_RASTERIZER_DESC rasterizerdesc = {};
+    rasterizerdesc.FillMode = D3D11_FILL_SOLID;
+    rasterizerdesc.CullMode = D3D11_CULL_BACK;
+    Device->CreateRasterizerState(&rasterizerdesc, &RasterizerStateSOLID);
+
+    rasterizerdesc.FillMode = D3D11_FILL_WIREFRAME;
+    rasterizerdesc.CullMode = D3D11_CULL_BACK;
+    Device->CreateRasterizerState(&rasterizerdesc, &RasterizerStateWIREFRAME);
+}
+
 
 void FGraphicsDevice::ReleaseDeviceAndSwapChain()
 {
@@ -187,10 +197,15 @@ void FGraphicsDevice::ReleaseFrameBuffer()
 
 void FGraphicsDevice::ReleaseRasterizerState()
 {
-    if (RasterizerState)
+    if (RasterizerStateSOLID)
     {
-        RasterizerState->Release();
-        RasterizerState = nullptr;
+        RasterizerStateSOLID->Release();
+        RasterizerStateSOLID = nullptr;
+    }
+    if (RasterizerStateWIREFRAME)
+    {
+        RasterizerStateWIREFRAME->Release();
+        RasterizerStateWIREFRAME = nullptr;
     }
 }
 
@@ -214,9 +229,9 @@ void FGraphicsDevice::ReleaseDepthStencilResources()
     }
 }
 
-void FGraphicsDevice::Release() {
-    RasterizerState->Release();
-
+void FGraphicsDevice::Release() 
+{
+    ReleaseRasterizerState();
     DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
     ReleaseFrameBuffer();
@@ -235,7 +250,7 @@ void FGraphicsDevice::Prepare()
     DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 정정 연결 방식 설정
 
     DeviceContext->RSSetViewports(1, &ViewportInfo); // GPU가 화면을 렌더링할 영역 설정
-    DeviceContext->RSSetState(RasterizerState); //레스터 라이저 상태 설정
+    DeviceContext->RSSetState(CurrentRasterizer); //레스터 라이저 상태 설정
 
     DeviceContext->OMSetDepthStencilState(DepthStencilState, 0);
 
@@ -284,4 +299,19 @@ void FGraphicsDevice::OnResize(HWND hWindow) {
     DXGI_SWAP_CHAIN_DESC swapchaindesc = {};
     SwapChain->GetDesc(&swapchaindesc);
     ViewportInfo = { 0.0f, 0.0f, (float)swapchaindesc.BufferDesc.Width, (float)swapchaindesc.BufferDesc.Height, 0.0f, 1.0f };
+}
+
+void FGraphicsDevice::ChangeRasterizer(EViewModeIndex evi)
+{
+    switch (evi)
+    {
+    case EViewModeIndex::VMI_Wireframe:
+        CurrentRasterizer = RasterizerStateWIREFRAME;
+        break;
+    case EViewModeIndex::VMI_Lit:
+    case EViewModeIndex::VMI_Unlit:
+        CurrentRasterizer = RasterizerStateSOLID;
+        break;
+    }
+    
 }

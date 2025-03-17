@@ -1,6 +1,7 @@
 #include "UBillboardComponent.h"
 #include "JungleMath.h"
 #include "Player.h"
+#include "ShowFlags.h"
 #include "QuadTexture.h"
 
 #include <DirectXMath.h>
@@ -63,9 +64,11 @@ void UBillboardComponent::Render()
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 
 	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
 		indexTextureBuffer,numIndices,m_texture.m_TextureSRV,m_texture.m_SamplerState);
+	}
 	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();

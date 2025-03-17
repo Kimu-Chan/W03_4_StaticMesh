@@ -2,6 +2,7 @@
 cbuffer MatrixBuffer : register(b0)
 {
     row_major float4x4 MVP;
+    float flag;
 };
 
 // LightingBuffer: 조명 관련 파라미터 관리
@@ -15,6 +16,14 @@ cbuffer LightingBuffer : register(b1)
     float pad3; // 16바이트 정렬 맞춤 추가 패딩
     float pad4; // 16바이트 정렬 맞춤 추가 패딩
     float pad5; // 16바이트 정렬 맞춤 추가 패딩
+};
+cbuffer FNormalConstants : register(b2)
+{
+    row_major float4x4 MInverseTranspose;
+};
+cbuffer FLitUnlitConstants : register(b3)
+{
+    int isLit;
 };
 
 struct VS_INPUT
@@ -39,7 +48,8 @@ PS_INPUT mainVS(VS_INPUT input)
     // 위치 변환
     output.position = mul(input.position, MVP);
     output.color = input.color;
-    
+    if (flag)
+        output.color += 0.5;
     // 입력 normal 값의 길이 확인
     float normalThreshold = 0.001;
     float normalLen = length(input.normal);
@@ -51,29 +61,38 @@ PS_INPUT mainVS(VS_INPUT input)
     else
     {
         //output.normal = normalize(input.normal);
-        output.normal = mul(input.normal, MVP);
+        output.normal = mul(input.normal, MInverseTranspose);
         output.normalFlag = 1.0;
     }
     
     return output;
 }
 
+
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
-    // normal 값이 유효하지 않으면 흰색을 출력
-    if (input.normalFlag < 0.5)
-    {
-        return float4(input.color.rgb, input.color.a);
-    }
-    
-    // 정상적인 normal 값이 있을 때 조명 계산 진행
-    float3 N = normalize(input.normal);
-    float3 L = normalize(LightDirection);
-    float diffuse = saturate(dot(N, L));
+    float3 color = input.color.rgb;
 
-    // ambient와 diffuse 조명의 결합
-    float3 litColor = AmbientFactor * input.color.rgb 
-                    + diffuse * LightColor * input.color.rgb;
-    
-    return float4(litColor, input.color.a);
+    //if (isLit == 1) // normal이 유효할 때만 조명 연산
+    //{
+    //    if (input.normalFlag > 0.5)
+    //    {
+    //        float3 N = normalize(input.normal);
+    //        float3 L = normalize(LightDirection);
+    //        float diffuse = saturate(dot(N, L));
+    //        color = AmbientFactor * color + diffuse * LightColor * color;
+    //    }
+        
+    //}
+    //else
+    //{
+    //    if (input.normalFlag > 0.5)
+    //    {
+    //        float lv = 3.0;
+    //        color = floor(color * lv) / (lv - 1);
+    //        color = lerp(float3(0.5, 0.5, 0.5), color, 0.4); // 톤 다운
+    //    }
+    //}
+
+    return float4(color, 1.0);
 }
