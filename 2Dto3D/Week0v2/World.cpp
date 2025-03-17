@@ -76,6 +76,7 @@ void UWorld::CreateBaseObject()
 	castUUID->SetTexture(L"Assets/Texture/font.png");
 	castUUID->SetRowColumnCount(106, 106);
 	castUUID->SetUUID(sphere->UUID);
+	castUUID->SetScale(FVector(0.25f, 0.25f, 0.25f));
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(uuid);
 

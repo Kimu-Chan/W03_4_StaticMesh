@@ -11,8 +11,17 @@ UTextUUID::~UTextUUID()
 void UTextUUID::Render()
 {
 	//플래그 처리
+#pragma region GizmoDepth
+	ID3D11DepthStencilState* DepthStateDisable = FEngineLoop::graphicDevice.DepthStateDisable;
+	FEngineLoop::graphicDevice.DeviceContext->OMSetDepthStencilState(DepthStateDisable, 0);
+#pragma endregion GizmoDepth
 
-	Super::Render();
+	TextMVPRendering();
+
+#pragma region GizmoDepth
+	ID3D11DepthStencilState* originalDepthState = FEngineLoop::graphicDevice.DepthStencilState;
+	FEngineLoop::graphicDevice.DeviceContext->OMSetDepthStencilState(originalDepthState, 0);
+#pragma endregion GizmoDepth
 }
 
 int UTextUUID::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)

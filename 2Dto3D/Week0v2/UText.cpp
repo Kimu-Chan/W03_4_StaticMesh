@@ -43,28 +43,7 @@ void UText::Release()
 
 void UText::Render()
 {
-	FEngineLoop::renderer.PrepareTextureShader();
-	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
-	//FEngineLoop::renderer.PrepareSubUVConstant();
-
-	FMatrix M = CreateBillboardMatrix();
-	FMatrix VP = GetEngine().View * GetEngine().Projection;
-
-	// 최종 MVP 행렬
-	FMatrix MVP = M * VP;
-	if (this == GetWorld()->GetPickingGizmo()) {
-		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
-	}
-	else
-		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-	
-	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)){ 
-	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
-		m_texture.m_TextureSRV, m_texture.m_SamplerState);
-	}
-	//Super::Render();
-
-	FEngineLoop::renderer.PrepareShader();
+	TextMVPRendering();
 }
 void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn) 
 {
@@ -341,6 +320,32 @@ void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,
 	//FEngineLoop::resourceMgr.RegisterMesh(&FEngineLoop::renderer, "JungleText", _vertex, _vertex.size() * sizeof(FVertexTexture),
 	//	nullptr, 0);
 
+}
+
+void UText::TextMVPRendering()
+{
+	FEngineLoop::renderer.PrepareTextureShader();
+	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	//FEngineLoop::renderer.PrepareSubUVConstant();
+
+	FMatrix M = CreateBillboardMatrix();
+	FMatrix VP = GetEngine().View * GetEngine().Projection;
+
+	// 최종 MVP 행렬
+	FMatrix MVP = M * VP;
+	if (this == GetWorld()->GetPickingGizmo()) {
+		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
+	}
+	else
+		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
+		FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
+			m_texture.m_TextureSRV, m_texture.m_SamplerState);
+	}
+	//Super::Render();
+
+	FEngineLoop::renderer.PrepareShader();
 }
 
 
