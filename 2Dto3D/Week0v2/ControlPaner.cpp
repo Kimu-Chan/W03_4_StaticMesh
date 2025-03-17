@@ -39,7 +39,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
 	ImGui::Separator();
 	static int32 primitiveType = 0;
-	const char* primitives[] = { "Sphere", "Cube", "Triangle" };
+	const char* primitives[] = { "Sphere", "Cube", "Triangle", "Particle"};
 	ImGui::Combo("Primitive", &primitiveType, primitives, IM_ARRAYSIZE(primitives));
 
 	int32 SpawnCount = world->GetObjectArr().size();

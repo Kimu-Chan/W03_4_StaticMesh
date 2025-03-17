@@ -52,18 +52,10 @@ void UWorld::CreateBaseObject()
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
 	castText->SetRowColumnCount(106, 106);
-	castText->SetText(L"Jungle HELLOW 1234 안녕하세요");
+	castText->SetText(L"Jungle HELLO 1234 안녕하세요");
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(text);
 	
-	//테스트용 파티클
-	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
-	particle = static_cast<UParticleSubUVComp*>(particle);
-	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
-	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
-	castParticle->SetRowColumnCount(6, 6);
-	GUObjectArray.push_back(castParticle);
-
 }
 
 void UWorld::ReleaseBaseObject()
@@ -137,7 +129,15 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	case OBJ_CUBE:
 		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
-
+		break;
+	case OBJ_PARTICLE:
+		{
+		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+		castParticle->SetRowColumnCount(6, 6);
+		GUObjectArray.push_back(castParticle);
+		}
 		break;
 	default:
 		break;

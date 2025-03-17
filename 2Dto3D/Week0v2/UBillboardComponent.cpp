@@ -195,21 +195,22 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad)
 	FMatrix P = projectionMatrix;
 	FMatrix MVP = M * V * P;
 
-	TArray<FVector4> transformedVerts;
+	float minX = FLT_MAX;
+	float maxX = FLT_MIN;
+	float minY = FLT_MAX;
+	float maxY = FLT_MIN;
 	for (int i = 0; i < checkQuad.size(); i++)
 	{
 		FVector4 v = FVector4(checkQuad[i].x, checkQuad[i].y, checkQuad[i].z, 1.0f);
 		FVector4 clipPos = FMatrix::TransformVector(v, MVP);
 		
-		if (clipPos.a != 0)
-			transformedVerts.push_back((clipPos / clipPos.a));
-		else
-			transformedVerts.push_back(clipPos);
+		if (clipPos.a != 0)	clipPos = clipPos/clipPos.a;
+
+		minX = min(minX, clipPos.x);
+		maxX = max(maxX, clipPos.x);
+		minY = min(minY, clipPos.y);
+		maxY = max(maxY, clipPos.y);
 	}
-	float minX = min(min(transformedVerts[0].x, transformedVerts[1].x), min(transformedVerts[2].x, transformedVerts[3].x));
-	float maxX = max(max(transformedVerts[0].x, transformedVerts[1].x), max(transformedVerts[2].x, transformedVerts[3].x));
-	float minY = min(min(transformedVerts[0].y, transformedVerts[1].y), min(transformedVerts[2].y, transformedVerts[3].y));
-	float maxY = max(max(transformedVerts[0].y, transformedVerts[1].y), max(transformedVerts[2].y, transformedVerts[3].y));
 
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
