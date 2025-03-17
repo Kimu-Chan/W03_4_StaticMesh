@@ -103,6 +103,11 @@ void UWorld::Tick(double deltaTime)
 	}
 	//if(!Trashbin.empty())
 	//	CleanUp();
+	//FVector tmp = FVector(45, 30, 60);
+	//FQuat tmpQ = JungleMath::EulerToQuaternion(tmp);
+	//FVector newTmp = JungleMath::QuaternionToEuler(tmpQ);
+	//UE_LOG(LogLevel::Warning, "%f %f %f ", tmp.x, tmp.y, tmp.z);
+	//UE_LOG(LogLevel::Error, "%f %f %f ", newTmp.x, newTmp.y, newTmp.z);
 }
 
 void UWorld::Release()

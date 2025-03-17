@@ -38,7 +38,7 @@ public:
 	inline FVector				GetLocalLocation() { return RelativeLocation; }
 
 	inline void					SetLocation(FVector _newLoc) { RelativeLocation = _newLoc; }
-	void						SetRotation(FVector _newRot);
+	virtual void				SetRotation(FVector _newRot);
 	inline void					SetRotation(FQuat _newRot) { QuatRotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { RelativeScale3D = _newScale; }
 	inline void					SetParent(USceneComponent* _parent) { AttachParent = _parent; }

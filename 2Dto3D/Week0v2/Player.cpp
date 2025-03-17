@@ -229,7 +229,7 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	);
 
 	//FMatrix rotationMatrix = JungleMath::CreateRotationMatrix(obj->GetWorldRotation());
-		FMatrix rotationMatrix =FMatrix::CreateRotation(
+	FMatrix rotationMatrix =FMatrix::CreateRotation(
 		obj->GetWorldRotation().x,
 		obj->GetWorldRotation().y,
 		obj->GetWorldRotation().z
@@ -283,32 +283,6 @@ void UPlayer::PickedObjControl()
 
 void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
-		//if (cdMode == CDM_LOCAL) {
-		//	FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
-		//	FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
-		//	FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
-
-		//	if (Gizmo->GetType() == "CircleX")
-		//	{
-		//		// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
-		//		float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
-
-		//		pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
-		//	}
-		//	else if (Gizmo->GetType() == "CircleY")
-		//	{
-		//		// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
-		//		float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
-		//		pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
-		//	}
-		//	else if (Gizmo->GetType() == "CircleZ")
-		//	{
-		//		// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
-		//		float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
-		//		pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
-		//	}
-
-		//}
 		if (cdMode == CDM_LOCAL) {
 			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
 			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
@@ -364,33 +338,6 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 
 			pObj->SetRotation(newRotation);
 		}
-		//else if (cdMode == CDM_WORLD)
-		//{
-		//	FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
-		//	FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
-		//	FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
-
-		//	if (Gizmo->GetType() == "CircleX")
-		//	{
-		//		// X 축 회전 (카메라 방향에 따라 Y 축 이동량 반영)
-		//		float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
-		//		//FMatrix rotMat = FMatrix::CreateRotation(-rotationAmount, 0.0f, 0.0f);
-		//		//FVector newRoc = FMatrix::TransformVector(pObj->GetWorldRotation(), rotMat);
-		//		pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
-		//	}
-		//	else if (Gizmo->GetType() == "CircleY")
-		//	{
-		//		// Y 축 회전 (카메라 방향에 따라 X 축 이동량 반영)
-		//		float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
-		//		pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
-		//	}
-		//	else if (Gizmo->GetType() == "CircleZ")
-		//	{
-		//		// Z 축 회전 (카메라 방향에 따라 X, Y 이동량 반영)
-		//		float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
-		//		pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
-		//	}
-		//}
 }
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)

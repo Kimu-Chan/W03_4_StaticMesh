@@ -116,6 +116,5 @@ FVector USceneComponent::GetLocalRotation()
 
 void USceneComponent::SetRotation(FVector _newRot)
 {
-	FVector newRot = FVector(JungleMath::DegToRad(_newRot.x), JungleMath::DegToRad(_newRot.y), JungleMath::DegToRad(_newRot.z));
 	QuatRotation = JungleMath::EulerToQuaternion(_newRot);
 }

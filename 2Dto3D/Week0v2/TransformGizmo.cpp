@@ -113,7 +113,7 @@ void UTransformGizmo::Update(double deltaTime)
 		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
 	if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
 	{
-		
+
 			SetRotation(GetWorld()->GetPickingObj()->GetQuat());
 	}
 	else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)

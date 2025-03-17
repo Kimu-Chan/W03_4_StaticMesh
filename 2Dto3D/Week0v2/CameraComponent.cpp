@@ -20,10 +20,7 @@ void UCameraComponent::Initialize()
 void UCameraComponent::Update(double deltaTime)
 {
 	Input();
-	zAxis = (RelativeLocation + GetForwardVector() - RelativeLocation).Normalize();
-	FVector X = FVector(0.0f, 0.0f, 1.0f);
-	xAxis = (JungleMath::FVectorRotate(X,RelativeRotation).Cross(zAxis)).Normalize();
-	yAxis = zAxis.Cross(xAxis);
+	QuatRotation = JungleMath::EulerToQuaternion(RelativeRotation);
 }
 
 void UCameraComponent::Release()
@@ -121,7 +118,8 @@ void UCameraComponent::MoveForward(float _Value)
 
 void UCameraComponent::MoveRight(float _Value)
 {
-	RelativeLocation = RelativeLocation + GetUpVector() * GetEngine().GetViewportClient()->GetCameraSpeedScalar() * _Value;
+	//FVector newRight = FVector(GetRightVector().x, GetRightVector().y, 0.0f);
+	RelativeLocation = RelativeLocation + GetRightVector() * GetEngine().GetViewportClient()->GetCameraSpeedScalar() * _Value;
 }
 
 void UCameraComponent::MoveUp(float _Value)
@@ -149,31 +147,36 @@ void UCameraComponent::RotatePitch(float _Value)
 		RelativeRotation.y = 90.0f;
 }
 
-FVector UCameraComponent::GetForwardVector()
-{
-	FVector Forward = FVector(1.f, 0.f, 0.0f);
-	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
-	return Forward;
-}
-
-FVector UCameraComponent::GetUpVector()
-{
-	FVector Right = FVector(0.f, 1.f, 0.0f);
-	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
-	return Right;
-}
-
-FVector UCameraComponent::GetRightVector()
-{
-	FVector Up = FVector(0.f, 0.f, 1.0f);
-	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
-	return Up;
-}
-
-FVector UCameraComponent::GetWorldRotation()
-{
-	return RelativeRotation;
-}
-
-
+//FVector UCameraComponent::GetForwardVector()
+//{
+//	FVector Forward = FVector(1.f, 0.f, 0.0f);
+//	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
+//	return Forward;
+//}
+//
+//FVector UCameraComponent::GetUpVector()
+//{
+//	FVector Right = FVector(0.f, 1.f, 0.0f);
+//	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
+//	return Right;
+//}
+//
+//FVector UCameraComponent::GetRightVector()
+//{
+//	FVector Up = FVector(0.f, 0.f, 1.0f);
+//	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
+//	return Up;
+//}
+//
+//FVector UCameraComponent::GetWorldRotation()
+//{
+//	return RelativeRotation;
+//}
+//
+//void UCameraComponent::SetRotation(FVector _newRot)
+//{
+//	RelativeRotation = _newRot;
+//}
+//
+//
 
