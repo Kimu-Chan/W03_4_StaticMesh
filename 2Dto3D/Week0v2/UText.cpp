@@ -8,11 +8,15 @@ UText::UText() : UBillboardComponent("Quad")
 
 UText::~UText()
 {
+	if (vertexTextBuffer)
+	{
+		vertexTextBuffer->Release();
+		vertexTextBuffer = nullptr;
+	}
 }
 
 void UText::Initialize()
 {
-
 	Super::Initialize();
 }
 
@@ -21,17 +25,16 @@ void UText::Update(double deltaTime)
 
 	Super::Update(deltaTime);
 
-	FVector newCamera = GetWorld()->GetCamera()->GetForwardVector();
-	newCamera.z = 0;
-	newCamera = newCamera.Normalize();
-	float tmp = FVector(1.0f, 0.0f, 0.0f).Dot(newCamera);
-	float rad = acosf(tmp);
-	float degree = JungleMath::RadToDeg(rad);
-	FVector vtmp = FVector(1.0f, 0.0f, 0.0f).Cross(GetWorld()->GetCamera()->GetForwardVector());
-	if (vtmp.z < 0)
-		degree *= -1;
-	RelativeRotation.z = degree + 90;
-	//UE_LOG(LogLevel::Error, "%f", degree);
+	//FVector newCamera = GetWorld()->GetCamera()->GetForwardVector();
+	//newCamera.z = 0;
+	//newCamera = newCamera.Normalize();
+	//float tmp = FVector(1.0f, 0.0f, 0.0f).Dot(newCamera);
+	//float rad = acosf(tmp);
+	//float degree = JungleMath::RadToDeg(rad);
+	//FVector vtmp = FVector(1.0f, 0.0f, 0.0f).Cross(GetWorld()->GetCamera()->GetForwardVector());
+	//if (vtmp.z < 0)
+	//	degree *= -1;
+	//RelativeRotation.z = degree + 90;
 }
 
 void UText::Release()
@@ -40,39 +43,20 @@ void UText::Release()
 
 void UText::Render()
 {
-	FEngineLoop::renderer.PrepareTextureShader();
-	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
-	//FEngineLoop::renderer.PrepareSubUVConstant();
-
-	FMatrix M = CreateBillboardMatrix();
-	FMatrix VP = GetEngine().View * GetEngine().Projection;
-
-	// 최종 MVP 행렬
-	FMatrix MVP = M * VP;
-	if (this == GetWorld()->GetPickingGizmo()) {
-		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
-	}
-	else
-		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-	
-	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)){ 
-	FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
-		m_texture.m_TextureSRV, m_texture.m_SamplerState);
-	}
-	//Super::Render();
-
-	FEngineLoop::renderer.PrepareShader();
+	TextMVPRendering();
 }
 void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn) 
 {
 	RowCount = _cellsPerRow;
 	ColumnCount = _cellsPerColumn;
 }
+
 int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
 	if (!(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText))) {
 		return 0;
 	}
+	/*
 	int nIntersections = 0;
 	
 	TArray<FVertexSimple> verArr;
@@ -142,7 +126,18 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 
 	}
 	return nIntersections;
+	*/
+	
+	for (int i = 0; i < vertexTextureArr.size(); i++)
+	{
+		quad.push_back(FVector(vertexTextureArr[i].x,
+			vertexTextureArr[i].y, vertexTextureArr[i].z));
+	}
+
+	return CheckPickingOnNDC(quad,pfNearHitDistance);
 }
+
+
 void UText::SetText(FWString _text)
 {
 	if (_text.empty())
@@ -199,6 +194,12 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(leftDown);
 	}
 	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
+
+	float lastX = -1.0f + quadSize* _text.size();
+	quad.push_back(FVector(-1.0f,1.0f,0.0f));
+	quad.push_back(FVector(-1.0f,-1.0f,0.0f));
+	quad.push_back(FVector(lastX,1.0f,0.0f));
+	quad.push_back(FVector(lastX,-1.0f,0.0f));
 
 	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
 }
@@ -319,6 +320,32 @@ void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,
 	//FEngineLoop::resourceMgr.RegisterMesh(&FEngineLoop::renderer, "JungleText", _vertex, _vertex.size() * sizeof(FVertexTexture),
 	//	nullptr, 0);
 
+}
+
+void UText::TextMVPRendering()
+{
+	FEngineLoop::renderer.PrepareTextureShader();
+	//FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
+	//FEngineLoop::renderer.PrepareSubUVConstant();
+
+	FMatrix M = CreateBillboardMatrix();
+	FMatrix VP = GetEngine().View * GetEngine().Projection;
+
+	// 최종 MVP 행렬
+	FMatrix MVP = M * VP;
+	if (this == GetWorld()->GetPickingGizmo()) {
+		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
+	}
+	else
+		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+
+	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
+		FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
+			m_texture.m_TextureSRV, m_texture.m_SamplerState);
+	}
+	//Super::Render();
+
+	FEngineLoop::renderer.PrepareShader();
 }
 
 

@@ -20,6 +20,8 @@ public:
 	void				AddScale(FVector _added);
 
 	void				AddChild(USceneComponent* _newChild);
+
+	//void				SetAttachedUUID(UTextUUID* attachedUUID);
 protected:
 	FVector				RelativeLocation;
 	FVector				RelativeRotation;
@@ -27,6 +29,7 @@ protected:
 	FVector				RelativeScale3D;
 	USceneComponent*	AttachParent = nullptr;
 	TArray<USceneComponent*> AttachChildren;
+
 public:
 	virtual FVector						GetWorldRotation();
 	FVector						GetWorldScale();

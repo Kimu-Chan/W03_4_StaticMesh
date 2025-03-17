@@ -7,6 +7,11 @@ UParticleSubUVComp::UParticleSubUVComp() :UBillboardComponent("Quad")
 
 UParticleSubUVComp::~UParticleSubUVComp()
 {
+	if (vertexSubUVBuffer)
+	{
+		vertexSubUVBuffer->Release();
+		vertexSubUVBuffer = nullptr;
+	}
 }
 
 void UParticleSubUVComp::Initialize()
@@ -31,17 +36,19 @@ void UParticleSubUVComp::Update(double deltaTime)
 		indexU++;
 		second = 0;
 	}
-	if (indexU >= 6)
+	if (indexU >= CellsPerColumn)
 	{
 		indexU = 0;
 		indexV++;
 	}
-	if (indexU >= 6 && indexV >= 6)
+	if (indexV >= CellsPerRow)
 	{
-
 		indexU = 0;
 		indexV = 0;
+		GetWorld()->ThrowAwayObj(this);
+		GetWorld()->CleanUp();
 	}
+
 
 	float normalWidthOffset = float(CellWidth) / float(m_texture.m_width);
 	float normalHeightOffset = float(CellHeight) / float(m_texture.m_height);

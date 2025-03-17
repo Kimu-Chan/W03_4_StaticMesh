@@ -13,7 +13,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(Name);
 		obj->Initialize();
-		obj->UUID = UEngineStatics::GenUUID();
+		obj->UUID = id;
 
 		return obj;
 	}
@@ -27,7 +27,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(Name);
 		obj->Initialize();
-		obj->UUID = UEngineStatics::GenUUID();
+		obj->UUID = id;
 
 		return obj;
 	}
@@ -41,7 +41,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(Name);
 		obj->Initialize();
-		obj->UUID = UEngineStatics::GenUUID();
+		obj->UUID = id;
 
 		return obj;
 	}
@@ -54,7 +54,7 @@ public:
 		UObject* obj = new T;
 		obj->SetName(newName);
 		obj->Initialize();
-		obj->UUID = UEngineStatics::GenUUID();
+		obj->UUID = id;
 
 		return obj;
 	}

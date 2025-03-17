@@ -126,6 +126,13 @@ void FGraphicsDevice::CreateDepthStencilState()
         // 오류 처리
         return;
     }
+
+    D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+    depthStencilDesc.DepthEnable = FALSE;  // 깊이 테스트 유지
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;  // 깊이 버퍼에 쓰지 않음
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;  // 깊이 비교를 항상 통과
+    Device->CreateDepthStencilState(&depthStencilDesc, &DepthStateDisable);
+
 }
 
 void FGraphicsDevice::CreateRasterizerState()
@@ -314,4 +321,9 @@ void FGraphicsDevice::ChangeRasterizer(EViewModeIndex evi)
         break;
     }
     
+}
+
+void FGraphicsDevice::ChangeDepthStencilState(ID3D11DepthStencilState* newDetptStencil)
+{
+    DeviceContext->OMSetDepthStencilState(newDetptStencil, 0);
 }
