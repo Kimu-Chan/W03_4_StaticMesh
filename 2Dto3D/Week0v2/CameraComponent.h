@@ -21,12 +21,6 @@ public:
 	void				MoveUp(float _Value);
 	void				RotateYaw(float _Value);
 	void				RotatePitch(float _Value);
-	//FVector				GetForwardVector() override;
-	//FVector				GetUpVector() override;
-	//FVector				GetRightVector() override;
-	//virtual FVector						GetWorldRotation();
-
-	//virtual void						SetRotation(FVector _newRot);
 
 private:
 	float mouseSpeed = 0.25f;

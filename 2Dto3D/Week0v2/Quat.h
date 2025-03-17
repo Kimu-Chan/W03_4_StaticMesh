@@ -108,5 +108,4 @@ struct FQuat
 
 		return RotationMatrix;
 	}
-
 };

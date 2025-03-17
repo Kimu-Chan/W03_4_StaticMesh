@@ -229,7 +229,8 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	);
 
 	//FMatrix rotationMatrix = JungleMath::CreateRotationMatrix(obj->GetWorldRotation());
-	FMatrix rotationMatrix =FMatrix::CreateRotation(
+	//FMatrix rotationMatrix = JungleMath::EulerToQuaternion(obj->GetWorldRotation()).ToMatrix();
+	FMatrix rotationMatrix = FMatrix::CreateRotation(
 		obj->GetWorldRotation().x,
 		obj->GetWorldRotation().y,
 		obj->GetWorldRotation().z
@@ -292,18 +293,21 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 			FQuat currentRotation = pObj->GetQuat();
 
 			FQuat rotationDelta;
+
 			if (Gizmo->GetType() == "CircleX") {
 				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY * 0.01f;
-				rotationDelta = FQuat(pObj->GetForwardVector(), rotationAmount);
+				rotationDelta = FQuat(FVector(1.0f, 0.0f, 0.0f), rotationAmount); // 로컬 X 축 기준 회전
 			}
 			else if (Gizmo->GetType() == "CircleY") {
 				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX * 0.01f;
-				rotationDelta = FQuat(pObj->GetRightVector(), (rotationAmount));
+				rotationDelta = FQuat(FVector(0.0f, 1.0f, 0.0f), rotationAmount); // 로컬 Y 축 기준 회전
 			}
 			else if (Gizmo->GetType() == "CircleZ") {
 				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX * 0.01f;
-				rotationDelta = FQuat(pObj->GetUpVector(), rotationAmount);
+				rotationDelta = FQuat(FVector(0.0f, 0.0f, 1.0f), rotationAmount); // 로컬 Z 축 기준 회전
 			}
+
+			// 새로운 회전 = 기존 회전 * 변화량
 			FQuat newRotation = currentRotation * rotationDelta;
 
 

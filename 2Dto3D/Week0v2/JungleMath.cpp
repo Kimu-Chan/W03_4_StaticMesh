@@ -16,7 +16,10 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
 {
     FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
+
     FMatrix Rotation = FMatrix::CreateRotation(rotation.x, rotation.y, rotation.z);
+    //FMatrix Rotation = JungleMath::EulerToQuaternion(rotation).ToMatrix();
+
     FMatrix Scale = FMatrix::CreateScale(scale.x, scale.y, scale.z);
     return Scale * Rotation * Translation;
 }

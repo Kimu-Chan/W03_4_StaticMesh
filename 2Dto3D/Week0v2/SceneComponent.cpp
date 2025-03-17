@@ -16,11 +16,6 @@ void USceneComponent::Initialize()
 void USceneComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
-	//if (AttachParent) {
-	//	SetLocation(GetWorldLocation() + AttachParent->GetWorldLocation());
-	//	SetRotation(GetWorldRotation() + AttachParent->GetWorldRotation());
-	//	SetRotation(GetWorldScale() + AttachParent->GetWorldScale());
-	//}
 }
 
 
@@ -35,8 +30,6 @@ void USceneComponent::Render()
 FVector USceneComponent::GetForwardVector()
 {
 	FVector Forward = FVector(1.f, 0.f, 0.0f);
-	//FMatrix Rot =FMatrix::CreateRotation(GetWorldRotation().x, GetWorldRotation().y, GetWorldRotation().z);
-	//Forward = FMatrix::TransformVector(Forward, Rot);
 	Forward = JungleMath::FVectorRotate(Forward, QuatRotation);
 	return Forward;
 }

@@ -129,11 +129,6 @@ void UCameraComponent::MoveUp(float _Value)
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	//// Yaw 회전용 쿼터니언 (Z축 기준 회전)
-	//FQuat YawQuat = FQuat(FVector(0, 0, 1), _Value * 0.01f);
-
-	//// 기존 회전에 새로운 Yaw 회전 적용 (누적 회전)
-	//QuatRotation = YawQuat * QuatRotation; 
 	RelativeRotation.z += _Value;
 }
 
@@ -146,37 +141,3 @@ void UCameraComponent::RotatePitch(float _Value)
 	if (RelativeRotation.y > 90.0f)
 		RelativeRotation.y = 90.0f;
 }
-
-//FVector UCameraComponent::GetForwardVector()
-//{
-//	FVector Forward = FVector(1.f, 0.f, 0.0f);
-//	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
-//	return Forward;
-//}
-//
-//FVector UCameraComponent::GetUpVector()
-//{
-//	FVector Right = FVector(0.f, 1.f, 0.0f);
-//	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
-//	return Right;
-//}
-//
-//FVector UCameraComponent::GetRightVector()
-//{
-//	FVector Up = FVector(0.f, 0.f, 1.0f);
-//	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
-//	return Up;
-//}
-//
-//FVector UCameraComponent::GetWorldRotation()
-//{
-//	return RelativeRotation;
-//}
-//
-//void UCameraComponent::SetRotation(FVector _newRot)
-//{
-//	RelativeRotation = _newRot;
-//}
-//
-//
-
