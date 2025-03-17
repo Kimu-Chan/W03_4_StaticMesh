@@ -1,8 +1,6 @@
 #include "Object.h"
 #include "JungleMath.h"
 
-
-
 UObject::UObject() : Name(FName("DefaultObjectName"))
 {
 }
@@ -22,6 +20,7 @@ UObject::~UObject()
 void UObject::Initialize()
 {
 	InternalIndex = GetWorld()->GetObjectArr().size() - 1;
+
 }
 
 void UObject::Update(double deltaTime)

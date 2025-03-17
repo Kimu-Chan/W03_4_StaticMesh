@@ -2,6 +2,7 @@
 
 UTextUUID::UTextUUID()
 {
+	SetScale(FVector(0.1f, 0.25f, 0.25f));
 }
 
 UTextUUID::~UTextUUID()

@@ -209,6 +209,7 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, fl
 	float maxX = FLT_MIN;
 	float minY = FLT_MAX;
 	float maxY = FLT_MIN;
+	float avgZ = 0.0f;
 	for (int i = 0; i < checkQuad.size(); i++)
 	{
 		FVector4 v = FVector4(checkQuad[i].x, checkQuad[i].y, checkQuad[i].z, 1.0f);
@@ -220,12 +221,22 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, fl
 		maxX = max(maxX, clipPos.x);
 		minY = min(minY, clipPos.y);
 		maxY = max(maxY, clipPos.y);
+		avgZ += clipPos.z;
 	}
+
+	avgZ /= checkQuad.size();
+		UE_LOG(LogLevel::Display, "Avg %f", avgZ);
 
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
 	{
-		hitDistance = 100.0f;
+		float A = P.M[2][2];  // Projection Matrix의 A값 (Z 변환 계수)
+		float B = P.M[3][2];  // Projection Matrix의 B값 (Z 변환 계수)
+
+		float z_view_pick = (pickPosition.z - B) / A; // 마우스 클릭 View 공간 Z
+		float z_view_billboard = (avgZ - B) / A; // Billboard View 공간 Z
+
+		hitDistance = 1000.0f;
 		result = true;
 	}
 

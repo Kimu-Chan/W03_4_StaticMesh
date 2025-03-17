@@ -12,6 +12,5 @@ public:
 		FVector& rayDirection, float& pfNearHitDistance) override;
 	void SetUUID(uint32 UUID);
 private:
-
 };
 
