@@ -117,7 +117,7 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 		quad.push_back(FVector(quadTextureVertices[i].x, 
 			quadTextureVertices[i].y, quadTextureVertices[i].z));
 	}
-	return CheckPickingOnNDC(quad);
+	return CheckPickingOnNDC(quad,pfNearHitDistance);
 
 }
 
@@ -179,7 +179,7 @@ void UBillboardComponent::CreateQuadTextureVertexBuffer()
 	}
 }
 
-bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad)
+bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, float& hitDistance)
 {
 	bool result = false;
 	POINT mousePos;
@@ -225,6 +225,7 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad)
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
 	{
+		hitDistance = 100.0f;
 		result = true;
 	}
 

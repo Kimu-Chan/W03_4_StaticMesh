@@ -30,7 +30,7 @@ protected:
 
 	USceneComponent* m_parent = nullptr;
 
-	bool CheckPickingOnNDC(const TArray<FVector>& checkQuad);
+	bool CheckPickingOnNDC(const TArray<FVector>& checkQuad, float& hitDistance);
 private:
 	void CreateQuadTextureVertexBuffer();
 

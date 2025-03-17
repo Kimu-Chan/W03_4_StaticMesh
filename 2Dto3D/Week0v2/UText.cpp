@@ -134,7 +134,7 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 			vertexTextureArr[i].y, vertexTextureArr[i].z));
 	}
 
-	return CheckPickingOnNDC(quad);
+	return CheckPickingOnNDC(quad,pfNearHitDistance);
 }
 
 
