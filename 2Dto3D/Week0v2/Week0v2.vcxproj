@@ -172,6 +172,7 @@
     <ClCompile Include="UParticleSubUVComp.cpp" />
     <ClCompile Include="UText.cpp" />
     <ClCompile Include="UTexture.cpp" />
+    <ClCompile Include="UTextUUID.cpp" />
     <ClCompile Include="ViewModeDropdown.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="QuadTexture.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="UParticleSubUVComp.h" />
     <ClInclude Include="UText.h" />
     <ClInclude Include="UTexture.h" />
+    <ClInclude Include="UTextUUID.h" />
     <ClInclude Include="ViewModeDropdown.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

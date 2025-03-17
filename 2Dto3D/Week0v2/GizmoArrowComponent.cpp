@@ -66,13 +66,6 @@ void UGizmoArrowComponent::Render()
 	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.GetCurrentRasterizer()); // 이전 레스터라이저 재설정.
 
 #pragma region GizmoDepth
-	ID3D11DepthStencilState* currentState = nullptr;
-	UINT stencilRef;
-	FEngineLoop::graphicDevice.DeviceContext->OMGetDepthStencilState(&currentState, &stencilRef);
-	if (currentState != gizmoDepthState)
-	{
-		Console::GetInstance().AddLog(LogLevel::Warning, "DepthStencilState was overridden before rendering gizmo!");
-	}
 	ID3D11DepthStencilState* originalDepthState = FEngineLoop::graphicDevice.DepthStencilState;
 	FEngineLoop::graphicDevice.DeviceContext->OMSetDepthStencilState(originalDepthState, 0);
 #pragma endregion GizmoDepth

@@ -10,7 +10,7 @@ public:
 	virtual void		Update(double deltaTime)	override;
 	virtual void		Release()					override;
 	virtual void		Render()					override;
-	virtual void SetText(FWString _text);
+	void				SetText(FWString _text);
 	void SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn);
 	virtual int			CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance);
 

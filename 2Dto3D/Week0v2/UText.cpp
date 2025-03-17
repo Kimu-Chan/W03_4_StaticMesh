@@ -77,6 +77,7 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 	if (!(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText))) {
 		return 0;
 	}
+	/*
 	int nIntersections = 0;
 	
 	TArray<FVertexSimple> verArr;

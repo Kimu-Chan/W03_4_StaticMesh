@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "ShowFlags.h"
 #include "QuadTexture.h"
-
+#include "Define.h"
 #include <DirectXMath.h>
 
 UBillboardComponent::UBillboardComponent() : 
@@ -127,6 +127,11 @@ void UBillboardComponent::SetTexture(FWString _fileName)
 	m_texture.init(_fileName);
 }
 
+void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)
+{
+	m_parent = _parent;
+}
+
 
 FMatrix UBillboardComponent::CreateBillboardMatrix()
 {
@@ -147,11 +152,13 @@ FMatrix UBillboardComponent::CreateBillboardMatrix()
 	CameraView.M[1][2] = -CameraView.M[1][2];
 	CameraView.M[2][2] = -CameraView.M[2][2];
 	FMatrix LookAtCamera = FMatrix::Transpose(CameraView);
-
-	FVector worldScale = GetWorldScale();
+	
+	FVector worldLocation = RelativeLocation;
+	if (m_parent) worldLocation = RelativeLocation + m_parent->GetWorldLocation();
+	FVector worldScale = RelativeScale3D;
 	FMatrix S = FMatrix::CreateScale(worldScale.x, worldScale.y, worldScale.z);
 	FMatrix R = LookAtCamera;
-	FMatrix T = FMatrix::CreateTranslationMatrix(GetWorldLocation());
+	FMatrix T = FMatrix::CreateTranslationMatrix(worldLocation);
 	FMatrix M = S * R * T;
 
 	return M;

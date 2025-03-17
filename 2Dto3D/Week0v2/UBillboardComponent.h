@@ -18,6 +18,7 @@ public:
 		FVector& rayDirection, float& pfNearHitDistance);
 
 	void SetTexture(FWString _fileName);
+	void SetUUIDParent(USceneComponent* _parent);
 protected:
 	UTexture m_texture;
 	FMatrix CreateBillboardMatrix();
@@ -26,6 +27,8 @@ protected:
 	ID3D11Buffer* indexTextureBuffer;
 	UINT numVertices;
 	UINT numIndices;
+
+	USceneComponent* m_parent = nullptr;
 
 	bool CheckPickingOnNDC(const TArray<FVector>& checkQuad);
 private:

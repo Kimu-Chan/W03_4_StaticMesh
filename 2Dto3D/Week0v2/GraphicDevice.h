@@ -25,6 +25,7 @@ public:
     FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear) 할 때 사용할 색상(RGBA)
     D3D11_VIEWPORT ViewportInfo;
 
+    ID3D11DepthStencilState* DepthStateDisable = nullptr;
 
     void Initialize(HWND hWindow);
     void CreateDeviceAndSwapChain(HWND hWindow);
@@ -42,6 +43,7 @@ public:
     void OnResize(HWND hWindow);
     ID3D11RasterizerState* GetCurrentRasterizer() { return CurrentRasterizer; }
     void ChangeRasterizer(EViewModeIndex evi);
+    void ChangeDepthStencilState(ID3D11DepthStencilState* newDetptStencil);
 private:
     ID3D11RasterizerState* CurrentRasterizer = nullptr;
 };
