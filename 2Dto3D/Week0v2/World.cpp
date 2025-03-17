@@ -12,7 +12,7 @@
 #include "UText.h"
 #include "UParticleSubUVComp.h"
 #include "LightComponent.h"
-#include "UHangulText.h"
+#include "UTextUUID.h"
 
 UWorld::UWorld()
 {
@@ -39,7 +39,8 @@ void UWorld::CreateBaseObject()
 
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
-
+	
+/*
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
@@ -47,33 +48,45 @@ void UWorld::CreateBaseObject()
 	castBillboard->SetTexture(L"Assets/Texture/emart.png");
 	GUObjectArray.push_back(billboard);
 
+
+
+
+	UObject* pObj = nullptr;
+	pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
+	UCubeComp* cube = static_cast<UCubeComp*>(pObj);
+	GUObjectArray.push_back(pObj);
+
+
+	UObject* pObj = nullptr;
+	pObj = FObjectFactory::ConstructObject<USphereComp>("Sphere");
+	USphereComp* sphere = static_cast<USphereComp*>(pObj);
+	GUObjectArray.push_back(pObj);
+	
 	//테스트용 텍스트
 	UObject* text = FObjectFactory::ConstructObject<UText>();
-	text = static_cast<UText*>(text);
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
+
 	castText->SetRowColumnCount(106, 106);
-	castText->SetText(L"Jungle HELLOW 1234 안 녕 하 세 요");
+	castText->SetText(L"안녕하세요 Jungle 1");
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(text);
 
-	UObject* hangulText = FObjectFactory::ConstructObject<UHangulText>();
-	hangulText = static_cast<UHangulText*>(hangulText);
-	UText* castHangulText = static_cast<UHangulText*>(hangulText);
-	castHangulText->SetTexture(L"Assets/Texture/NanumMyeongjo.png");
-	castHangulText->SetRowColumnCount(107, 107);
-	castHangulText->SetText(L"안녕하세요");
+	//테스트용 텍스트
+	UObject* uuid = FObjectFactory::ConstructObject<UTextUUID>();
+	UTextUUID* castUUID = static_cast<UTextUUID*>(uuid);
+	castUUID->SetTexture(L"Assets/Texture/font.png");
+	castUUID->SetRowColumnCount(106, 106);
+	castUUID->SetUUID(sphere->UUID);
+	castUUID->SetScale(FVector(0.25f, 0.25f, 0.25f));
 	//SetText전에 RowColumn 반드시 설정
-	GUObjectArray.push_back(hangulText);
-	
-	//테스트용 파티클
-	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
-	particle = static_cast<UParticleSubUVComp*>(particle);
-	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
-	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
-	castParticle->SetRowColumnCount(6, 6);
-	GUObjectArray.push_back(castParticle);
+	GUObjectArray.push_back(uuid);
 
+	castUUID->SetUUIDParent(sphere);
+	//castBillboard->SetParent(sphere);
+	//sphere->AddChild(castBillboard);
+	//cube->AddChild(sphere);
+*/
 }
 
 void UWorld::ReleaseBaseObject()
@@ -147,13 +160,22 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	case OBJ_CUBE:
 		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
+
+	case OBJ_PARTICLE:
+	{
+		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+		castParticle->SetRowColumnCount(6, 6);
+		GUObjectArray.push_back(castParticle);
 		break;
+	}
 	case OBJ_SpotLight:
 	{
 		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
 		spotLight = static_cast<ULightComponentBase*>(spotLight);
 		ULightComponentBase* castLight = static_cast<ULightComponentBase*>(spotLight);
-		
+
 		GUObjectArray.push_back(spotLight);
 		break;
 	}

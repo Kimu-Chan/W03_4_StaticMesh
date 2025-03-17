@@ -14,9 +14,11 @@ public:
 	virtual void		Update(double deltaTime)	override;
 	virtual void		Release()					override;
 	virtual void		Render()					override;
-	virtual int			CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance);
+	virtual int			CheckRayIntersection(FVector& rayOrigin, 
+		FVector& rayDirection, float& pfNearHitDistance);
 
 	void SetTexture(FWString _fileName);
+	void SetUUIDParent(USceneComponent* _parent);
 protected:
 	UTexture m_texture;
 	FMatrix CreateBillboardMatrix();
@@ -26,9 +28,11 @@ protected:
 	UINT numVertices;
 	UINT numIndices;
 
+	USceneComponent* m_parent = nullptr;
+
+	bool CheckPickingOnNDC(const TArray<FVector>& checkQuad, float& hitDistance);
 private:
 	void CreateQuadTextureVertexBuffer();
-
 
 
 };

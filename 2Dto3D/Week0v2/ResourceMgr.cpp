@@ -22,6 +22,12 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 	LoadObjAsset(renderer, "ScaleX", L"Assets/AxisScaleArrowX.obj");
 	LoadObjAsset(renderer, "ScaleY", L"Assets/AxisScaleArrowY.obj");
 	LoadObjAsset(renderer, "ScaleZ", L"Assets/AxisScaleArrowZ.obj");
+	LoadObjAsset(renderer, "CircleX", L"Assets/AxisCircleX.obj");
+	LoadObjAsset(renderer, "CircleY", L"Assets/AxisCircleY.obj");
+	LoadObjAsset(renderer, "CircleZ", L"Assets/AxisCircleZ.obj");
+
+
+
 	LoadObjNormalAsset(renderer, "Cube", L"Assets/Cube.obj");
 	LoadObjNormalAsset(renderer, "Sphere", L"Assets/Sphere.obj");
 }
