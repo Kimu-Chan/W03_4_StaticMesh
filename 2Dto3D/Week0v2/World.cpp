@@ -39,7 +39,7 @@ void UWorld::CreateBaseObject()
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
 	
-	
+/*
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
@@ -48,13 +48,13 @@ void UWorld::CreateBaseObject()
 	GUObjectArray.push_back(billboard);
 
 
-/*
+
 
 	UObject* pObj = nullptr;
 	pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 	UCubeComp* cube = static_cast<UCubeComp*>(pObj);
 	GUObjectArray.push_back(pObj);
-*/
+
 
 	UObject* pObj = nullptr;
 	pObj = FObjectFactory::ConstructObject<USphereComp>("Sphere");
@@ -65,6 +65,7 @@ void UWorld::CreateBaseObject()
 	UObject* text = FObjectFactory::ConstructObject<UText>();
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
+
 	castText->SetRowColumnCount(106, 106);
 	castText->SetText(L"안녕하세요 Jungle 1");
 	//SetText전에 RowColumn 반드시 설정
@@ -84,6 +85,7 @@ void UWorld::CreateBaseObject()
 	//castBillboard->SetParent(sphere);
 	//sphere->AddChild(castBillboard);
 	//cube->AddChild(sphere);
+*/
 }
 
 void UWorld::ReleaseBaseObject()
