@@ -5,7 +5,6 @@
 ShowFlags::ShowFlags()
 {
 	constexpr uint64_t AllFlags =
-		static_cast<uint64_t>(EEngineShowFlags::SF_Grid) |
 		static_cast<uint64_t>(EEngineShowFlags::SF_AABB) |
 		static_cast<uint64_t>(EEngineShowFlags::SF_Primitives) |
 		static_cast<uint64_t>(EEngineShowFlags::SF_BillboardText);
