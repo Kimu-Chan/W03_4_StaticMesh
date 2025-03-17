@@ -337,7 +337,7 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 			}
 
 			// 새로운 회전 = 기존 회전 * 변화량
-			FQuat newRotation = currentRotation * rotationDelta;
+			FQuat newRotation =  rotationDelta* currentRotation;
 
 
 			pObj->SetRotation(newRotation);
