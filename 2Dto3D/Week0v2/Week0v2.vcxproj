@@ -147,6 +147,7 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="JungleMath.cpp" />
+    <ClCompile Include="LightComponentBase.cpp" />
     <ClCompile Include="ShowFlags.cpp" />
     <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
@@ -175,6 +176,14 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelTextureShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="ShaderLine.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -231,6 +240,7 @@
     <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
+    <ClInclude Include="LightComponentBase.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Quat.h" />
     <ClInclude Include="ShowFlags.h" />

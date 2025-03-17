@@ -146,8 +146,16 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	case OBJ_CUBE:
 		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
-
 		break;
+	case OBJ_SpotLight:
+	{
+		UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
+		billboard = static_cast<UBillboardComponent*>(billboard);
+		UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
+		castBillboard->SetTexture(L"Assets/Texture/spotLight.png");
+		GUObjectArray.push_back(billboard);
+		break;
+	}
 	default:
 		break;
 	}

@@ -39,7 +39,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
 	ImGui::Separator();
 	static int32 primitiveType = 0;
-	const char* primitives[] = { "Sphere", "Cube", "Triangle" };
+	const char* primitives[] = { "Sphere", "Cube", "SpotLight"};
 	ImGui::Combo("Primitive", &primitiveType, primitives, IM_ARRAYSIZE(primitives));
 
 	int32 SpawnCount = world->GetObjectArr().size();
@@ -119,11 +119,14 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->LoadData(LoadData);
 	}
 	ImGui::Separator();
-	float sp = UPrimitiveBatch::GetInstance().GetSpacing();
-
+	float sp  =   UPrimitiveBatch::GetInstance().GetSpacing();;
 	ImGui::SliderFloat("Grid Spacing", &sp, 1.0f, 300.0f);
+	UPrimitiveBatch::GetInstance().GenerateGrid(sp, 1000);
+	/*float sp = UPrimitiveBatch::GetInstance().GetSpacing();
+
 
 	UPrimitiveBatch::GetInstance().SetSpacing(sp);
+	*/
 	ImGui::Separator();
 
 	ImGui::Text("Orthogonal");
