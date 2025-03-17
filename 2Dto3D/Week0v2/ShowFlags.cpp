@@ -30,10 +30,10 @@ void ShowFlags::Draw(UWorld* world)
 
 	if (ImGui::Begin("ShowFlags"))
 	{
-		const char* items[] = { "Grid", "AABB", "Primitves","BillBoardText"};
-		static bool selected[IM_ARRAYSIZE(items)] = { false, false, false };  // 각 항목의 체크 상태 저장
+		const char* items[] = { "AABB", "Primitves","BillBoardText"};
+		static bool selected[IM_ARRAYSIZE(items)] = { true, true, true };  // 각 항목의 체크 상태 저장
 
-		if (ImGui::BeginCombo("Select Items", "Select multiple"))
+		if (ImGui::BeginCombo("Show Flags", "Select Show Flags"))
 		{
 			for (int i = 0; i < IM_ARRAYSIZE(items); i++)
 			{
@@ -51,12 +51,10 @@ uint64 ShowFlags::ConvertSelectionToFlags(const bool selected[])
 	uint64 flags = static_cast<uint64>(EEngineShowFlags::None);
 
 	if (selected[0])
-		flags |= static_cast<uint64>(EEngineShowFlags::SF_Grid);
-	if (selected[1])
 		flags |= static_cast<uint64>(EEngineShowFlags::SF_AABB);
-	if (selected[2])
+	if (selected[1])
 		flags |= static_cast<uint64>(EEngineShowFlags::SF_Primitives);
-	if (selected[3])
+	if (selected[2])
 		flags |= static_cast<uint64>(EEngineShowFlags::SF_BillboardText);
 
 	return flags;
