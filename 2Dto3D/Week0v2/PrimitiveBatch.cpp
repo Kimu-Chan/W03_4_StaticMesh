@@ -30,6 +30,14 @@ UPrimitiveBatch::~UPrimitiveBatch()
     if (pConesSRV) {
         pConesSRV->Release();
         pConesSRV = nullptr;
+    } 
+    if (pOBBSRV) {
+        pOBBSRV->Release();
+        pOBBSRV = nullptr;
+    }  
+    if (pOBBBuffer) {
+        pOBBBuffer->Release();
+        pOBBBuffer = nullptr;
     }
 }
 
@@ -44,48 +52,90 @@ void UPrimitiveBatch::RenderBatch(const FMatrix& View, const FMatrix& Projection
 {
     FEngineLoop::renderer.PrepareLineShader();
 
-    if (!pVertexBuffer)
-        pVertexBuffer = FEngineLoop::renderer.CreateStaticVerticesBuffer();
+    InitializeVertexBuffer();
 
     FMatrix Model = FMatrix::Identity;
     FMatrix MVP = Model * View * Projection;
     FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
     FEngineLoop::renderer.UpdateGridConstantBuffer(GridParam);
 
+    UpdateBoundingBoxResources();
+    UpdateConeResources();
+    UpdateOBBResources();
+
+    FEngineLoop::renderer.UpdateLinePrimitveCountBuffer(BoundingBoxes.size(), Cones.size());
+    FEngineLoop::renderer.RenderBatch(GridParam, pVertexBuffer, BoundingBoxes.size(), Cones.size(), ConeSegmentCount, OrientedBoundingBoxes.size());
+    BoundingBoxes.clear();
+    Cones.clear();
+    OrientedBoundingBoxes.clear();
+}
+void UPrimitiveBatch::InitializeVertexBuffer()
+{
+    if (!pVertexBuffer)
+        pVertexBuffer = FEngineLoop::renderer.CreateStaticVerticesBuffer();
+}
+
+void UPrimitiveBatch::UpdateBoundingBoxResources()
+{
     if (BoundingBoxes.size() > allocatedBoundingBoxCapacity) {
         allocatedBoundingBoxCapacity = BoundingBoxes.size();
 
-        if (pBoundingBoxBuffer) pBoundingBoxBuffer->Release();
-        if (pBoundingBoxSRV) pBoundingBoxSRV->Release();
+        ReleaseBoundingBoxResources();
 
         pBoundingBoxBuffer = FEngineLoop::renderer.CreateBoundingBoxBuffer(allocatedBoundingBoxCapacity);
         pBoundingBoxSRV = FEngineLoop::renderer.CreateBoundingBoxSRV(pBoundingBoxBuffer, allocatedBoundingBoxCapacity);
     }
-    
+
     if (pBoundingBoxBuffer && pBoundingBoxSRV)
         FEngineLoop::renderer.UpdateBoundingBoxBuffer(pBoundingBoxBuffer, BoundingBoxes, BoundingBoxes.size());
+}
 
+void UPrimitiveBatch::ReleaseBoundingBoxResources()
+{
+    if (pBoundingBoxBuffer) pBoundingBoxBuffer->Release();
+    if (pBoundingBoxSRV) pBoundingBoxSRV->Release();
+}
 
+void UPrimitiveBatch::UpdateConeResources()
+{
     if (Cones.size() > allocatedConeCapacity) {
         allocatedConeCapacity = Cones.size();
 
-        if (pConesBuffer) pConesBuffer->Release();
-        if (pConesSRV) pConesSRV->Release();
+        ReleaseConeResources();
 
         pConesBuffer = FEngineLoop::renderer.CreateConeBuffer(allocatedConeCapacity);
         pConesSRV = FEngineLoop::renderer.CreateConeSRV(pConesBuffer, allocatedConeCapacity);
     }
+
     if (pConesBuffer && pConesSRV)
         FEngineLoop::renderer.UpdateConesBuffer(pConesBuffer, Cones, Cones.size());
-
-
-
-    FEngineLoop::renderer.UpdateLinePrimitveCountBuffer(BoundingBoxes.size(), Cones.size());
-    FEngineLoop::renderer.RenderBatch(GridParam, pVertexBuffer, BoundingBoxes.size(), Cones.size(), ConeSegmentCount);
-    BoundingBoxes.clear();
-    Cones.clear();
 }
 
+void UPrimitiveBatch::ReleaseConeResources()
+{
+    if (pConesBuffer) pConesBuffer->Release();
+    if (pConesSRV) pConesSRV->Release();
+}
+
+void UPrimitiveBatch::UpdateOBBResources()
+{
+    if (OrientedBoundingBoxes.size() > allocatedOBBCapacity) {
+        allocatedOBBCapacity = OrientedBoundingBoxes.size();
+
+        ReleaseOBBResources();
+
+        pOBBBuffer = FEngineLoop::renderer.CreateOBBBuffer(allocatedOBBCapacity);
+        pOBBSRV = FEngineLoop::renderer.CreateOBBSRV(pOBBBuffer, allocatedOBBCapacity);
+    }
+
+    if (pOBBBuffer && pOBBSRV)
+        FEngineLoop::renderer.UpdateOBBBuffer(pOBBBuffer, OrientedBoundingBoxes, OrientedBoundingBoxes.size());
+}
+void UPrimitiveBatch::ReleaseOBBResources()
+{
+    if (pOBBBuffer) pOBBBuffer->Release();
+    if (pOBBSRV) pOBBSRV->Release();
+}
 void UPrimitiveBatch::AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
 {
     FVector localVertices[8] = {
@@ -122,6 +172,31 @@ void UPrimitiveBatch::AddBoxForCube(const FBoundingBox& localAABB, const FVector
     BoundingBox.max = max;
     BoundingBoxes.push_back(BoundingBox);
 }
+void UPrimitiveBatch::AddPlaneForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
+{
+    // 1) 로컬 AABB의 8개 꼭짓점
+    FVector localVertices[8] =
+    {
+        { localAABB.min.x, localAABB.min.y, localAABB.min.z },
+        { localAABB.max.x, localAABB.min.y, localAABB.min.z },
+        { localAABB.min.x, localAABB.max.y, localAABB.min.z },
+        { localAABB.max.x, localAABB.max.y, localAABB.min.z },
+        { localAABB.min.x, localAABB.min.y, localAABB.max.z },
+        { localAABB.max.x, localAABB.min.y, localAABB.max.z },
+        { localAABB.min.x, localAABB.max.y, localAABB.max.z },
+        { localAABB.max.x, localAABB.max.y, localAABB.max.z }
+    };
+
+    FOBB faceBB;
+    for (int32 i = 0; i < 8; ++i) {
+        // 모델 매트릭스로 점을 변환 후, center를 더해준다.
+        faceBB.corners[i] =  center + FMatrix::TransformVector(localVertices[i], modelMatrix);
+    }
+
+    OrientedBoundingBoxes.push_back(faceBB);
+
+}
+
 void UPrimitiveBatch::AddBoxForSphere(const FVector& center, bool isUniform, FVector radius, const FMatrix& modelMatrix)
 {
     FVector minPoint, maxPoint;

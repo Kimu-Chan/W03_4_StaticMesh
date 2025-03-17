@@ -18,6 +18,8 @@ void FRenderer::Release() {
     if (LightingBuffer) LightingBuffer->Release();
     if (NormalConstantBuffer) NormalConstantBuffer->Release();
     if (LitUnlitBuffer) LitUnlitBuffer->Release();
+    if (GridConstantBuffer) GridConstantBuffer->Release();
+    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
 
 }
 
@@ -311,9 +313,9 @@ void FRenderer::UpdateLightBuffer()
         constants->lightDirY = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightDirZ = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightColorX = 1.0f;
-        constants->lightColorY = .0f;
-        constants->lightColorZ = .0f;
-        constants->AmbientFactor = .1;
+        constants->lightColorY = 1.0f;
+        constants->lightColorZ = 1.0f;
+        constants->AmbientFactor = .06;
     }
     Graphics->DeviceContext->Unmap(LightingBuffer, 0);
 
@@ -582,6 +584,7 @@ void FRenderer::PrepareLineShader()
         
         Graphics->DeviceContext->VSSetShaderResources(2, 1, &pBBSRV);
         Graphics->DeviceContext->VSSetShaderResources(3, 1, &pConeSRV);
+        Graphics->DeviceContext->VSSetShaderResources(4, 1, &pOBBSRV);
     }
 }
 
@@ -652,6 +655,21 @@ ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
     return BoundingBoxBuffer;
 }
 
+ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
+{
+    D3D11_BUFFER_DESC bufferDesc = {};
+    bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
+    bufferDesc.ByteWidth = sizeof(FOBB) * numBoundingBoxes;
+    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bufferDesc.StructureByteStride = sizeof(FOBB);
+
+    ID3D11Buffer* BoundingBoxBuffer = nullptr;
+    Graphics->Device->CreateBuffer(&bufferDesc, nullptr, &BoundingBoxBuffer);
+    return BoundingBoxBuffer;
+}
+
 ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
@@ -680,6 +698,17 @@ ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundin
     return pBBSRV;
 }
 
+ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+{
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.ElementOffset = 0;
+    srvDesc.Buffer.NumElements = numBoundingBoxes;
+    Graphics->Device->CreateShaderResourceView(pBoundingBoxBuffer, &srvDesc, &pOBBSRV);
+    return pOBBSRV;
+}
+
 ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, int numCones)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -693,17 +722,30 @@ ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, in
     return pConeSRV;
 }
 
-void FRenderer::UpdateBoundingBoxBuffer(ID3D11Buffer* pBoundingBox,const TArray<FBoundingBox>& BoundingBoxes, int numBoundingBoxes)
+void FRenderer::UpdateBoundingBoxBuffer(ID3D11Buffer* pBoundingBoxBuffer,const TArray<FBoundingBox>& BoundingBoxes, int numBoundingBoxes)
 {
-    if (!pBoundingBox) return;
+    if (!pBoundingBoxBuffer) return;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
-    Graphics->DeviceContext->Map(pBoundingBox, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    Graphics->DeviceContext->Map(pBoundingBoxBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
     FBoundingBox* pData = reinterpret_cast<FBoundingBox*>(mappedResource.pData);
     for (int i = 0; i < BoundingBoxes.size(); ++i)
     {
           pData[i] = BoundingBoxes[i];
     }
-    Graphics->DeviceContext->Unmap(pBoundingBox, 0);
+    Graphics->DeviceContext->Unmap(pBoundingBoxBuffer, 0);
+}
+
+void FRenderer::UpdateOBBBuffer(ID3D11Buffer* pBoundingBoxBuffer, const TArray<FOBB>& BoundingBoxes, int numBoundingBoxes)
+{
+    if (!pBoundingBoxBuffer) return;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    Graphics->DeviceContext->Map(pBoundingBoxBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    FOBB* pData = reinterpret_cast<FOBB*>(mappedResource.pData);
+    for (int i = 0; i < BoundingBoxes.size(); ++i)
+    {
+        pData[i] = BoundingBoxes[i];
+    }
+    Graphics->DeviceContext->Unmap(pBoundingBoxBuffer, 0);
 }
 
 void FRenderer::UpdateConesBuffer(ID3D11Buffer* pConeBuffer, const TArray<FCone>& Cones, int numCones)
@@ -743,7 +785,7 @@ void FRenderer::UpdateLinePrimitveCountBuffer(int numBoundingBoxes, int numCones
     Graphics->DeviceContext->Unmap(LinePrimitiveBuffer, 0);
 }
 
-void FRenderer::RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVertexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount)
+void FRenderer::RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVertexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount, int obbCount)
 {
     UINT stride = sizeof(FSimpleVertex);
     UINT offset = 0;
@@ -751,7 +793,7 @@ void FRenderer::RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVer
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
   
     UINT vertexCountPerInstance = 2;
-    UINT instanceCount = gridParam.numGridLines + 3 + (boundingBoxCount * 12) + (coneCount * (2 * coneSegmentCount));
+    UINT instanceCount = gridParam.numGridLines + 3 + (boundingBoxCount * 12) + (coneCount * (2 * coneSegmentCount)) + (12 * obbCount);
     Graphics->DeviceContext->DrawInstanced(vertexCountPerInstance, instanceCount, 0, 0);
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

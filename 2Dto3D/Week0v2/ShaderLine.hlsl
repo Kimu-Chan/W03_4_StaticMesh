@@ -38,9 +38,14 @@ struct FConeData
     int ConeSegmentCount; // 원뿔 밑면 분할 수
     float padding2;
 };
+struct FOrientedBoxCornerData
+{
+    float3 corners[8]; // 회전/이동 된 월드 공간상의 8꼭짓점
+};
 
 StructuredBuffer<FBoundingBoxData> g_BoundingBoxes : register(t2);
 StructuredBuffer<FConeData> g_ConeData : register(t3);
+StructuredBuffer<FOrientedBoxCornerData> g_OrientedBoxes : register(t4);
 static const int BB_EdgeIndices[12][2] =
 {
     { 0, 1 },
@@ -198,7 +203,15 @@ float3 ComputeConePosition(uint globalInstanceID, uint vertexID)
         return (vertexID == 0) ? v0 : v1;
     }
 }
-
+/////////////////////////////////////////////////////////////////////////
+// OBB
+/////////////////////////////////////////////////////////////////////////
+float3 ComputeOrientedBoxPosition(uint obIndex, uint edgeIndex, uint vertexID)
+{
+    FOrientedBoxCornerData ob = g_OrientedBoxes[obIndex];
+    int cornerID = BB_EdgeIndices[edgeIndex][vertexID];
+    return ob.corners[cornerID];
+}
 
 /////////////////////////////////////////////////////////////////////////
 // 메인 버텍스 셰이더
@@ -209,49 +222,69 @@ PS_INPUT mainVS(VS_INPUT input)
     float3 pos;
     float4 color;
     
-    // 분기 기준:
-    // Grid: instanceID 0 ~ (GridCount - 1)
-    // Axis: instanceID GridCount ~ (GridCount + 2)
-    // Bounding Box: 그 이후, 각 bounding box 당 12 인스턴스
-    
-    uint gridLineCount = GridCount;
-    uint axisCount = 3;
-    uint aabbInstanceCount = 12 * BoundingBoxCount;
+    // Cone 하나당 (2 * SegmentCount) 선분.
+    // ConeCount 개수만큼이므로 총 (2 * SegmentCount * ConeCount).
+    uint coneInstCnt = ConeCount * 2 * g_ConeData[0].ConeSegmentCount;
+
+    // Grid / Axis / AABB 인스턴스 개수 계산
+    uint gridLineCount = GridCount; // 그리드 라인
+    uint axisCount = 3; // X, Y, Z 축 (월드 좌표축)
+    uint aabbInstanceCount = 12 * BoundingBoxCount; // AABB 하나당 12개 엣지
+
+    // 1) "콘 인스턴스 시작" 지점
     uint coneInstanceStart = gridLineCount + axisCount + aabbInstanceCount;
-    
-    if (input.instanceID < (uint) gridLineCount)
+    // 2) 그 다음(=콘 구간의 끝)이 곧 OBB 시작 지점
+    uint obbStart = coneInstanceStart + coneInstCnt;
+
+    // 이제 instanceID를 기준으로 분기
+    if (input.instanceID < gridLineCount)
     {
+        // 0 ~ (GridCount-1): 그리드
         pos = ComputeGridPosition(input.instanceID, input.vertexID);
-        color = float4(0.5, 0.5, 0.5, 1.0); // Grid: 회색
+        color = float4(0.5, 0.5, 0.5, 1.0); // 예: 회색
     }
-    else if (input.instanceID < (uint) (gridLineCount + axisCount))
+    else if (input.instanceID < gridLineCount + axisCount)
     {
+        // 그 다음 (axisCount)개: 축(Axis)
         uint axisInstanceID = input.instanceID - gridLineCount;
         pos = ComputeAxisPosition(axisInstanceID, input.vertexID);
+
+        // 축마다 색상
         if (axisInstanceID == 0)
-            color = float4(1.0, 0.0, 0.0, 1.0); // X축: 빨강
+            color = float4(1.0, 0.0, 0.0, 1.0); // X: 빨강
         else if (axisInstanceID == 1)
-            color = float4(0.0, 1.0, 0.0, 1.0); // Y축: 초록
-        else if (axisInstanceID == 2)
-            color = float4(0.0, 0.0, 1.0, 1.0); // Z축: 파랑
+            color = float4(0.0, 1.0, 0.0, 1.0); // Y: 초록
         else
-            color = float4(1.0, 1.0, 1.0, 1.0);
+            color = float4(0.0, 0.0, 1.0, 1.0); // Z: 파랑
     }
-    else if (input.instanceID < (uint) (gridLineCount + axisCount + aabbInstanceCount))
+    else if (input.instanceID < gridLineCount + axisCount + aabbInstanceCount)
     {
+        // 그 다음 AABB 인스턴스 구간
         uint index = input.instanceID - (gridLineCount + axisCount);
-        uint bbInstanceID = index / 12;
+        uint bbInstanceID = index / 12; // 12개가 1박스
         uint bbEdgeIndex = index % 12;
+        
         pos = ComputeBoundingBoxPosition(bbInstanceID, bbEdgeIndex, input.vertexID);
-        color = float4(1.0, 1.0, 0.0, 1.0); // Bounding Box: 노란색
+        color = float4(1.0, 1.0, 0.0, 1.0); // 노란색
+    }
+    else if (input.instanceID < obbStart)
+    {
+        // 그 다음 콘(Cone) 구간
+        uint coneInstanceID = input.instanceID - coneInstanceStart;
+        pos = ComputeConePosition(coneInstanceID, input.vertexID);
+        color = float4(1.0, 1.0, 1.0, 1.0); // 흰색
     }
     else
     {
-        uint coneInstanceID = input.instanceID - coneInstanceStart;
-        pos = ComputeConePosition(coneInstanceID, input.vertexID);
-        color = float4(1.0, 1.0, 1.0, 1.0);
+        uint obbLocalID = input.instanceID - obbStart;
+        uint obbIndex = obbLocalID / 12;
+        uint edgeIndex = obbLocalID % 12;
+
+        pos = ComputeOrientedBoxPosition(obbIndex, edgeIndex, input.vertexID);
+        color = float4(0.4, 1.0, 0.4, 1.0); // 예시: 연두색
     }
-    
+
+    // 출력 변환
     output.Position = mul(float4(pos, 1.0), MVP);
     output.Color = color;
     return output;

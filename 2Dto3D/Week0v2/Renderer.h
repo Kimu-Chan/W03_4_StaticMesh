@@ -118,15 +118,19 @@ public: // line shader
     void PrepareLineShader();
     void CreateLineShader();
     void ReleaseLineShader();
-    void RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVectexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount);
+    void RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVectexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount, int obbCount);
     void UpdateGridConstantBuffer(const FGridParameters& gridParams);
     void UpdateLinePrimitveCountBuffer(int numBoundingBoxes, int numCones);
     ID3D11Buffer* CreateStaticVerticesBuffer();
     ID3D11Buffer* CreateBoundingBoxBuffer(int numBoundingBoxes);
+    ID3D11Buffer* CreateOBBBuffer(int numBoundingBoxes);
     ID3D11Buffer* CreateConeBuffer(int numCones);
-    ID3D11ShaderResourceView* CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBox, int numBoundingBoxes);
+    ID3D11ShaderResourceView* CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes);
+    ID3D11ShaderResourceView* CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes);
     ID3D11ShaderResourceView* CreateConeSRV(ID3D11Buffer* pConeBuffer, int numCones);
+
     void UpdateBoundingBoxBuffer(ID3D11Buffer* pBoundingBoxBuffer, const TArray<FBoundingBox>& BoundingBoxes, int numBoundingBoxes);
+    void UpdateOBBBuffer(ID3D11Buffer* pBoundingBoxBuffer, const TArray<FOBB>& BoundingBoxes, int numBoundingBoxes);
     void UpdateConesBuffer(ID3D11Buffer* pConeBuffer, const TArray<FCone>& Cones, int numCones);
 
 
@@ -138,5 +142,6 @@ public: // line shader
     ID3D11Buffer* LinePrimitiveBuffer = nullptr;
     ID3D11ShaderResourceView* pBBSRV = nullptr;
     ID3D11ShaderResourceView* pConeSRV = nullptr;
+    ID3D11ShaderResourceView* pOBBSRV = nullptr;
 };
 

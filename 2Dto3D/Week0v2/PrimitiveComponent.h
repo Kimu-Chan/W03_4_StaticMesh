@@ -19,6 +19,7 @@ public:
 	FBoundingBox		AABB;
 private:
 	FString m_Type;
+protected:
 	std::shared_ptr<FStaticMesh> staticMesh;
 public:
 	FString GetType() { return m_Type; }

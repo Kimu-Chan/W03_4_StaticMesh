@@ -16,7 +16,15 @@ public:
 	float GetSpacing() { return GridParam.gridSpacing; }
 	void GenerateGrid(float spacing, int gridCount);
 	void RenderBatch(const FMatrix& View, const FMatrix& Projection);
+	void InitializeVertexBuffer();
+	void UpdateBoundingBoxResources();
+	void ReleaseBoundingBoxResources();
+	void UpdateConeResources();
+	void ReleaseConeResources();
+	void UpdateOBBResources();
+	void ReleaseOBBResources();
 	void AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix);
+	void AddPlaneForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix);
 	void AddBoxForSphere(const FVector& center,bool isUniform, FVector radius, const FMatrix& modelMatrix);
 	
 	void AddCone(const FVector& center, float radius, float height, int segments, const FMatrix& modelMatri);
@@ -29,11 +37,15 @@ private:
 	ID3D11Buffer* pBoundingBoxBuffer;
 	ID3D11ShaderResourceView* pBoundingBoxSRV;
 	ID3D11Buffer* pConesBuffer;
+	ID3D11Buffer* pOBBBuffer;
 	ID3D11ShaderResourceView* pConesSRV;
+	ID3D11ShaderResourceView* pOBBSRV;
 
 	size_t allocatedBoundingBoxCapacity;
 	size_t allocatedConeCapacity;
+	size_t allocatedOBBCapacity;
 	TArray<FBoundingBox> BoundingBoxes;
+	TArray<FOBB> OrientedBoundingBoxes;
 	TArray<FCone> Cones;
 	FGridParameters GridParam;
 	int ConeSegmentCount = 0;

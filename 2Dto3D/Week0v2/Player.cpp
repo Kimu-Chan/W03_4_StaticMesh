@@ -14,6 +14,8 @@
 #include "GizmoCircleComponent.h"
 #include "GizmoRectangleComponent.h"
 #include "UBillboardComponent.h"
+#include "LightComponent.h"
+
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -164,7 +166,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
 		UPrimitiveComponent* pObj = nullptr;
-		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
+		if (iter->IsA(UPrimitiveComponent::StaticClass()) || iter->IsA(ULightComponentBase::StaticClass())) {
 			pObj = static_cast<UPrimitiveComponent*>(iter);
 		}
 		else
@@ -188,6 +190,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 	}
 	if (Possible) {
 		GetWorld()->SetPickingObj(Possible);
+		UE_LOG(LogLevel::Warning, "hello");
 	}
 }
 
@@ -247,10 +250,10 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
 	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
 	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local ÁÂÇ¥ÃàÀÇ ray
-
-	if (obj->AABB.Intersect(pickRayOrigin, rayDirection) || obj->IsA(UGizmoBaseComponent::StaticClass())) {
-		intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
-	}
+	float dist;
+	
+	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
+	
 	return intersectCount;
 }
 

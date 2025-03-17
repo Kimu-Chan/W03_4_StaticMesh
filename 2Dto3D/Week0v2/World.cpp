@@ -11,6 +11,7 @@
 #include "UBillboardComponent.h"
 #include "UText.h"
 #include "UParticleSubUVComp.h"
+#include "LightComponent.h"
 #include "UHangulText.h"
 
 UWorld::UWorld()
@@ -149,11 +150,11 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		break;
 	case OBJ_SpotLight:
 	{
-		UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
-		billboard = static_cast<UBillboardComponent*>(billboard);
-		UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
-		castBillboard->SetTexture(L"Assets/Texture/spotLight.png");
-		GUObjectArray.push_back(billboard);
+		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
+		spotLight = static_cast<ULightComponentBase*>(spotLight);
+		ULightComponentBase* castLight = static_cast<ULightComponentBase*>(spotLight);
+		
+		GUObjectArray.push_back(spotLight);
 		break;
 	}
 	default:

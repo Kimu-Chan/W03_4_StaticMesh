@@ -49,7 +49,7 @@ PS_INPUT mainVS(VS_INPUT input)
     output.position = mul(input.position, MVP);
     output.color = input.color;
     if (flag)
-        output.color += 0.5;
+        output.color *= 0.5;
     // 입력 normal 값의 길이 확인
     float normalThreshold = 0.001;
     float normalLen = length(input.normal);
@@ -78,8 +78,7 @@ float4 PaperTexture(float3 originalColor)
     // 입력 색상을 0~1 범위로 제한
     float3 color = saturate(originalColor);
     
-    // 원래 색상과 종이 색상을 혼합 (blendFactor 값을 조절하여 혼합 비율 결정)
-    float3 paperColor = float3(0.95, 0.85, 0.7);
+    float3 paperColor = float3(0.95, 0.95, 0.95);
     float blendFactor = 0.5;
     float3 mixedColor = lerp(color, paperColor, blendFactor);
     
@@ -87,8 +86,8 @@ float4 PaperTexture(float3 originalColor)
     float grain = noise(color * 10.0) * 0.1;
     
     // 거친 질감 효과: 두 단계의 노이즈 레이어를 결합
-    float rough1 = (noise(color * 20.0) - 0.5) * 0.25;  // 첫 번째 레이어: 큰 규모의 노이즈
-    float rough2 = (noise(color * 40.0) - 0.5) * 0.15;  // 두 번째 레이어: 세부 질감 추가
+    float rough1 = (noise(color * 20.0) - 0.5) * 0.15;  // 첫 번째 레이어: 큰 규모의 노이즈
+    float rough2 = (noise(color * 40.0) - 0.5) * 0.01;  // 두 번째 레이어: 세부 질감 추가
     float rough = rough1 + rough2;
     
     // vignette 효과: 중앙에서 멀어질수록 어두워지는 효과
