@@ -5,6 +5,8 @@
 #include "PrimitiveBatch.h"
 UCubeComp::UCubeComp() : UPrimitiveComponent("Cube")
 {
+	AABB.max = { 1,1,1 };
+	AABB.min = { -1,-1,-1 };
 }
 
 UCubeComp::~UCubeComp()
@@ -38,7 +40,7 @@ void UCubeComp::Render()
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB))
-		UPrimitiveBatch::GetInstance().AddBoxForCube(GetWorldLocation(), { 1,1,1,1 }, Model);
+		UPrimitiveBatch::GetInstance().AddBoxForCube(AABB, GetWorldLocation(), Model);
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
 		Super::Render();
 }

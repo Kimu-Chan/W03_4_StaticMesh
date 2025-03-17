@@ -13,6 +13,7 @@
 #include "TransformGizmo.h"
 #include "GizmoCircleComponent.h"
 #include "GizmoRectangleComponent.h"
+#include "UBillboardComponent.h"
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -220,7 +221,6 @@ void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, c
 }
 int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount)
 {
-
 	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전, 크기 적용)
 	FMatrix scaleMatrix = FMatrix::CreateScale(
 		obj->GetWorldScale().x,
@@ -238,6 +238,7 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	// 최종 변환 행렬
 	FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+
 	FMatrix ViewMatrix = GEngineLoop.View;
 	FMatrix inverseMatrix = FMatrix::Inverse(worldMatrix * ViewMatrix);
 
@@ -246,7 +247,10 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
 	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
 	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local 좌표축의 ray
-	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
+
+	if (obj->AABB.Intersect(pickRayOrigin, rayDirection) || obj->IsA(UGizmoBaseComponent::StaticClass())) {
+		intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
+	}
 	return intersectCount;
 }
 

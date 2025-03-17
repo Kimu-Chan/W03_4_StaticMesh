@@ -2,97 +2,97 @@
 #include "EngineLoop.h"
 UPrimitiveBatch::UPrimitiveBatch()
 {
+    GenerateGrid(5, 500000);
 }
 
 UPrimitiveBatch::~UPrimitiveBatch()
 {
-    if (vertexBuffer) {
-        vertexBuffer->Release();
-        vertexBuffer = nullptr;
+    if (pVertexBuffer) {
+        pVertexBuffer->Release();
+        pVertexBuffer = nullptr;
+    }
+    if (pBoundingBoxBuffer) {
+        pBoundingBoxBuffer->Release();
+        pBoundingBoxBuffer = nullptr;
+    }
+    if (pBoundingBoxSRV) {
+        pBoundingBoxSRV->Release();
+        pBoundingBoxSRV = nullptr;
+    }
+    if (pConesBuffer) {
+        pConesBuffer->Release();
+        pConesBuffer = nullptr;
+    }
+    if (pConesSRV) {
+        pConesSRV->Release();
+        pConesSRV = nullptr;
     }
 }
 
-void UPrimitiveBatch::AddLine(const FVector& start, const FVector& end, const FVector4& color)
+void UPrimitiveBatch::GenerateGrid(float spacing, int gridCount)
 {
-	Vertices.push_back({ start.x, start.y, start.z, 
-						 color.x, color.y, color.z, 1,0,0,0 });
-
-	Vertices.push_back({ end.x, end.y, end.z,
-						 color.x, color.y, color.z, 1,0,0,0 });
+    GridParam.gridSpacing = spacing;
+    GridParam.numGridLines = gridCount;
+    GridParam.gridOrigin = { 0,0,0 };
 }
 
-void UPrimitiveBatch::AddGridLine(const FVector& start, const FVector& end, const FVector4& color)
+void UPrimitiveBatch::RenderBatch(const FMatrix& View, const FMatrix& Projection)
 {
+    FEngineLoop::renderer.PrepareLineShader();
 
-    GridVertices.push_back({ start.x, start.y, start.z,
-                         color.x, color.y, color.z, 1,0,0,0 });
+    if (!pVertexBuffer)
+        pVertexBuffer = FEngineLoop::renderer.CreateStaticVerticesBuffer();
 
-    GridVertices.push_back({ end.x, end.y, end.z,
-                         color.x, color.y, color.z, 1,0,0,0 });
-}
-
-void UPrimitiveBatch::Begin()
-{
-	Vertices.clear();
-}
-
-void UPrimitiveBatch::AddGrid(int gridSize)
-{
-    if (Spacing != PreSpacing) {
-        GridVertices.clear();
-        for (int i = -gridSize; i <= gridSize; i++) {
-            float pos = i * Spacing;
-        
-            // y-up 기준
-            // 세로선
-            AddGridLine({ pos, -gridSize * Spacing, 0 }, { pos, gridSize * Spacing, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
-
-            // 가로선
-            AddGridLine({ -gridSize * Spacing,  pos, 0 }, { gridSize * Spacing,  pos, 0 }, { 0.5f, 0.5f, 0.5f, 1.0f });
-        }
-        PreSpacing = Spacing;
-    }
-}
-void UPrimitiveBatch::ClearGrid()
-{
-    PreSpacing = 0;
-    GridVertices.clear();
-}
-void UPrimitiveBatch::SetSpacing(float spacing)
-{
-    Spacing = spacing;
-}
-
-void UPrimitiveBatch::End(const FMatrix& View, const FMatrix& Projection)
-{
-    Vertices.insert(Vertices.end(), GridVertices.begin(), GridVertices.end());
-    if (Vertices.empty()) return; // 렌더링할 데이터가 없으면 패스
-
-    if (Vertices.size() > allocatedCapacity) {
-        if (vertexBuffer) {
-            vertexBuffer->Release();
-        }
-        allocatedCapacity = Vertices.size() * 2;
-        vertexBuffer = FEngineLoop::renderer.CreateDynamicBatchBuffer(allocatedCapacity);
-    }
-
-    FEngineLoop::renderer.UpdateBuffer(vertexBuffer, Vertices);
-
-
-    UINT stride = sizeof(FVertexSimple);
-    UINT offset = 0;
     FMatrix Model = FMatrix::Identity;
-
     FMatrix MVP = Model * View * Projection;
     FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
-    FEngineLoop::renderer.RenderBatch(vertexBuffer, Vertices.size(), stride, offset);
+    FEngineLoop::renderer.UpdateGridConstantBuffer(GridParam);
+
+    if (BoundingBoxes.size() > allocatedBoundingBoxCapacity) {
+        allocatedBoundingBoxCapacity = BoundingBoxes.size();
+
+        if (pBoundingBoxBuffer) pBoundingBoxBuffer->Release();
+        if (pBoundingBoxSRV) pBoundingBoxSRV->Release();
+
+        pBoundingBoxBuffer = FEngineLoop::renderer.CreateBoundingBoxBuffer(allocatedBoundingBoxCapacity);
+        pBoundingBoxSRV = FEngineLoop::renderer.CreateBoundingBoxSRV(pBoundingBoxBuffer, allocatedBoundingBoxCapacity);
+    }
+    
+    if (pBoundingBoxBuffer && pBoundingBoxSRV)
+        FEngineLoop::renderer.UpdateBoundingBoxBuffer(pBoundingBoxBuffer, BoundingBoxes, BoundingBoxes.size());
+
+
+    if (Cones.size() > allocatedConeCapacity) {
+        allocatedConeCapacity = Cones.size();
+
+        if (pConesBuffer) pConesBuffer->Release();
+        if (pConesSRV) pConesSRV->Release();
+
+        pConesBuffer = FEngineLoop::renderer.CreateConeBuffer(allocatedConeCapacity);
+        pConesSRV = FEngineLoop::renderer.CreateConeSRV(pConesBuffer, allocatedConeCapacity);
+    }
+    if (pConesBuffer && pConesSRV)
+        FEngineLoop::renderer.UpdateConesBuffer(pConesBuffer, Cones, Cones.size());
+
+
+
+    FEngineLoop::renderer.UpdateLinePrimitveCountBuffer(BoundingBoxes.size(), Cones.size());
+    FEngineLoop::renderer.RenderBatch(GridParam, pVertexBuffer, BoundingBoxes.size(), Cones.size(), ConeSegmentCount);
+    BoundingBoxes.clear();
+    Cones.clear();
 }
 
-void UPrimitiveBatch::AddBoxForCube(const FVector& center, const FVector4& color, const FMatrix& modelMatrix)
+void UPrimitiveBatch::AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
 {
     FVector localVertices[8] = {
-        { -1, -1, -1 }, { 1, -1, -1 }, { 1, 1, -1 }, { -1, 1, -1 },
-        { -1, -1,  1 }, { 1, -1,  1 }, { 1, 1,  1 }, { -1, 1,  1 }
+         { localAABB.min.x, localAABB.min.y, localAABB.min.z },
+         { localAABB.max.x, localAABB.min.y, localAABB.min.z },
+         { localAABB.min.x, localAABB.max.y, localAABB.min.z },
+         { localAABB.max.x, localAABB.max.y, localAABB.min.z },
+         { localAABB.min.x, localAABB.min.y, localAABB.max.z },
+         { localAABB.max.x, localAABB.min.y, localAABB.max.z },
+         { localAABB.min.x, localAABB.max.y, localAABB.max.z },
+         { localAABB.max.x, localAABB.max.y, localAABB.max.z }
     };
 
     FVector worldVertices[8];
@@ -113,104 +113,62 @@ void UPrimitiveBatch::AddBoxForCube(const FVector& center, const FVector4& color
         max.y = (worldVertices[i].y > max.y) ? worldVertices[i].y : max.y;
         max.z = (worldVertices[i].z > max.z) ? worldVertices[i].z : max.z;
     }
-
-    AddBox(min, max, color);
+    FBoundingBox BoundingBox;
+    BoundingBox.min = min;
+    BoundingBox.max = max;
+    BoundingBoxes.push_back(BoundingBox);
 }
-
-void UPrimitiveBatch::AddBox(const FVector& minPoint, const FVector& maxPoint, const FVector4& color)
-{
-    // `FVector` 배열 없이 직접 `AddLine` 호출
-    AddLine({ minPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, minPoint.y, minPoint.z }, color);
-    AddLine({ maxPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, maxPoint.y, minPoint.z }, color);
-    AddLine({ maxPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, maxPoint.y, minPoint.z }, color);
-    AddLine({ minPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, minPoint.y, minPoint.z }, color);
-
-    AddLine({ minPoint.x, minPoint.y, maxPoint.z }, { maxPoint.x, minPoint.y, maxPoint.z }, color);
-    AddLine({ maxPoint.x, minPoint.y, maxPoint.z }, { maxPoint.x, maxPoint.y, maxPoint.z }, color);
-    AddLine({ maxPoint.x, maxPoint.y, maxPoint.z }, { minPoint.x, maxPoint.y, maxPoint.z }, color);
-    AddLine({ minPoint.x, maxPoint.y, maxPoint.z }, { minPoint.x, minPoint.y, maxPoint.z }, color);
-
-    AddLine({ minPoint.x, minPoint.y, minPoint.z }, { minPoint.x, minPoint.y, maxPoint.z }, color);
-    AddLine({ maxPoint.x, minPoint.y, minPoint.z }, { maxPoint.x, minPoint.y, maxPoint.z }, color);
-    AddLine({ maxPoint.x, maxPoint.y, minPoint.z }, { maxPoint.x, maxPoint.y, maxPoint.z }, color);
-    AddLine({ minPoint.x, maxPoint.y, minPoint.z }, { minPoint.x, maxPoint.y, maxPoint.z }, color);
-}
-
-void UPrimitiveBatch::AddBoxForSphere(const FVector& center,bool isUniform, float radius, const FMatrix& modelMatrix, const FVector4& color)
+void UPrimitiveBatch::AddBoxForSphere(const FVector& center, bool isUniform, FVector radius, const FMatrix& modelMatrix)
 {
     FVector minPoint, maxPoint;
-    float r = radius;
+    FVector r = radius;
+
     if (isUniform)
     {
-        // 균일 스케일: 반지름 그대로 사용
-        minPoint = FVector(center.x - r, center.y - r, center.z - r);
-        maxPoint = FVector(center.x + r, center.y + r, center.z + r);
+        minPoint = center - r;
+        maxPoint = center + r;
     }
     else
     {
-        FVector localOffsets[8] = {
-            { -1, -1, -1 }, { 1, -1, -1 }, { -1,  1, -1 }, { 1,  1, -1 },
-            { -1, -1,  1 }, { 1, -1,  1 }, { -1,  1,  1 }, { 1,  1,  1 }
-        };
-
-        minPoint = maxPoint = center  + FMatrix::TransformVector(localOffsets[0] * r, modelMatrix);
-
-        for (int i = 1; i < 8; ++i)
+        FMatrix AbsModelMatrix = modelMatrix;
+        for (int i = 0; i < 3; i++)
         {
-            FVector transformed = center + FMatrix::TransformVector(localOffsets[i] * r, modelMatrix);
-
-            minPoint.x = (transformed.x < minPoint.x) ? transformed.x : minPoint.x;
-            minPoint.y = (transformed.y < minPoint.y) ? transformed.y : minPoint.y;
-            minPoint.z = (transformed.z < minPoint.z) ? transformed.z : minPoint.z;
-
-            maxPoint.x = (transformed.x > maxPoint.x) ? transformed.x : maxPoint.x;
-            maxPoint.y = (transformed.y > maxPoint.y) ? transformed.y : maxPoint.y;
-            maxPoint.z = (transformed.z > maxPoint.z) ? transformed.z : maxPoint.z;
+            for (int j = 0; j < 3; j++)
+            {
+                AbsModelMatrix.M[i][j] = fabs(AbsModelMatrix.M[i][j]);
+            }
         }
+
+         FVector transformedRadius = FVector(
+            AbsModelMatrix.M[0][0] * r.x + AbsModelMatrix.M[1][0] * r.x + AbsModelMatrix.M[2][0] * r.x,
+            AbsModelMatrix.M[0][1] * r.y + AbsModelMatrix.M[1][1] * r.y + AbsModelMatrix.M[2][1] * r.y,
+            AbsModelMatrix.M[0][2] * r.z + AbsModelMatrix.M[1][2] * r.z + AbsModelMatrix.M[2][2] * r.z
+        );
+
+
+        FVector transformedCenter = modelMatrix.TransformPosition(center);
+
+        minPoint = transformedCenter - transformedRadius;
+        maxPoint = transformedCenter + transformedRadius;
     }
 
-    AddBox(minPoint, maxPoint, color);
+    FBoundingBox BoundingBox;
+    BoundingBox.min = minPoint;
+    BoundingBox.max = maxPoint;
+    BoundingBoxes.push_back(BoundingBox);
 }
 
-void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatrix)
+void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height, int segments, const FMatrix& modelMatrix)
 {
-    // 로컬 좌표에서 꼭짓점은 (0,0,0)으로 정의됨
+    ConeSegmentCount = segments;
     FVector localApex = FVector(0, 0, 0);
-    // 월드 좌표상의 꼭짓점 (모델 행렬 변환 및 center 오프셋 적용)
-    FVector worldApex = center + FMatrix::TransformVector(localApex, modelMatrix);
-
-    float angleStep = 2 * PI / segments;
-    TArray<FVector> basePoints;
-    basePoints.reserve(segments);
-
-    // 밑면 원의 각 점을 로컬 좌표에서 계산 (z = height에서 원을 형성)
-    for (int i = 0; i < segments; i++)
-    {
-        float angle = i * angleStep;
-        // 로컬 좌표상의 밑면 점: z 좌표가 height
-        FVector localPoint = FVector(cos(angle) * radius, sin(angle) * radius, height);
-        // 월드 좌표로 변환
-        basePoints.push_back(center + FMatrix::TransformVector(localPoint, modelMatrix));
-    }
-
-    // 밑면 원 둘레를 이루는 선분 추가
-    for (int i = 0; i < segments; i++)
-    {
-        int next = (i + 1) % segments;
-        AddLine(basePoints[i], basePoints[next], color);
-    }
-
-    // 꼭짓점(아펙스)와 밑면 각 점을 연결하는 선분 추가 (측면)
-    for (int i = 0; i < segments; i++)
-    {
-        AddLine(worldApex, basePoints[i], color);
-    }
+    FCone cone;
+    cone.ConeApex = center + FMatrix::TransformVector(localApex, modelMatrix);
+    FVector localBaseCenter = FVector(0, 0, height);
+    cone.ConeBaseCenter = center + FMatrix::TransformVector(localBaseCenter, modelMatrix);
+    cone.ConeRadius = radius;
+    cone.ConeHeight = height;
+    cone.ConeSegmentCount = ConeSegmentCount;
+    Cones.push_back(cone);
 }
 
-void UPrimitiveBatch::AddWorldGizmo()
-{
-    AddLine(FVector(0.0f, 0.0f, 0.01f), FVector(1000.0f, 0.0f, 0.01f), FVector4(1.0f, 0.0f, 0.0f, 1.0f));
-    AddLine(FVector(0.0f, 0.0f, 0.01f), FVector(0.0f, 1000.0f, 0.01f), FVector4(0.0f, 1.0f, 0.0f, 1.0f));
-    AddLine(FVector(0.0f, 0.0f, 0.00f), FVector(0.0f, 0.0f, 1000.0f), FVector4(0.0f, 0.0f, 1.0f, 1.0f));
-
-}

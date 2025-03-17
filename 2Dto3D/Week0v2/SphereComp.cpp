@@ -5,6 +5,8 @@
 
 USphereComp::USphereComp() : UPrimitiveComponent("Sphere")
 {
+	AABB.max = { 1,1,1 };
+	AABB.min = { -1,-1,-1 };
 }
 
 USphereComp::~USphereComp()
@@ -38,13 +40,13 @@ void USphereComp::Render()
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
 	FVector scale = GetWorldScale();
-	float r = 1;
+	FVector r = { 1,1,1 };
 	bool isUniform = (fabs(scale.x - scale.y) < 1e-6f) && (fabs(scale.y - scale.z) < 1e-6f);
-	r *= isUniform ? scale.x : 1;
+	r = { r.x * scale.x,r.y * scale.y,r.z * scale.z };
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB)) {
-		UPrimitiveBatch::GetInstance().AddBoxForSphere(GetWorldLocation(), isUniform,r, Model,{ 1,1,1,1 });
-		UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 3, 5, 140, { 1,1,1,1 }, Model);
+		UPrimitiveBatch::GetInstance().AddBoxForCube(AABB, GetWorldLocation(), Model);
+		UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 3, 5, 140, Model);
 	}
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))

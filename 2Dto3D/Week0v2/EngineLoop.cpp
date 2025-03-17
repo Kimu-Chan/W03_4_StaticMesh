@@ -147,15 +147,8 @@ void FEngineLoop::Tick()
 float a = 5;
 void FEngineLoop::Render()
 {
-	UPrimitiveBatch::GetInstance().Begin();
-	if(ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Grid))
-		UPrimitiveBatch::GetInstance().AddGrid(50);
-	else
-		UPrimitiveBatch::GetInstance().ClearGrid();
-
-	UPrimitiveBatch::GetInstance().AddWorldGizmo();
+	UPrimitiveBatch::GetInstance().RenderBatch(View, Projection);
 	GWorld->Render();
-	UPrimitiveBatch::GetInstance().End(View, Projection);
 	GWorld->RenderBaseObject();
 }
 float FEngineLoop::GetAspectRatio(IDXGISwapChain* swapChain)
