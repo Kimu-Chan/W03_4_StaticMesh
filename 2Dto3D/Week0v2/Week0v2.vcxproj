@@ -128,6 +128,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ActorComponent.cpp" />
+    <ClCompile Include="EditorViewportClient.cpp" />
+    <ClCompile Include="GameUserSettings.cpp" />
     <ClCompile Include="GizmoArrowComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -147,7 +149,6 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="JungleMath.cpp" />
-    <ClCompile Include="LightComponentBase.cpp" />
     <ClCompile Include="ShowFlags.cpp" />
     <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
@@ -183,14 +184,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="ShaderLine.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="ShaderW0.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -211,8 +204,8 @@
   <ItemGroup>
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Arrow.h" />
-    <ClInclude Include="CoreTypes.h" />
-    <ClInclude Include="EngineBaseTypes.h" />
+    <ClInclude Include="EditorViewportClient.h" />
+    <ClInclude Include="GameUserSettings.h" />
     <ClInclude Include="GizmoArrowComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Console.h" />
@@ -240,9 +233,6 @@
     <ClInclude Include="IWindowToggleable.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JungleMath.h" />
-    <ClInclude Include="LightComponentBase.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Quat.h" />
     <ClInclude Include="ShowFlags.h" />
     <ClInclude Include="TransformGizmo.h" />
     <ClInclude Include="NameTypes.h" />
@@ -270,8 +260,6 @@
     <ClInclude Include="UParticleSubUVComp.h" />
     <ClInclude Include="UText.h" />
     <ClInclude Include="UTexture.h" />
-    <ClInclude Include="Vector.h" />
-    <ClInclude Include="Vector4.h" />
     <ClInclude Include="ViewModeDropdown.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

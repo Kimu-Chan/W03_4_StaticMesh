@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneComponent.h"
+#include "ShowFlags.h"
 class UPrimitiveComponent : public USceneComponent
 {
 	DECLARE_CLASS(UPrimitiveComponent, USceneComponent)

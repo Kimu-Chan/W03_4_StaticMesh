@@ -5,9 +5,12 @@
 #include "Renderer.h"
 #include "PrimitiveBatch.h"
 #include "ResourceMgr.h"
-
+//#include "EditorViewportClient.h"
 class UImGuiManager;
 class UWorld;
+class FEditorViewportClient;
+
+
 class FEngineLoop
 {
 public:
@@ -29,6 +32,8 @@ public:
 	static FResourceMgr resourceMgr;
 	static uint32 TotalAllocationBytes;
 	static uint32 TotalAllocationCount;
+
+	
 	HWND hWnd;
 	FMatrix View;
 	FMatrix Projection;
@@ -38,9 +43,12 @@ private:
 	bool bIsExit = false;
 	const int32 targetFPS = 60;
 
-
+	std::shared_ptr<FEditorViewportClient> viewportClient;
 public:
 	UWorld* GetWorld(){ return GWorld; }
-	
+	std::shared_ptr<FEditorViewportClient> GetViewportClient() const
+	{
+		return viewportClient;
+	}
 };
 

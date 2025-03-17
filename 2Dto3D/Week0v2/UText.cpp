@@ -31,7 +31,7 @@ void UText::Update(double deltaTime)
 	if (vtmp.z < 0)
 		degree *= -1;
 	RelativeRotation.z = degree + 90;
-	UE_LOG(LogLevel::Error, "%f", degree);
+	//UE_LOG(LogLevel::Error, "%f", degree);
 }
 
 void UText::Release()
@@ -136,7 +136,6 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 		if (IntersectRayTriangle(rayOrigin, rayDirection, v0, v1, v2, fHitDistance)) {
 			if (fHitDistance < fNearHitDistance) {
 				pfNearHitDistance = fNearHitDistance = fHitDistance;
-	UE_LOG(LogLevel::Error, "Primitives : %d", nPrimitives);
 			}
 			nIntersections++;
 		}

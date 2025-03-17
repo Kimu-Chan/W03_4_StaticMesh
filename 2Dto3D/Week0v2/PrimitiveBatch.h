@@ -19,7 +19,6 @@ public:
 	void AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix);
 	void AddBoxForSphere(const FVector& center,bool isUniform, FVector radius, const FMatrix& modelMatrix);
 	
-
 	void AddCone(const FVector& center, float radius, float height, int segments, const FMatrix& modelMatri);
 	
 	// 복사 생성자 및 대입 연산자 삭제
@@ -38,4 +37,5 @@ private:
 	TArray<FCone> Cones;
 	FGridParameters GridParam;
 	int ConeSegmentCount = 0;
+
 };

@@ -156,19 +156,7 @@
     <ClCompile Include="UTexture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GizmoArrowComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoBaseComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoCircleComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="TransformGizmo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoRectangleComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UParticleSubUVComp.cpp">
@@ -177,7 +165,22 @@
     <ClCompile Include="UText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UHangulText.cpp">
+    <ClCompile Include="GizmoArrowComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoBaseComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoCircleComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoRectangleComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUserSettings.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorViewportClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShowFlags.cpp">
@@ -346,19 +349,7 @@
     <ClInclude Include="UTexture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GizmoArrowComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoCircleComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoBaseComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="TransformGizmo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoRectangleComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UParticleSubUVComp.h">
@@ -367,7 +358,22 @@
     <ClInclude Include="UText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="UHangulText.h">
+    <ClInclude Include="GizmoRectangleComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GizmoBaseComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GizmoCircleComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GizmoArrowComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUserSettings.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorViewportClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CoreTypes.h">

@@ -1,7 +1,11 @@
 #include "PrimitiveBatch.h"
 #include "EngineLoop.h"
+#include "EditorViewportClient.h"
+extern FEngineLoop GEngineLoop;
+
 UPrimitiveBatch::UPrimitiveBatch()
 {
+
     GenerateGrid(5, 500000);
 }
 

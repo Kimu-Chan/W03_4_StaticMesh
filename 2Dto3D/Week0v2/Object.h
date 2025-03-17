@@ -49,5 +49,6 @@ public:
 		static UClass ClassInfo("UObject", nullptr);
 		return &ClassInfo;
 	}
+private:
 };	
 
