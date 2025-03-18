@@ -5,11 +5,8 @@
 
 ULightComponentBase::ULightComponentBase()
 {
-	InitializeLight();
-}
-
-ULightComponentBase::ULightComponentBase(FString m_type) :UPrimitiveComponent(m_type)
-{
+	FString name = "SpotLight";
+	SetName(name);
 	InitializeLight();
 }
 

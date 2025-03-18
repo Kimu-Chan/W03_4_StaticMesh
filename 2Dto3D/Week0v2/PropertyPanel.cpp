@@ -56,7 +56,8 @@ void PropertyPanel::Draw(UWorld* world)
 	if (ImGui::Button(coordiButtonLabel.c_str(), buttonSize)) {
 		player->AddCoordiMode();
 	}
-    UPrimitiveComponent* PickObj = dynamic_cast<UPrimitiveComponent*>(world->GetPickingObj());
+
+    USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
     if (PickObj)
     {
         std::string objectName = PickObj->GetName().ToString();

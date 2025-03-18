@@ -2,12 +2,11 @@
 #include "PrimitiveComponent.h"
 #include "Define.h"
 class UBillboardComponent;
-class ULightComponentBase :public UPrimitiveComponent
+class ULightComponentBase :public USceneComponent
 {
-	DECLARE_CLASS(ULightComponentBase, UPrimitiveComponent)
+	DECLARE_CLASS(ULightComponentBase, USceneComponent)
 public:
 	ULightComponentBase();
-	ULightComponentBase(FString m_type);
 	~ULightComponentBase();
 
 	virtual void		Render();
@@ -21,6 +20,7 @@ public:
 private:
 	FVector4	color;
 	float		radius;
+	FBoundingBox	AABB;
 	UBillboardComponent* texture2D;
 };
 
