@@ -186,9 +186,6 @@
     <ClCompile Include="ViewModeDropdown.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="LightComponentBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ShowFlags.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -200,6 +197,18 @@
     </ClCompile>
     <ClCompile Include="GraphicDevice.cpp">
       <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UTextUUID.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTexture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SkySphereComponent.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -385,31 +394,10 @@
     <ClInclude Include="EditorViewportClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CoreTypes.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBaseTypes.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Quat.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ShowFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ViewModeDropdown.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LightComponentBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="StaticMesh.h">
@@ -422,6 +410,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ViewModeDropdown.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UTextUUID.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SkySphereComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

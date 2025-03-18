@@ -24,8 +24,8 @@ void UParticleSubUVComp::Initialize()
 void UParticleSubUVComp::Update(double deltaTime)
 {
 
-	float CellWidth = m_texture.m_width / CellsPerColumn;
-	float CellHeight = m_texture.m_height / CellsPerColumn;
+	float CellWidth = Texture->width / CellsPerColumn;
+	float CellHeight = Texture->height / CellsPerColumn;
 
 	static int indexU = 0;
 	static int indexV = 0;
@@ -51,8 +51,8 @@ void UParticleSubUVComp::Update(double deltaTime)
 	}
 
 
-	float normalWidthOffset = float(CellWidth) / float(m_texture.m_width);
-	float normalHeightOffset = float(CellHeight) / float(m_texture.m_height);
+	float normalWidthOffset = float(CellWidth) / float(Texture->width);
+	float normalHeightOffset = float(CellHeight) / float(Texture->height);
 
 	finalIndexU = float(indexU) * normalWidthOffset;
 	finalIndexV = float(indexV) * normalHeightOffset;
@@ -84,7 +84,7 @@ void UParticleSubUVComp::Render()
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 
 		FEngineLoop::renderer.RenderTexturePrimitive(vertexSubUVBuffer, numTextVertices,
-			indexTextureBuffer, numIndices, m_texture.m_TextureSRV, m_texture.m_SamplerState);
+			indexTextureBuffer, numIndices, Texture->TextureSRV, Texture->SamplerState);
 	}	
 	//Super::Render();
 
@@ -117,10 +117,10 @@ void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertic
 void UParticleSubUVComp::CreateSubUVVertexBuffer()
 {
 
-	float CellWidth = m_texture.m_width/CellsPerColumn;
-	float CellHeight = m_texture.m_height/ CellsPerColumn;
-	float normalWidthOffset = float(CellWidth) / float(m_texture.m_width);
-	float normalHeightOffset = float(CellHeight) / float(m_texture.m_height);
+	float CellWidth = Texture->width/CellsPerColumn;
+	float CellHeight = Texture->height/ CellsPerColumn;
+	float normalWidthOffset = float(CellWidth) / float(Texture->width);
+	float normalHeightOffset = float(CellHeight) / float(Texture->height);
 
 	TArray<FVertexTexture> vertices =
 	{

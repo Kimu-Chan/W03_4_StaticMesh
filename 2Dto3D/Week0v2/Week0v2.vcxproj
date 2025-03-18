@@ -151,6 +151,7 @@
     <ClCompile Include="JungleMath.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="ShowFlags.cpp" />
+    <ClCompile Include="SkySphereComponent.cpp" />
     <ClCompile Include="TransformGizmo.cpp" />
     <ClCompile Include="Launch.cpp" />
     <ClCompile Include="GraphicDevice.cpp" />
@@ -242,6 +243,8 @@
     <ClInclude Include="JungleMath.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="ShowFlags.h" />
+    <ClInclude Include="SkySphereComponent.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TransformGizmo.h" />
     <ClInclude Include="NameTypes.h" />
     <ClInclude Include="ObjectFactory.h" />

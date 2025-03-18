@@ -10,8 +10,8 @@ void UHangulText::SetText(FWString _text)
 	int textSize = _text.size();
 
 
-	float BitmapWidth = m_texture.m_width;
-	float BitmapHeight = m_texture.m_height;
+	float BitmapWidth = Texture->width;
+	float BitmapHeight = Texture->height;
 
 	float CellWidth = BitmapWidth / ColumnCount;
 	float CellHeight = BitmapHeight / RowCount;
