@@ -46,6 +46,7 @@ void USphereComp::Render()
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB)) {
 		UPrimitiveBatch::GetInstance().RenderAABB(AABB, GetWorldLocation(), Model);
+		UPrimitiveBatch::GetInstance().RenderOBB(AABB, GetWorldLocation(), Model);
 	}
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
 		Super::Render();

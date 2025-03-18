@@ -37,7 +37,7 @@ void Outliner::Draw(UWorld* world)
             // 오브젝트 리스트
             for (int32 i = 0; i < world->GetObjectArr().size();i++)
             {
-                if(!world->GetObjectArr()[i]->IsA(UPrimitiveComponent::StaticClass()))
+                if(!world->GetObjectArr()[i]->IsA(USceneComponent::StaticClass()))
                     continue;
                 // 선택 가능 항목 (Selectable)
                 if (ImGui::Selectable(world->GetObjectArr()[i]->GetName().ToString().c_str(), selected == i))

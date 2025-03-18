@@ -24,7 +24,7 @@ UWorld::~UWorld()
 
 void UWorld::Initialize()
 {
-	CreateBaseObject();;
+	CreateBaseObject();
 }
 
 void UWorld::CreateBaseObject()
@@ -40,9 +40,8 @@ void UWorld::CreateBaseObject()
 
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
-	
-	
-	//테스트용 텍스트
+		
+	////테스트용 텍스트
 	UObject* text = FObjectFactory::ConstructObject<UText>();
 	UText* castText = static_cast<UText*>(text);
 	castText->SetTexture(L"Assets/Texture/font.png");
@@ -51,7 +50,6 @@ void UWorld::CreateBaseObject()
 	//SetText전에 RowColumn 반드시 설정
 	GUObjectArray.push_back(text);
 	
-
 /*
 	//테스트용 빌보드. 필요없으면 삭제
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
@@ -208,12 +206,11 @@ SceneData UWorld::SaveData()
 	for (auto iter : GUObjectArray)
 	{
 
-		UPrimitiveComponent* Primitive = nullptr;
-		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
-			Primitive = static_cast<UPrimitiveComponent*>(iter);
+		USceneComponent* Primitive = nullptr;
+		if (iter->IsA(USceneComponent::StaticClass())) {
+			Primitive = static_cast<USceneComponent*>(iter);
 		}
-		if (Primitive)
-		{
+		if (Primitive) {
 				Save.Primitives[Count] = iter;
 				Count++;
 		}

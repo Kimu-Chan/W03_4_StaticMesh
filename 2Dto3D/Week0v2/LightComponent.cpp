@@ -37,7 +37,7 @@ void ULightComponentBase::SetRadius(float r)
 void ULightComponentBase::Render()
 {
 	texture2D->Render();
-	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
+	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), {1,1,1});
 	//FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
 	UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), radius, 15, 140, color, Model);
 	UPrimitiveBatch::GetInstance().RenderOBB(AABB, GetWorldLocation(), Model);

@@ -7,6 +7,7 @@
 #include "ObjectFactory.h"
 #include <fstream>
 #include "UBillboardComponent.h"
+#include "LightComponent.h"
 using json = nlohmann::json;
 
 SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
@@ -43,6 +44,10 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
                 else if (value["Type"].get<FString>() == "Quad")
                 {
                     obj = FObjectFactory::ConstructObject<UBillboardComponent>();
+                }  
+                else if (value["Type"].get<FString>() == "SpotLight")
+                {
+                    obj = FObjectFactory::ConstructObject<ULightComponentBase>();
                 }
             }
             USceneComponent* sceneComp = static_cast<USceneComponent*>(obj);
@@ -55,8 +60,16 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
             if (value.contains("Scale")) sceneComp->SetScale(FVector(value["Scale"].get<TArray<float>>()[0],
                 value["Scale"].get<TArray<float>>()[1],
                 value["Scale"].get<TArray<float>>()[2]));
-            if (value.contains("Type")) static_cast<UPrimitiveComponent*>(sceneComp)->SetType(value["Type"].get<FString>());
-
+            if (value.contains("Type")) {
+                UPrimitiveComponent* primitiveComp = dynamic_cast<UPrimitiveComponent*>(sceneComp);
+                if (primitiveComp) {
+                    primitiveComp->SetType(value["Type"].get<FString>());
+                }
+                else {
+                    FString name = value["Type"].get<FString>();
+                    sceneComp->SetName(name);
+                }
+            }
             sceneData.Primitives[id] = sceneComp;
         }
     }
@@ -109,11 +122,16 @@ std::string FSceneMgr::SerializeSceneData(const SceneData& sceneData)
         TArray<float> Rotation = { primitive->GetWorldRotation().x,primitive->GetWorldRotation().y,primitive->GetWorldRotation().z };
         TArray<float> Scale = { primitive->GetWorldScale().x,primitive->GetWorldScale().y,primitive->GetWorldScale().z };
 
+        FString primitiveName = static_cast<USceneComponent*>(primitive)->GetName().ToString();
+         size_t pos = primitiveName.rfind('_');
+        if (pos != std::string::npos) {
+            primitiveName = primitiveName.substr(0, pos);
+        }
         j["Primitives"][std::to_string(id)] = {
             {"Location", Location},
             {"Rotation", Rotation},
             {"Scale", Scale},
-            {"Type", static_cast<UPrimitiveComponent*>(primitive)->GetType()}
+            {"Type",primitiveName}
         };
     }
 

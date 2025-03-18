@@ -564,8 +564,7 @@ void FRenderer::PrepareLineShader()
     // 셰이더와 입력 레이아웃 설정
     Graphics->DeviceContext->VSSetShader(VertexLineShader, nullptr, 0);
     Graphics->DeviceContext->PSSetShader(PixelLineShader, nullptr, 0);
-    Graphics->DeviceContext->IASetInputLayout(LineInputLayout);
-
+  
     // 상수 버퍼 바인딩: 
     // - MatrixBuffer는 register(b0)로, Vertex Shader에 바인딩
     // - GridConstantBuffer는 register(b1)로, Vertex와 Pixel Shader에 바인딩 (픽셀 셰이더는 필요에 따라)
@@ -574,9 +573,7 @@ void FRenderer::PrepareLineShader()
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);       // MatrixBuffer (b0)
         Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &GridConstantBuffer);     // GridParameters (b1)
         Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &GridConstantBuffer); 
-
         Graphics->DeviceContext->VSSetConstantBuffers(3, 1, &LinePrimitiveBuffer); 
-        
         Graphics->DeviceContext->VSSetShaderResources(2, 1, &pBBSRV);
         Graphics->DeviceContext->VSSetShaderResources(3, 1, &pConeSRV);
         Graphics->DeviceContext->VSSetShaderResources(4, 1, &pOBBSRV);
@@ -603,11 +600,7 @@ void FRenderer::CreateLineShader()
     }
     Graphics->Device->CreatePixelShader(PixelShaderLine->GetBufferPointer(), PixelShaderLine->GetBufferSize(), nullptr, &PixelLineShader);
 
-    D3D11_INPUT_ELEMENT_DESC layout[] = {
-       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-     };
-    Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), VertexShaderLine->GetBufferPointer(), VertexShaderLine->GetBufferSize(), &LineInputLayout);
-    
+   
     VertexShaderLine->Release();
     PixelShaderLine->Release();
 
