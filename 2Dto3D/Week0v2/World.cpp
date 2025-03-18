@@ -11,8 +11,8 @@
 #include "UBillboardComponent.h"
 #include "UText.h"
 #include "UParticleSubUVComp.h"
+#include "LightComponent.h"
 #include "UTextUUID.h"
-
 UWorld::UWorld()
 {
 }
@@ -158,6 +158,14 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	case OBJ_CUBE:
 		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
+		break;
+	case OBJ_SpotLight:
+	{
+		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
+		spotLight = static_cast<ULightComponentBase*>(spotLight);
+		ULightComponentBase* castLight = static_cast<ULightComponentBase*>(spotLight);
+		
+		GUObjectArray.push_back(spotLight);
 		break;
 	//case OBJ_PARTICLE:
 	//	{

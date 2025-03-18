@@ -1,6 +1,6 @@
 #pragma once
 #include "Define.h"
-
+#include <d3d11.h>
 class UPrimitiveBatch
 {
 public:
@@ -12,31 +12,42 @@ public:
 	}
 
 public:
-	void AddLine(const FVector& start, const FVector& end, const FVector4& color);
-	void AddGridLine(const FVector& start, const FVector& end, const FVector4& color);
-	void AddGrid(int gridSize);
-	void ClearGrid();
-	void Begin();
-	//void SetSpacing(float spacing);
-	//float GetSpacing() { return Spacing; }
-	void End(const FMatrix& View, const FMatrix& Projection);
-	void AddBoxForCube(const FVector& center, const FVector4& color, const FMatrix& modelMatrix);
-	void AddBox(const FVector& minPoint, const FVector& maxPoint, const FVector4& color);
-	void AddBoxForSphere(const FVector& center,bool isUniform, float radius, const FMatrix& modelMatrix, const FVector4& color);
+	void ClearGrid() {};
+	float GetSpacing() { return GridParam.gridSpacing; }
+	void GenerateGrid(float spacing, int gridCount);
+	void RenderBatch(const FMatrix& View, const FMatrix& Projection);
+	void InitializeVertexBuffer();
+	void UpdateBoundingBoxResources();
+	void ReleaseBoundingBoxResources();
+	void UpdateConeResources();
+	void ReleaseConeResources();
+	void UpdateOBBResources();
+	void ReleaseOBBResources();
+	void AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix);
+	void AddPlaneForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix);
+	void AddBoxForSphere(const FVector& center,bool isUniform, FVector radius, const FMatrix& modelMatrix);
 	
-
-	void AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatri);
-	void AddWorldGizmo();
+	void AddCone(const FVector& center, float radius, float height, int segments, const FMatrix& modelMatri);
 	
 	// 복사 생성자 및 대입 연산자 삭제
 	UPrimitiveBatch(const UPrimitiveBatch&) = delete;
 	UPrimitiveBatch& operator=(const UPrimitiveBatch&) = delete;
 private:
-	ID3D11Buffer* vertexBuffer;
-	size_t allocatedCapacity;
-	TArray<FVertexSimple> Vertices;
-	TArray<FVertexSimple> GridVertices;
-	//float Spacing = 5.f;
-	float PreSpacing = 0.f;
-	
+	ID3D11Buffer* pVertexBuffer;
+	ID3D11Buffer* pBoundingBoxBuffer;
+	ID3D11ShaderResourceView* pBoundingBoxSRV;
+	ID3D11Buffer* pConesBuffer;
+	ID3D11Buffer* pOBBBuffer;
+	ID3D11ShaderResourceView* pConesSRV;
+	ID3D11ShaderResourceView* pOBBSRV;
+
+	size_t allocatedBoundingBoxCapacity;
+	size_t allocatedConeCapacity;
+	size_t allocatedOBBCapacity;
+	TArray<FBoundingBox> BoundingBoxes;
+	TArray<FOBB> OrientedBoundingBoxes;
+	TArray<FCone> Cones;
+	FGridParameters GridParam;
+	int ConeSegmentCount = 0;
+
 };

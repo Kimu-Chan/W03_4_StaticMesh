@@ -13,6 +13,9 @@
 #include "TransformGizmo.h"
 #include "GizmoCircleComponent.h"
 #include "GizmoRectangleComponent.h"
+#include "UBillboardComponent.h"
+#include "LightComponent.h"
+
 using namespace DirectX;
 
 UPlayer::UPlayer()
@@ -66,7 +69,7 @@ void UPlayer::Input()
 	else
 	{
 		if (bLeftMouseDown) {
-				bLeftMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
+				bLeftMouseDown = false; // ���콺 ������ ��ư�� ���� ���� �ʱ�ȭ
 				GetWorld()->SetPickingGizmo(nullptr);
 		}
 	}
@@ -163,7 +166,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
 		UPrimitiveComponent* pObj = nullptr;
-		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
+		if (iter->IsA(UPrimitiveComponent::StaticClass()) || iter->IsA(ULightComponentBase::StaticClass())) {
 			pObj = static_cast<UPrimitiveComponent*>(iter);
 		}
 		else
@@ -187,6 +190,7 @@ void UPlayer::PickObj(FVector& pickPosition)
 	}
 	if (Possible) {
 		GetWorld()->SetPickingObj(Possible);
+		UE_LOG(LogLevel::Warning, "hello");
 	}
 }
 
@@ -220,8 +224,7 @@ void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, c
 }
 int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount)
 {
-
-	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전, 크기 적용)
+	// ������Ʈ�� ���� ��ȯ ��� ���� (��ġ, ȸ��, ũ�� ����)
 	FMatrix scaleMatrix = FMatrix::CreateScale(
 		obj->GetWorldScale().x,
 		obj->GetWorldScale().y,
@@ -238,8 +241,9 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->GetWorldLocation());
 
-	// 최종 변환 행렬
+	// ���� ��ȯ ���
 	FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+
 	FMatrix ViewMatrix = GEngineLoop.View;
 	FMatrix inverseMatrix = FMatrix::Inverse(worldMatrix * ViewMatrix);
 
@@ -247,18 +251,21 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
 	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
-	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local 좌표축의 ray
+	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local ��ǥ���� ray
+	float dist;
+	
 	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
+	
 	return intersectCount;
 }
 
 void UPlayer::PickedObjControl()
 {
-	// 마우스 이동량 계산
+	// ���콺 �̵��� ���
 	if (GetWorld()->GetPickingObj() && GetWorld()->GetPickingGizmo()) {
 		POINT currentMousePos;
 		GetCursorPos(&currentMousePos);
-		// 마우스 이동 차이 계산
+		// ���콺 �̵� ���� ���
 		int32 deltaX = currentMousePos.x - m_LastMousePos.x;
 		int32 deltaY = currentMousePos.y - m_LastMousePos.y;
 
@@ -277,7 +284,7 @@ void UPlayer::PickedObjControl()
 			ControlRotation(pObj, Gizmo, deltaX, deltaY);
 			break;
 		}
-		// 새로운 마우스 위치 저장
+		// ���ο� ���콺 ��ġ ����
 		m_LastMousePos = currentMousePos;
 	}
 }
@@ -289,7 +296,7 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 		FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
 		FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
 
-		// 현재 로컬 회전값 가져오기
+		// ���� ���� ȸ���� ��������
 		FQuat currentRotation = pObj->GetQuat();
 
 		FQuat rotationDelta;
@@ -298,17 +305,17 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 			float rotationAmount = (cameraUp.z >= 0 ? -1.0f : 1.0f) * deltaY * 0.01f;
 			rotationAmount = rotationAmount + (cameraRight.x >= 0 ? 1.0f : -1.0f) * deltaX * 0.01f;
 
-			rotationDelta = FQuat(FVector(1.0f, 0.0f, 0.0f), rotationAmount); // 로컬 X 축 기준 회전
+			rotationDelta = FQuat(FVector(1.0f, 0.0f, 0.0f), rotationAmount); // ���� X �� ���� ȸ��
 		}
 		else if (Gizmo->GetType() == "CircleY") {
 			float rotationAmount = (cameraRight.x >= 0 ? 1.0f : -1.0f) * deltaX * 0.01f;
 			rotationAmount = rotationAmount + (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY * 0.01f;
 
-			rotationDelta = FQuat(FVector(0.0f, 1.0f, 0.0f), rotationAmount); // 로컬 Y 축 기준 회전
+			rotationDelta = FQuat(FVector(0.0f, 1.0f, 0.0f), rotationAmount); // ���� Y �� ���� ȸ��
 		}
 		else if (Gizmo->GetType() == "CircleZ") {
 			float rotationAmount = (cameraForward.x <= 0 ? -1.0f : 1.0f) * deltaX * 0.01f;
-			rotationDelta = FQuat(FVector(0.0f, 0.0f, 1.0f), rotationAmount); // 로컬 Z 축 기준 회전
+			rotationDelta = FQuat(FVector(0.0f, 0.0f, 1.0f), rotationAmount); // ���� Z �� ���� ȸ��
 		}
 		if (cdMode == CDM_LOCAL) {
 			pObj->SetRotation(currentRotation * rotationDelta);
@@ -327,17 +334,17 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 
 	if (cdMode == CDM_LOCAL) {
 		if (Gizmo->GetType() == "ArrowX") {
-			// 이동 벡터를 로컬 X 축에 투영하여 X 방향 이동 적용
+			// �̵� ���͸� ���� X �࿡ �����Ͽ� X ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetForwardVector());
 			pObj->AddLocation(pObj->GetForwardVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowY") {
-			// 이동 벡터를 로컬 Y 축에 투영하여 Y 방향 이동 적용
+			// �̵� ���͸� ���� Y �࿡ �����Ͽ� Y ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetRightVector());
 			pObj->AddLocation(pObj->GetRightVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowZ") {
-			// 이동 벡터를 로컬 Z 축에 투영하여 Z 방향 이동 적용
+			// �̵� ���͸� ���� Z �࿡ �����Ͽ� Z ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetUpVector());
 			pObj->AddLocation(pObj->GetUpVector() * moveAmount);
 		}

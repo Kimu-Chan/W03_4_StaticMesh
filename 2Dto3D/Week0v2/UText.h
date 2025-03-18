@@ -3,6 +3,7 @@
 class UText :
     public UBillboardComponent
 {
+	DECLARE_CLASS(UText, UBillboardComponent)
 public:
 	UText();
 	~UText();

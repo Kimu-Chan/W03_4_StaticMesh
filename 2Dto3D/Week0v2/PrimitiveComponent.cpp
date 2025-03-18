@@ -41,6 +41,7 @@ void UPrimitiveComponent::Render()
 
 int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
+    if (!AABB.Intersect(rayOrigin, rayDirection, pfNearHitDistance)) return 0;
     int nIntersections = 0;
     if (staticMesh == nullptr) return 0;
     FVertexSimple* vertices = staticMesh->vertices.get();

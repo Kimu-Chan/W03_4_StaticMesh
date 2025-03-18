@@ -2,7 +2,7 @@
 #include "GizmoBaseComponent.h"
 class UGizmoArrowComponent : public UGizmoBaseComponent
 {
-	DECLARE_CLASS(UGizmoArrowComponent, UPrimitiveComponent)
+	DECLARE_CLASS(UGizmoArrowComponent, UGizmoBaseComponent)
 
 public:
 	UGizmoArrowComponent();

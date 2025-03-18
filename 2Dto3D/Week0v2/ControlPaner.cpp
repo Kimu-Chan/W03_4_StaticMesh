@@ -40,7 +40,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
 	ImGui::Separator();
 	static int32 primitiveType = 0;
-	const char* primitives[] = { "Sphere", "Cube", "Triangle", "Particle"};
+	const char* primitives[] = { "Sphere", "Cube", "SpotLight"};
 	ImGui::Combo("Primitive", &primitiveType, primitives, IM_ARRAYSIZE(primitives));
 
 	int32 SpawnCount = world->GetObjectArr().size();
@@ -120,11 +120,12 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 		world->LoadData(LoadData);
 	}
 	ImGui::Separator();
-
+	
 	float sp = GEngineLoop.GetViewportClient()->GetGridSize();
 	ImGui::SliderFloat("Grid Spacing", &sp, 1.0f, 300.0f);
+	UPrimitiveBatch::GetInstance().GenerateGrid(sp, 50000);
 	GEngineLoop.GetViewportClient()->SetGridSize(sp);
-
+	
 	sp = GEngineLoop.GetViewportClient()->GetCameraSpeedScalar();
 	ImGui::SliderFloat("Camera Speed", &sp, 0.198f, 192.0f);
 	GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(sp);

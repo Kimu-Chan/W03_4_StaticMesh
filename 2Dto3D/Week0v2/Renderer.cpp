@@ -4,6 +4,7 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
     CreateTextureShader();
+    CreateLineShader();
     CreateConstantBuffer();
     CreateLightingBuffer();
     CreateLitUnlitBuffer();
@@ -17,6 +18,8 @@ void FRenderer::Release() {
     if (LightingBuffer) LightingBuffer->Release();
     if (NormalConstantBuffer) NormalConstantBuffer->Release();
     if (LitUnlitBuffer) LitUnlitBuffer->Release();
+    if (GridConstantBuffer) GridConstantBuffer->Release();
+    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
 
 }
 
@@ -155,16 +158,6 @@ void FRenderer::RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, I
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
-void FRenderer::RenderBatch(ID3D11Buffer* pVectexBuffer, UINT numVertices, UINT stride, UINT offset)
-{
-    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVectexBuffer, &stride, &offset);
-    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
-    // 한 번의 Draw Call로 모든 선을 렌더링
-    Graphics->DeviceContext->Draw(numVertices, 0);
-    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
     // 2. Create a vertex buffer
@@ -184,7 +177,6 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
     }
     return vertexBuffer;
 }
-
 ID3D11Buffer* FRenderer::CreateVertexBuffer(const TArray<FVertexSimple>& vertices, UINT byteWidth)
 {
     D3D11_BUFFER_DESC vertexbufferdesc = {};
@@ -203,23 +195,6 @@ ID3D11Buffer* FRenderer::CreateVertexBuffer(const TArray<FVertexSimple>& vertice
         UE_LOG(LogLevel::Warning, "VertexBuffer Creation faild");
     }
     return vertexBuffer;
-}
-ID3D11Buffer* FRenderer::CreateDynamicBatchBuffer(size_t capacity)
-{
-    D3D11_BUFFER_DESC bd = {};
-    bd.Usage = D3D11_USAGE_DYNAMIC;
-    bd.ByteWidth = sizeof(FVertexSimple) * capacity;
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    bd.MiscFlags = 0;
-
-    ID3D11Buffer* buffer = nullptr;
-    HRESULT hr = Graphics->Device->CreateBuffer(&bd, nullptr, &buffer);
-    if (FAILED(hr))
-    {
-        UE_LOG(LogLevel::Warning, "동적 배치 버퍼 생성 실패");
-    }
-    return buffer;
 }
 
 ID3D11Buffer* FRenderer::CreateIndexBuffer(uint32* indices, UINT byteWidth)
@@ -286,6 +261,16 @@ void FRenderer::CreateConstantBuffer()
     // create FNormalConstans buffer 
     constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
+
+    constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
+    
+    constantbufferdesc.ByteWidth = sizeof(FGridParameters) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &GridConstantBuffer);
+    
+    constantbufferdesc.ByteWidth = sizeof(FPrimitiveCounts) + 0xf & 0xfffffff0;
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &LinePrimitiveBuffer);
+
 }
 
 void FRenderer::CreateLightingBuffer()
@@ -328,26 +313,14 @@ void FRenderer::UpdateLightBuffer()
         constants->lightDirY = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightDirZ = 1.0f; // 예: 빛이 위에서 아래로 내려오는 경우
         constants->lightColorX = 1.0f;
-        constants->lightColorY = .0f;
-        constants->lightColorZ = .0f;
-        constants->AmbientFactor = .1;
+        constants->lightColorY = 1.0f;
+        constants->lightColorZ = 1.0f;
+        constants->AmbientFactor = .06;
     }
     Graphics->DeviceContext->Unmap(LightingBuffer, 0);
 
 }
-void FRenderer::UpdateBuffer(ID3D11Buffer* vertexBuffer, const TArray<FVertexSimple>& Vertices)
-{
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-    HRESULT hr = Graphics->DeviceContext->Map(vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) {
-        memcpy(mappedResource.pData, Vertices.data(), Vertices.size() * sizeof(FVertexSimple));
-        Graphics->DeviceContext->Unmap(vertexBuffer, 0);
-    }
-    else {
-        UE_LOG(LogLevel::Warning, "Vertex buffer 매핑 실패");
-    }
 
-}
 void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
 {
     if (ConstantBuffer)
@@ -586,4 +559,237 @@ void FRenderer::PrepareSubUVConstant()
     }
 }
 
+void FRenderer::PrepareLineShader()
+{
+    // 셰이더와 입력 레이아웃 설정
+    Graphics->DeviceContext->VSSetShader(VertexLineShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelLineShader, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(LineInputLayout);
 
+    // 상수 버퍼 바인딩: 
+    // - MatrixBuffer는 register(b0)로, Vertex Shader에 바인딩
+    // - GridConstantBuffer는 register(b1)로, Vertex와 Pixel Shader에 바인딩 (픽셀 셰이더는 필요에 따라)
+    if (ConstantBuffer && GridConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);       // MatrixBuffer (b0)
+        Graphics->DeviceContext->VSSetConstantBuffers(1, 1, &GridConstantBuffer);     // GridParameters (b1)
+        Graphics->DeviceContext->PSSetConstantBuffers(1, 1, &GridConstantBuffer); 
+
+        Graphics->DeviceContext->VSSetConstantBuffers(3, 1, &LinePrimitiveBuffer); 
+        
+        Graphics->DeviceContext->VSSetShaderResources(2, 1, &pBBSRV);
+        Graphics->DeviceContext->VSSetShaderResources(3, 1, &pConeSRV);
+        Graphics->DeviceContext->VSSetShaderResources(4, 1, &pOBBSRV);
+    }
+}
+
+void FRenderer::CreateLineShader()
+{
+    ID3DBlob* VertexShaderLine;
+    ID3DBlob* PixelShaderLine;
+
+    HRESULT hr;
+    hr = D3DCompileFromFile(L"ShaderLine.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &VertexShaderLine, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "VertexShader Error");
+    }
+    Graphics->Device->CreateVertexShader(VertexShaderLine->GetBufferPointer(), VertexShaderLine->GetBufferSize(), nullptr, &VertexLineShader);
+
+    hr = D3DCompileFromFile(L"ShaderLine.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &PixelShaderLine, nullptr);
+    if (FAILED(hr))
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "PixelShader Error");
+    }
+    Graphics->Device->CreatePixelShader(PixelShaderLine->GetBufferPointer(), PixelShaderLine->GetBufferSize(), nullptr, &PixelLineShader);
+
+    D3D11_INPUT_ELEMENT_DESC layout[] = {
+       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+     };
+    Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), VertexShaderLine->GetBufferPointer(), VertexShaderLine->GetBufferSize(), &LineInputLayout);
+    
+    VertexShaderLine->Release();
+    PixelShaderLine->Release();
+
+}
+
+void FRenderer::ReleaseLineShader()
+{
+
+}
+
+ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer()
+{
+    FSimpleVertex vertices[2]{ {0},{0} };
+
+    D3D11_BUFFER_DESC vbDesc = {};
+    vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    vbDesc.ByteWidth = sizeof(vertices);
+    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    vbDesc.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA vbInitData = {};
+    vbInitData.pSysMem = vertices;
+    ID3D11Buffer* pVertexBuffer = nullptr;
+    HRESULT hr = Graphics->Device->CreateBuffer(&vbDesc, &vbInitData, &pVertexBuffer);
+    return pVertexBuffer;
+ 
+}
+
+ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
+{
+    D3D11_BUFFER_DESC bufferDesc = {};
+    bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
+    bufferDesc.ByteWidth = sizeof(FBoundingBox) * numBoundingBoxes;
+    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bufferDesc.StructureByteStride = sizeof(FBoundingBox);
+
+    ID3D11Buffer* BoundingBoxBuffer = nullptr;
+    Graphics->Device->CreateBuffer(&bufferDesc, nullptr, &BoundingBoxBuffer);
+    return BoundingBoxBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
+{
+    D3D11_BUFFER_DESC bufferDesc = {};
+    bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
+    bufferDesc.ByteWidth = sizeof(FOBB) * numBoundingBoxes;
+    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bufferDesc.StructureByteStride = sizeof(FOBB);
+
+    ID3D11Buffer* BoundingBoxBuffer = nullptr;
+    Graphics->Device->CreateBuffer(&bufferDesc, nullptr, &BoundingBoxBuffer);
+    return BoundingBoxBuffer;
+}
+
+ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
+{
+    D3D11_BUFFER_DESC bufferDesc = {};
+    bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    bufferDesc.ByteWidth = sizeof(FCone) * numCones;
+    bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    bufferDesc.StructureByteStride = sizeof(FCone);
+
+    ID3D11Buffer* ConeBuffer = nullptr;
+    Graphics->Device->CreateBuffer(&bufferDesc, nullptr, &ConeBuffer);
+    return ConeBuffer;
+}
+
+ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+{
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.ElementOffset = 0;
+    srvDesc.Buffer.NumElements = numBoundingBoxes;
+
+   
+    Graphics->Device->CreateShaderResourceView(pBoundingBoxBuffer, &srvDesc, &pBBSRV);
+    return pBBSRV;
+}
+
+ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+{
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.ElementOffset = 0;
+    srvDesc.Buffer.NumElements = numBoundingBoxes;
+    Graphics->Device->CreateShaderResourceView(pBoundingBoxBuffer, &srvDesc, &pOBBSRV);
+    return pOBBSRV;
+}
+
+ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, int numCones)
+{
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.ElementOffset = 0;
+    srvDesc.Buffer.NumElements = numCones;
+
+
+    Graphics->Device->CreateShaderResourceView(pConeBuffer, &srvDesc, &pConeSRV);
+    return pConeSRV;
+}
+
+void FRenderer::UpdateBoundingBoxBuffer(ID3D11Buffer* pBoundingBoxBuffer,const TArray<FBoundingBox>& BoundingBoxes, int numBoundingBoxes)
+{
+    if (!pBoundingBoxBuffer) return;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    Graphics->DeviceContext->Map(pBoundingBoxBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    FBoundingBox* pData = reinterpret_cast<FBoundingBox*>(mappedResource.pData);
+    for (int i = 0; i < BoundingBoxes.size(); ++i)
+    {
+          pData[i] = BoundingBoxes[i];
+    }
+    Graphics->DeviceContext->Unmap(pBoundingBoxBuffer, 0);
+}
+
+void FRenderer::UpdateOBBBuffer(ID3D11Buffer* pBoundingBoxBuffer, const TArray<FOBB>& BoundingBoxes, int numBoundingBoxes)
+{
+    if (!pBoundingBoxBuffer) return;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    Graphics->DeviceContext->Map(pBoundingBoxBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    FOBB* pData = reinterpret_cast<FOBB*>(mappedResource.pData);
+    for (int i = 0; i < BoundingBoxes.size(); ++i)
+    {
+        pData[i] = BoundingBoxes[i];
+    }
+    Graphics->DeviceContext->Unmap(pBoundingBoxBuffer, 0);
+}
+
+void FRenderer::UpdateConesBuffer(ID3D11Buffer* pConeBuffer, const TArray<FCone>& Cones, int numCones)
+{
+    if (!pConeBuffer) return;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    Graphics->DeviceContext->Map(pConeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    FCone* pData = reinterpret_cast<FCone*>(mappedResource.pData);
+    for (int i = 0; i < Cones.size(); ++i)
+    {
+        pData[i] = Cones[i];
+    }
+    Graphics->DeviceContext->Unmap(pConeBuffer, 0);
+}
+
+void FRenderer::UpdateGridConstantBuffer(const FGridParameters& gridParams)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    HRESULT hr = Graphics->DeviceContext->Map(GridConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+        memcpy(mappedResource.pData, &gridParams, sizeof(FGridParameters));
+        Graphics->DeviceContext->Unmap(GridConstantBuffer, 0);
+    }
+    else {
+        UE_LOG(LogLevel::Warning, "gridParams 매핑 실패");
+    }
+
+}
+
+void FRenderer::UpdateLinePrimitveCountBuffer(int numBoundingBoxes, int numCones)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    HRESULT hr = Graphics->DeviceContext->Map(LinePrimitiveBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    FPrimitiveCounts* pData = reinterpret_cast<FPrimitiveCounts*>(mappedResource.pData);
+    pData->BoundingBoxCount = numBoundingBoxes;
+    pData->ConeCount = numCones;
+    Graphics->DeviceContext->Unmap(LinePrimitiveBuffer, 0);
+}
+
+void FRenderer::RenderBatch(const FGridParameters& gridParam, ID3D11Buffer* pVertexBuffer, int boundingBoxCount, int coneCount, int coneSegmentCount, int obbCount)
+{
+    UINT stride = sizeof(FSimpleVertex);
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+  
+    UINT vertexCountPerInstance = 2;
+    UINT instanceCount = gridParam.numGridLines + 3 + (boundingBoxCount * 12) + (coneCount * (2 * coneSegmentCount)) + (12 * obbCount);
+    Graphics->DeviceContext->DrawInstanced(vertexCountPerInstance, instanceCount, 0, 0);
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+}
