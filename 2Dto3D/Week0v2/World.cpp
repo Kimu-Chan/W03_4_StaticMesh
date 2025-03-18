@@ -181,6 +181,7 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
 		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
 		castParticle->SetRowColumnCount(6, 6);
+		castParticle->SetScale(FVector(10.0f, 10.0f, 1.0f));
 		GUObjectArray.push_back(castParticle);
 		}
 		break;
