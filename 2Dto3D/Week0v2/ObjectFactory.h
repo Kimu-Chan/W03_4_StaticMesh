@@ -12,8 +12,8 @@ public:
 		FString Name = "DefualtObjectName_" + std::to_string(id);
 		UObject* obj = new T;
 		obj->SetName(Name);
-		obj->Initialize();
 		obj->UUID = id;
+		obj->Initialize();
 
 		return obj;
 	}
@@ -26,8 +26,8 @@ public:
 		UE_LOG(LogLevel::Display, "Created New Object : %s", Name);
 		UObject* obj = new T;
 		obj->SetName(Name);
-		obj->Initialize();
 		obj->UUID = id;
+		obj->Initialize();
 
 		return obj;
 	}
@@ -40,8 +40,8 @@ public:
 		UE_LOG(LogLevel::Display, "Created New Object : %s", newName);
 		UObject* obj = new T;
 		obj->SetName(Name);
-		obj->Initialize();
 		obj->UUID = id;
+		obj->Initialize();
 
 		return obj;
 	}
@@ -53,8 +53,8 @@ public:
 		UE_LOG(LogLevel::Display, "Created New Object : %s", newName.c_str());
 		UObject* obj = new T;
 		obj->SetName(newName);
-		obj->Initialize();
 		obj->UUID = id;
+		obj->Initialize();
 
 		return obj;
 	}

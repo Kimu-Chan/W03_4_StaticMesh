@@ -225,7 +225,6 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, fl
 	}
 
 	avgZ /= checkQuad.size();
-		UE_LOG(LogLevel::Display, "Avg %f", avgZ);
 
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
