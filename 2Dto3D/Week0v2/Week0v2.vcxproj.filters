@@ -78,9 +78,6 @@
     <ClCompile Include="World.cpp">
       <Filter>소스 파일\UWorld</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicDevice.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>소스 파일\Engine</Filter>
     </ClCompile>
@@ -191,6 +188,18 @@
     </ClCompile>
     <ClCompile Include="LightComponentBase.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowFlags.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UHangulText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModeDropdown.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicDevice.cpp">
+      <Filter>소스 파일\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +414,15 @@
     </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>소스 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UHangulText.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModeDropdown.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -66,6 +66,7 @@ void PropertyPanel::Draw(UWorld* world)
 
 		PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
 		PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
+		// 함정카드 발동! z축이 반대로 돌아가지만 여기서 보정해주는것
 		PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
 	}
 

@@ -15,45 +15,22 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 
 FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
 {
-    // 1. 스케일 행렬
-    //XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
-
-    //// 2. 회전 행렬 (쿼터니언 사용)
-    //XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
-    //XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
-    //XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
-
-    //XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
-    //rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
-
-    //XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
-
-    //// 3. 이동 행렬
-    //XMMATRIX translationMatrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
-
-    //// 최종 변환 행렬 (회전 -> 스케일 -> 이동 순서)
-    //XMMATRIX finalMatrix = XMMatrixMultiply(XMMatrixMultiply(scaleMatrix,rotationMatrix), translationMatrix);
-
     FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
+
     FMatrix Rotation = FMatrix::CreateRotation(rotation.x, rotation.y, rotation.z);
+    //FMatrix Rotation = JungleMath::EulerToQuaternion(rotation).ToMatrix();
+
     FMatrix Scale = FMatrix::CreateScale(scale.x, scale.y, scale.z);
-
-
-
-    // XMMATRIX -> FMatrix 변환
-    //FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
-
-    //for (int i = 0; i < 4; i++)
-    //{
-    //    for (int j = 0; j < 4; j++)
-    //    {
-    //        result.M[i][j] = finalMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
-    //    }
-    //}
-
     return Scale * Rotation * Translation;
 }
 
+FMatrix JungleMath::CreateModelMatrix(FVector translation, FQuat rotation, FVector scale)
+{
+    FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
+    FMatrix Rotation = rotation.ToMatrix();
+    FMatrix Scale = FMatrix::CreateScale(scale.x, scale.y, scale.z);
+    return Scale * Rotation * Translation;
+}
 FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)
 {
     FVector zAxis = (target - eye).Normalize();  // DirectX는 LH이므로 -z가 아니라 +z 사용
@@ -88,77 +65,73 @@ FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPl
     return Projection;
 }
 
-//FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
-//{
-//    // 회전 값 (degree -> radian 변환)
-//    float pitch = XMConvertToRadians(rotation.x); // X축 (Pitch)
-//    float yaw = XMConvertToRadians(rotation.y); // Y축 (Yaw)
-//    float roll = XMConvertToRadians(rotation.z); // Z축 (Roll)
-//
-//    // Yaw-Pitch-Roll 회전 행렬 생성
-//    XMMATRIX rotMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
-//
-//    // 원본 벡터를 XMVECTOR로 변환
-//    XMVECTOR vec = XMVectorSet(origin.x, origin.y, origin.z, 1.0f);
-//
-//    // 회전 적용
-//    vec = XMVector3Transform(vec, rotMatrix);
-//
-//    // 결과를 FVector로 변환하여 반환
-//    FVector rotated;
-//    rotated.x = XMVectorGetX(vec);
-//    rotated.y = XMVectorGetY(vec);
-//    rotated.z = XMVectorGetZ(vec);
-//
-//    return rotated;
-//}
-
 FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
 {
-    // 회전 각도를 라디안으로 변환
-    float pitch = DegToRad(rotation.x) * 0.5f;
-    float yaw = DegToRad(rotation.y) * 0.5f;
-    float roll = DegToRad(rotation.z) * 0.5f;
-
-    // 쿼터니언 생성 (Yaw-Pitch-Roll 순서)
-    float cosX = cosf(pitch), sinX = sinf(pitch);
-    float cosY = cosf(yaw), sinY = sinf(yaw);
-    float cosZ = cosf(roll), sinZ = sinf(roll);
-
-    FQuat quaternion;
-    quaternion.w = cosX * cosY * cosZ + sinX * sinY * sinZ;
-    quaternion.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
-    quaternion.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
-    quaternion.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
-
+    FQuat quaternion = JungleMath::EulerToQuaternion(rotation);
     // 쿼터니언을 이용해 벡터 회전 적용
     return quaternion.RotateVector(origin);
 }
-//FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
-//{
-//    // 2. 회전 행렬 (쿼터니언 사용)
-//    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
-//    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
-//    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
-//
-//    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
-//    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
-//
-//    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
-//
-//    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
-//
-//    for (int i = 0; i < 4; i++)
-//    {
-//        for (int j = 0; j < 4; j++)
-//        {
-//            result.M[i][j] = rotationMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
-//        }
-//    }
-//    origin = FMatrix::TransformVector(origin, result);
-//    return origin;
-//}
-//
+FQuat JungleMath::EulerToQuaternion(const FVector& eulerDegrees)
+{
+    float yaw = DegToRad(eulerDegrees.z);   // Z축 Yaw
+    float pitch = DegToRad(eulerDegrees.y); // Y축 Pitch
+    float roll = DegToRad(eulerDegrees.x);  // X축 Roll
+
+    float halfYaw = yaw * 0.5f;
+    float halfPitch = pitch * 0.5f;
+    float halfRoll = roll * 0.5f;
+
+    float cosYaw = cos(halfYaw);
+    float sinYaw = sin(halfYaw);
+    float cosPitch = cos(halfPitch);
+    float sinPitch = sin(halfPitch);
+    float cosRoll = cos(halfRoll);
+    float sinRoll = sin(halfRoll);
+
+    FQuat quat;
+    quat.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+    quat.x = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
+    quat.y = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
+    quat.z = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+
+    quat.Normalize();
+    return quat;
+}
+FVector JungleMath::QuaternionToEuler(const FQuat& quat)
+{
+    FVector euler;
+
+    // 쿼터니언 정규화
+    FQuat q = quat;
+    q.Normalize();
+
+    // Yaw (Z 축 회전)
+    float sinYaw = 2.0f * (q.w * q.z + q.x * q.y);
+    float cosYaw = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+    euler.z = RadToDeg(atan2(sinYaw, cosYaw));
+
+    // Pitch (Y 축 회전, 짐벌락 방지)
+    float sinPitch = 2.0f * (q.w * q.y - q.z * q.x);
+    if (fabs(sinPitch) >= 1.0f)
+    {
+        euler.y = RadToDeg(copysign(PI / 2, sinPitch)); // 🔥 Gimbal Lock 방지
+    }
+    else
+    {
+        euler.y = RadToDeg(asin(sinPitch));
+    }
+
+    // Roll (X 축 회전)
+    float sinRoll = 2.0f * (q.w * q.x + q.y * q.z);
+    float cosRoll = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+    euler.x = RadToDeg(atan2(sinRoll, cosRoll));
+    return euler;
+}
+FVector JungleMath::FVectorRotate(FVector& origin, const FQuat& rotation)
+{
+    return rotation.RotateVector(origin);
+}
+
 FMatrix JungleMath::CreateRotationMatrix(FVector rotation)
 {
     XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
@@ -191,58 +164,3 @@ float JungleMath::DegToRad(float degree)
 {
     return degree * (PI / 180.0f);
 }
-
-FQuat JungleMath::EulerToQuaternion(const FVector& eulerDegrees)
-{
-    float pitch = DegToRad(eulerDegrees.x);
-    float yaw = DegToRad(eulerDegrees.y);
-    float roll = DegToRad(eulerDegrees.z);
-
-    // 반각 계산
-    float halfPitch = pitch * 0.5f;
-    float halfYaw = yaw * 0.5f;
-    float halfRoll = roll * 0.5f;
-
-    // 코사인, 사인 값 미리 계산
-    float cosPitch = cos(halfPitch);
-    float sinPitch = sin(halfPitch);
-    float cosYaw = cos(halfYaw);
-    float sinYaw = sin(halfYaw);
-    float cosRoll = cos(halfRoll);
-    float sinRoll = sin(halfRoll);
-
-    FQuat quat;
-    // 표준 Euler->Quaternion 변환 공식 (Yaw-Pitch-Roll 순서)
-    quat.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
-    quat.x = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
-    quat.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
-    quat.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
-
-    return quat;
-}
-
-FVector JungleMath::QuaternionToEuler(const FQuat& quat)
-{
-    FVector euler;
-
-    // Yaw (Z 축 회전)
-    float sinYaw = 2.0f * (quat.w * quat.z + quat.x * quat.y);
-    float cosYaw = 1.0f - 2.0f * (quat.y * quat.y + quat.z * quat.z);
-    euler.y = RadToDeg(atan2(sinYaw, cosYaw));
-
-    // Pitch (X 축 회전)
-    float sinPitch = 2.0f * (quat.w * quat.x - quat.y * quat.z);
-    if (fabs(sinPitch) >= 1.0f)
-        euler.x = RadToDeg(copysign(PI / 2, sinPitch)); // Gimbal Lock 처리
-    else
-        euler.x = RadToDeg(asin(sinPitch));
-
-    // Roll (Y 축 회전)
-    float sinRoll = 2.0f * (quat.w * quat.y + quat.z * quat.x);
-    float cosRoll = 1.0f - 2.0f * (quat.x * quat.x + quat.y * quat.y);
-    euler.z = RadToDeg(atan2(sinRoll, cosRoll));
-
-    return euler;
-}
-
-

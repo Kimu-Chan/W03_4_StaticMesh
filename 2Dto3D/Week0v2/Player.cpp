@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include <Windows.h>
 #include "GraphicDevice.h"
 #include "World.h"
@@ -69,7 +69,7 @@ void UPlayer::Input()
 	else
 	{
 		if (bLeftMouseDown) {
-				bLeftMouseDown = false; // ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°À» ¶¼¸é »óÅÂ ÃÊ±âÈ­
+				bLeftMouseDown = false; // ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 				GetWorld()->SetPickingGizmo(nullptr);
 		}
 	}
@@ -224,7 +224,7 @@ void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, c
 }
 int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponent* obj, float& hitDistance, int& intersectCount)
 {
-	// ¿ÀºêÁ§Æ®ÀÇ ¿ùµå º¯È¯ Çà·Ä »ý¼º (À§Ä¡, È¸Àü, Å©±â Àû¿ë)
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡, È¸ï¿½ï¿½, Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	FMatrix scaleMatrix = FMatrix::CreateScale(
 		obj->GetWorldScale().x,
 		obj->GetWorldScale().y,
@@ -232,7 +232,8 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	);
 
 	//FMatrix rotationMatrix = JungleMath::CreateRotationMatrix(obj->GetWorldRotation());
-		FMatrix rotationMatrix =FMatrix::CreateRotation(
+	//FMatrix rotationMatrix = JungleMath::EulerToQuaternion(obj->GetWorldRotation()).ToMatrix();
+	FMatrix rotationMatrix = FMatrix::CreateRotation(
 		obj->GetWorldRotation().x,
 		obj->GetWorldRotation().y,
 		obj->GetWorldRotation().z
@@ -240,7 +241,7 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->GetWorldLocation());
 
-	// ÃÖÁ¾ º¯È¯ Çà·Ä
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½
 	FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 
 	FMatrix ViewMatrix = GEngineLoop.View;
@@ -250,7 +251,7 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
 	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
-	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local ÁÂÇ¥ÃàÀÇ ray
+	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ray
 	float dist;
 	
 	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
@@ -260,11 +261,11 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 
 void UPlayer::PickedObjControl()
 {
-	// ¸¶¿ì½º ÀÌµ¿·® °è»ê
+	// ï¿½ï¿½ï¿½ì½º ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (GetWorld()->GetPickingObj() && GetWorld()->GetPickingGizmo()) {
 		POINT currentMousePos;
 		GetCursorPos(&currentMousePos);
-		// ¸¶¿ì½º ÀÌµ¿ Â÷ÀÌ °è»ê
+		// ï¿½ï¿½ï¿½ì½º ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		int32 deltaX = currentMousePos.x - m_LastMousePos.x;
 		int32 deltaY = currentMousePos.y - m_LastMousePos.y;
 
@@ -280,69 +281,47 @@ void UPlayer::PickedObjControl()
 
 			break;
 		case CM_ROTATION:
-			ControlRoation(pObj, Gizmo, deltaX, deltaY);
+			ControlRotation(pObj, Gizmo, deltaX, deltaY);
 			break;
 		}
-		// »õ·Î¿î ¸¶¿ì½º À§Ä¡ ÀúÀå
+		// ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
 		m_LastMousePos = currentMousePos;
 	}
 }
 
-void UPlayer::ControlRoation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
+void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
-		if (cdMode == CDM_LOCAL) {
-			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
-			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
-			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
 
-			if (Gizmo->GetType() == "CircleX")
-			{
-				// X Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó Y Ãà ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
+		FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
+		FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
+		FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
 
-				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
-			}
-			else if (Gizmo->GetType() == "CircleY")
-			{
-				// Y Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó X Ãà ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
-				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
-			}
-			else if (Gizmo->GetType() == "CircleZ")
-			{
-				// Z Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó X, Y ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
-				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
-			}
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		FQuat currentRotation = pObj->GetQuat();
 
+		FQuat rotationDelta;
+
+		if (Gizmo->GetType() == "CircleX") {
+			float rotationAmount = (cameraUp.z >= 0 ? -1.0f : 1.0f) * deltaY * 0.01f;
+			rotationAmount = rotationAmount + (cameraRight.x >= 0 ? 1.0f : -1.0f) * deltaX * 0.01f;
+
+			rotationDelta = FQuat(FVector(1.0f, 0.0f, 0.0f), rotationAmount); // ï¿½ï¿½ï¿½ï¿½ X ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 		}
+		else if (Gizmo->GetType() == "CircleY") {
+			float rotationAmount = (cameraRight.x >= 0 ? 1.0f : -1.0f) * deltaX * 0.01f;
+			rotationAmount = rotationAmount + (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY * 0.01f;
 
-		else if (cdMode == CDM_WORLD)
-		{
-			FVector cameraForward = GetWorld()->GetCamera()->GetForwardVector();
-			FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
-			FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
-
-			if (Gizmo->GetType() == "CircleX")
-			{
-				// X Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó Y Ãà ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraUp.z >= 0 ? 1.0f : -1.0f) * deltaY;
-				//FMatrix rotMat = FMatrix::CreateRotation(-rotationAmount, 0.0f, 0.0f);
-				//FVector newRoc = FMatrix::TransformVector(pObj->GetWorldRotation(), rotMat);
-				pObj->AddRotation(FVector(-rotationAmount, 0.0f, 0.0f));
-			}
-			else if (Gizmo->GetType() == "CircleY")
-			{
-				// Y Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó X Ãà ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraRight.x >= 0 ? -1.0f : 1.0f) * deltaX;
-				pObj->AddRotation(FVector(0.0f, -rotationAmount, 0.0f));
-			}
-			else if (Gizmo->GetType() == "CircleZ")
-			{
-				// Z Ãà È¸Àü (Ä«¸Þ¶ó ¹æÇâ¿¡ µû¶ó X, Y ÀÌµ¿·® ¹Ý¿µ)
-				float rotationAmount = (cameraForward.x <= 0 ? 1.0f : -1.0f) * deltaX;
-				pObj->AddRotation(FVector(0.0f, 0.0f, rotationAmount));
-			}
+			rotationDelta = FQuat(FVector(0.0f, 1.0f, 0.0f), rotationAmount); // ï¿½ï¿½ï¿½ï¿½ Y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
+		}
+		else if (Gizmo->GetType() == "CircleZ") {
+			float rotationAmount = (cameraForward.x <= 0 ? -1.0f : 1.0f) * deltaX * 0.01f;
+			rotationDelta = FQuat(FVector(0.0f, 0.0f, 1.0f), rotationAmount); // ï¿½ï¿½ï¿½ï¿½ Z ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
+		}
+		if (cdMode == CDM_LOCAL) {
+			pObj->SetRotation(currentRotation * rotationDelta);
+		}
+		else if (cdMode == CDM_WORLD) {
+			pObj->SetRotation(rotationDelta * currentRotation);
 		}
 }
 
@@ -355,17 +334,17 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 
 	if (cdMode == CDM_LOCAL) {
 		if (Gizmo->GetType() == "ArrowX") {
-			// ÀÌµ¿ º¤ÅÍ¸¦ ·ÎÄÃ X Ãà¿¡ Åõ¿µÇÏ¿© X ¹æÇâ ÀÌµ¿ Àû¿ë
+			// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ X ï¿½à¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ X ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 			float moveAmount = worldMoveDir.Dot(pObj->GetForwardVector());
 			pObj->AddLocation(pObj->GetForwardVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowY") {
-			// ÀÌµ¿ º¤ÅÍ¸¦ ·ÎÄÃ Y Ãà¿¡ Åõ¿µÇÏ¿© Y ¹æÇâ ÀÌµ¿ Àû¿ë
+			// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Y ï¿½à¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Y ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 			float moveAmount = worldMoveDir.Dot(pObj->GetRightVector());
 			pObj->AddLocation(pObj->GetRightVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowZ") {
-			// ÀÌµ¿ º¤ÅÍ¸¦ ·ÎÄÃ Z Ãà¿¡ Åõ¿µÇÏ¿© Z ¹æÇâ ÀÌµ¿ Àû¿ë
+			// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Z ï¿½à¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Z ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 			float moveAmount = worldMoveDir.Dot(pObj->GetUpVector());
 			pObj->AddLocation(pObj->GetUpVector() * moveAmount);
 		}

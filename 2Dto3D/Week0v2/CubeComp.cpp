@@ -29,7 +29,6 @@ void UCubeComp::Release()
 void UCubeComp::Render()
 {
 	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
-
 	// 최종 MVP 행렬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
 	FEngineLoop::renderer.UpdateNormalConstantBuffer(Model);

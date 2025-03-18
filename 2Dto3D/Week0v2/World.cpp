@@ -13,7 +13,6 @@
 #include "UParticleSubUVComp.h"
 #include "LightComponent.h"
 #include "UTextUUID.h"
-
 UWorld::UWorld()
 {
 }
@@ -115,8 +114,7 @@ void UWorld::Tick(double deltaTime)
 	{
 		iter->Update(deltaTime);
 	}
-	//if(!Trashbin.empty())
-	//	CleanUp();
+	
 }
 
 void UWorld::Release()
@@ -160,16 +158,7 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	case OBJ_CUBE:
 		pObj = FObjectFactory::ConstructObject<UCubeComp>("Cube");
 		GUObjectArray.push_back(pObj);
-
-	case OBJ_PARTICLE:
-	{
-		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
-		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
-		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
-		castParticle->SetRowColumnCount(6, 6);
-		GUObjectArray.push_back(castParticle);
 		break;
-	}
 	case OBJ_SpotLight:
 	{
 		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
@@ -179,6 +168,15 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		GUObjectArray.push_back(spotLight);
 		break;
 	}
+	//case OBJ_PARTICLE:
+	//	{
+	//	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+	//	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+	//	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+	//	castParticle->SetRowColumnCount(6, 6);
+	//	GUObjectArray.push_back(castParticle);
+	//	}
+	//	break;
 	default:
 		break;
 	}
@@ -232,7 +230,6 @@ void UWorld::SetPickingObj(UObject* _Obj)
 void UWorld::DeleteObj(UObject* _Obj)
 {
 	UObject* tmpObj = _Obj;
-	/*GUObjectArray.erase(std::remove(GUObjectArray.begin(),GUObjectArray.end(),));*/
 	Trashbin.erase(std::find(GUObjectArray.begin(), GUObjectArray.end(), _Obj));
 	delete tmpObj;
 }

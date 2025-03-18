@@ -21,6 +21,7 @@ public:
 	void				MoveUp(float _Value);
 	void				RotateYaw(float _Value);
 	void				RotatePitch(float _Value);
+
 private:
 	float mouseSpeed = 0.25f;
 	POINT lastMousePos;

@@ -20,11 +20,6 @@ void USceneComponent::Initialize()
 void USceneComponent::Update(double deltaTime)
 {
 	Super::Update(deltaTime);
-	//if (AttachParent) {
-	//	SetLocation(GetWorldLocation() + AttachParent->GetWorldLocation());
-	//	SetRotation(GetWorldRotation() + AttachParent->GetWorldRotation());
-	//	SetRotation(GetWorldScale() + AttachParent->GetWorldScale());
-	//}
 }
 
 
@@ -39,23 +34,21 @@ void USceneComponent::Render()
 FVector USceneComponent::GetForwardVector()
 {
 	FVector Forward = FVector(1.f, 0.f, 0.0f);
-	//FMatrix Rot =FMatrix::CreateRotation(GetWorldRotation().x, GetWorldRotation().y, GetWorldRotation().z);
-	//Forward = FMatrix::TransformVector(Forward, Rot);
-	Forward = JungleMath::FVectorRotate(Forward, RelativeRotation);
+	Forward = JungleMath::FVectorRotate(Forward, QuatRotation);
 	return Forward;
 }
 
 FVector USceneComponent::GetRightVector()
 {
 	FVector Right = FVector(0.f, 1.f, 0.0f);
-	Right = JungleMath::FVectorRotate(Right, RelativeRotation);
+	Right = JungleMath::FVectorRotate(Right, QuatRotation);
 	return Right;
 }
 
 FVector USceneComponent::GetUpVector()
 {
 	FVector Up = FVector(0.f, 0.f, 1.0f);
-	Up = JungleMath::FVectorRotate(Up, RelativeRotation);
+	Up = JungleMath::FVectorRotate(Up, QuatRotation);
 	return Up;
 }
 
@@ -111,4 +104,14 @@ FVector USceneComponent::GetWorldLocation()
 	}
 	else
 		return GetLocalLocation();
+}
+
+FVector USceneComponent::GetLocalRotation()
+{
+	return JungleMath::QuaternionToEuler(QuatRotation);
+}
+
+void USceneComponent::SetRotation(FVector _newRot)
+{
+	QuatRotation = JungleMath::EulerToQuaternion(_newRot);
 }

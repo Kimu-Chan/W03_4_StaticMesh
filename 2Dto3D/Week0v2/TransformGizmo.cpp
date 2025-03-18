@@ -12,7 +12,6 @@ UTransformGizmo::UTransformGizmo()
 	ArrowX->SetType("ArrowX");
 	ArrowX->SetParent(this);
 	AttachChildren.push_back(ArrowX);
-	//GetWorld()->GetObjectArr().push_back(ArrowX);
 	ArrowArr.push_back(ArrowX);
 
 	obj = FObjectFactory::ConstructObject<UGizmoArrowComponent>();
@@ -22,7 +21,6 @@ UTransformGizmo::UTransformGizmo()
 	ArrowY->SetParent(this);
 	ArrowY->SetDir(ARROW_DIR::AD_Y);
 	AttachChildren.push_back(ArrowY);
-	//GetWorld()->GetObjectArr().push_back(ArrowY);
 	ArrowArr.push_back(ArrowY);
 
 
@@ -33,7 +31,6 @@ UTransformGizmo::UTransformGizmo()
 	ArrowZ->SetParent(this);
 	ArrowZ->SetDir(ARROW_DIR::AD_Z);
 	AttachChildren.push_back(ArrowZ);
-	//GetWorld()->GetObjectArr().push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
 
 	UGizmoCircleComponent* disc = new UGizmoCircleComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
@@ -41,14 +38,12 @@ UTransformGizmo::UTransformGizmo()
 	disc->SetRotation(FVector(0.0f,0.0f,0.0f));
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
-	//GetWorld()->GetObjectArr().push_back(disc);
 	CircleArr.push_back(disc);
 
 	disc = new UGizmoCircleComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
 	disc->SetType("CircleY");
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
-	//GetWorld()->GetObjectArr().push_back(disc);
 	CircleArr.push_back(disc);
 
 
@@ -57,7 +52,6 @@ UTransformGizmo::UTransformGizmo()
 	disc->SetParent(this);
 	disc->SetRotation(FVector(0.0f,0.0f,0.0f));
 	AttachChildren.push_back(disc);
-	//GetWorld()->GetObjectArr().push_back(disc);
 	CircleArr.push_back(disc);
 
 	for (auto i : CircleArr)
@@ -113,8 +107,7 @@ void UTransformGizmo::Update(double deltaTime)
 		SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation());
 	if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_LOCAL)
 	{
-		
-			SetRotation(GetWorld()->GetPickingObj()->GetWorldRotation());
+			SetRotation(GetWorld()->GetPickingObj()->GetQuat());
 	}
 	else if (GetWorld()->GetPlayer()->GetCoordiMode() == CoordiMode::CDM_WORLD)
 			SetRotation(FVector(0.0f,0.0f,0.0f));
