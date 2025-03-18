@@ -29,6 +29,7 @@ private:
 	void ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY);
 	void ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY);
 	bool bLeftMouseDown = false;
+	bool bRightMouseDown = false;
 	bool bSpaceDown = false;
 
 	POINT m_LastMousePos;

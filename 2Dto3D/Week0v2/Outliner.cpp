@@ -22,7 +22,7 @@ void Outliner::Draw(UWorld* world)
     float controllWindowHeight = static_cast<float>(height) * 0.15f;
 
     float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
-    float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.43f;
+    float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.47f;
 
     // 창 크기와 위치 설정
     ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));

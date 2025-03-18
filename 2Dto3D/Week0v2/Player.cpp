@@ -83,10 +83,39 @@ void UPlayer::Input()
 	else
 	{
 		if (bSpaceDown)
-		{
+		{       
 			bSpaceDown = false;
 		}
 	}
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+	{
+		if (!bRightMouseDown)
+		{
+			bRightMouseDown = true;
+		}
+	}
+	else
+	{
+		bRightMouseDown = false;
+
+		if (GetAsyncKeyState('Q') & 0x8000)
+		{
+			//GetWorld()->SetPickingObj(nullptr);
+		}
+		if (GetAsyncKeyState('W') & 0x8000)
+		{
+			cMode = CM_TRANSLATION;
+		}
+		if (GetAsyncKeyState('E') & 0x8000)
+		{
+			cMode = CM_ROTATION;
+		}
+		if (GetAsyncKeyState('R') & 0x8000)
+		{
+			cMode = CM_SCALE;
+		}
+	}
+
 	if (GetAsyncKeyState(VK_DELETE) & 0x8000)
 	{
 		DeletePickedObj();
@@ -333,17 +362,14 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 
 	if (cdMode == CDM_LOCAL) {
 		if (Gizmo->GetType() == "ArrowX") {
-			// �̵� ���͸� ���� X �࿡ �����Ͽ� X ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetForwardVector());
 			pObj->AddLocation(pObj->GetForwardVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowY") {
-			// �̵� ���͸� ���� Y �࿡ �����Ͽ� Y ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetRightVector());
 			pObj->AddLocation(pObj->GetRightVector() * moveAmount);
 		}
 		else if (Gizmo->GetType() == "ArrowZ") {
-			// �̵� ���͸� ���� Z �࿡ �����Ͽ� Z ���� �̵� ����
 			float moveAmount = worldMoveDir.Dot(pObj->GetUpVector());
 			pObj->AddLocation(pObj->GetUpVector() * moveAmount);
 		}

@@ -10,10 +10,10 @@ ViewModeDropdown& ViewModeDropdown::GetInstance()
 }
 void ViewModeDropdown::Draw(UWorld* world)
 {
-    float controllWindowWidth = static_cast<float>(width) * 0.05f;
+    float controllWindowWidth = static_cast<float>(width) * 0.07f;
     float controllWindowHeight = static_cast<float>(height) * 0.f;
 
-    float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.32f;
+    float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.3225f;
     float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
 
     ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));

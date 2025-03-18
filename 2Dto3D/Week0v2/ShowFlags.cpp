@@ -25,7 +25,7 @@ void ShowFlags::Draw(UWorld* world)
 	float controllWindowWidth = static_cast<float>(width) * 0.2f;
 	float controllWindowHeight = static_cast<float>(height) * 0.f;
 
-	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.45f;
+	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.46f;
 	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
 
 	// 창 크기와 위치 설정
