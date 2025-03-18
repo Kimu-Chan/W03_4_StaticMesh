@@ -164,9 +164,10 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
 		spotLight = static_cast<ULightComponentBase*>(spotLight);
 		ULightComponentBase* castLight = static_cast<ULightComponentBase*>(spotLight);
-		
+
 		GUObjectArray.push_back(spotLight);
 		break;
+	}
 	//case OBJ_PARTICLE:
 	//	{
 	//	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
