@@ -88,16 +88,35 @@ float3 ComputeGridPosition(uint instanceID, uint vertexID)
     {
         // 수직선: X 좌표 변화, Y는 -centerOffset ~ +centerOffset
         float x = GridOrigin.x + (instanceID - centerOffset) * GridSpacing;
-        startPos = float3(x, GridOrigin.y - centerOffset * GridSpacing, GridOrigin.z);
-        endPos = float3(x, GridOrigin.y + centerOffset * GridSpacing, GridOrigin.z);
+        if (abs(x - GridOrigin.x) < 0.001)
+        {
+            // 두 점 모두 화면 밖 위치로 설정
+            startPos = float3(0, 0, 0);
+            endPos = float3(0, (GridOrigin.y - centerOffset * GridSpacing), 0);
+        }
+        else
+        {
+            startPos = float3(x, GridOrigin.y - centerOffset * GridSpacing, GridOrigin.z);
+            endPos = float3(x, GridOrigin.y + centerOffset * GridSpacing, GridOrigin.z);
+        }
     }
     else
     {
         // 수평선: Y 좌표 변화, X는 -centerOffset ~ +centerOffset
         int idx = instanceID - halfCount;
         float y = GridOrigin.y + (idx - centerOffset) * GridSpacing;
-        startPos = float3(GridOrigin.x - centerOffset * GridSpacing, y, GridOrigin.z);
-        endPos = float3(GridOrigin.x + centerOffset * GridSpacing, y, GridOrigin.z);
+        if (abs(y - GridOrigin.y) < 0.001)
+        {
+            // 두 점 모두 화면 밖 위치로 설정
+            startPos = float3(0, 0, 0);
+            endPos = float3(-(GridOrigin.x + centerOffset * GridSpacing), 0, 0);
+        }
+        else
+        {
+            startPos = float3(GridOrigin.x - centerOffset * GridSpacing, y, GridOrigin.z);
+            endPos = float3(GridOrigin.x + centerOffset * GridSpacing, y, GridOrigin.z);
+        }
+
     }
     return (vertexID == 0) ? startPos : endPos;
 }
@@ -109,7 +128,7 @@ float3 ComputeAxisPosition(uint axisInstanceID, uint vertexID)
 {
     float3 start = float3(0.0, 0.0, 0.0);
     float3 end;
-    float zOffset = 0.6f;
+    float zOffset = 0.f;
     if (axisInstanceID == 0)
     {
         // X 축: 빨간색
@@ -240,7 +259,7 @@ PS_INPUT mainVS(VS_INPUT input)
     {
         // 0 ~ (GridCount-1): 그리드
         pos = ComputeGridPosition(input.instanceID, input.vertexID);
-        color = float4(0.5, 0.5, 0.5, 1.0); // 예: 회색
+        color = float4(0.1, 0.1, 0.1, 1.0);
     }
     else if (input.instanceID < gridLineCount + axisCount)
     {
