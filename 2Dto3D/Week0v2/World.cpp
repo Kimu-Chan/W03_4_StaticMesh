@@ -34,7 +34,9 @@ void UWorld::CreateBaseObject()
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
-	camera->SetLocation(FVector(0.0f, 10.0f, 0.f));
+	camera->SetLocation(FVector(8.0f, 8.0f, 8.f));
+	camera->SetRotation(FVector(0.0f,45.0f, -135.0f));
+
 
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);

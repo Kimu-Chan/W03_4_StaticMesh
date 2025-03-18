@@ -54,61 +54,36 @@ void UCameraComponent::Input()
 			// 새로운 마우스 위치 저장
 			lastMousePos = currentMousePos;
 		}
+		if (GetAsyncKeyState('A') & 0x8000)
+		{
+			MoveRight(-1.f);
+		}
+		if (GetAsyncKeyState('D') & 0x8000)
+		{
+			MoveRight(1.f);
+		}
+		if (GetAsyncKeyState('W') & 0x8000)
+		{
+			MoveForward(1.f);
+		}
+		if (GetAsyncKeyState('S') & 0x8000)
+		{
+			MoveForward(-1.f);
+		}
+		if (GetAsyncKeyState('E') & 0x8000)
+		{
+			MoveUp(1.f);
+		}
+		if (GetAsyncKeyState('Q') & 0x8000)
+		{
+			MoveUp(-1.f);
+		}
 	}
 	else
 	{
 		bRightMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
-	{
-		MoveRight(-1.f);
-	}
-	if (GetAsyncKeyState('D') & 0x8000)
-	{
-		MoveRight(1.f);
-	}
-	if (GetAsyncKeyState('W') & 0x8000)
-	{
-		MoveForward(1.f);
-	}
-	if (GetAsyncKeyState('S') & 0x8000)
-	{
-		MoveForward(-1.f);
-	}
-	if (GetAsyncKeyState('E') & 0x8000)
-	{
-		MoveUp(1.f);
-	}
-	if (GetAsyncKeyState('Q') & 0x8000)
-	{
-		MoveUp(-1.f);
-	}
-	if (GetAsyncKeyState('J') & 0x8000)
-	{
-		RotateYaw(-1.f);
-	}
-	if (GetAsyncKeyState('L') & 0x8000)
-	{
-		RotateYaw(1.f);
-	}
-	if (GetAsyncKeyState('I') & 0x8000)
-	{
-		RotatePitch(-1.f);
-	}
-	if (GetAsyncKeyState('K') & 0x8000)
-	{
-		RotatePitch(1.f);
-	}
-	if (GetAsyncKeyState('Z') & 0x8000)
-	{
-		if (!GetWorld()->GetPickingObj()) return;
-		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation() + GetWorld()->GetPickingObj()->GetRightVector());
-	}
-	if (GetAsyncKeyState('X') & 0x8000)
-	{
-		if (!GetWorld()->GetPickingObj()) return;
-		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetWorldLocation() + GetWorld()->GetPickingObj()->GetForwardVector());
-	}
+
 }
 
 void UCameraComponent::MoveForward(float _Value)

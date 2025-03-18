@@ -41,7 +41,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_MOUSEWHEEL:
 		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // ÈÙ È¸Àü °ª (+120 / -120)
-		GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta *0.01);
+		if (GEngineLoop.GetWorld()->GetCamera()->IsCameraMode()) {
+			GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta * 0.01);
+		}
+		else
+		{
+			GEngineLoop.GetWorld()->GetCamera()->MoveForward(zDelta*0.1f);
+		}
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

@@ -24,7 +24,7 @@ ControlPanel::~ControlPanel()
 void ControlPanel::Draw(UWorld* world, double elapsedTime )
 {	
 	float controllWindowWidth = static_cast<float>(width) * 0.3f;
-	float controllWindowHeight = static_cast<float>(height) * 0.36f;
+	float controllWindowHeight = static_cast<float>(height) * 0.4f;
 
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
 	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
