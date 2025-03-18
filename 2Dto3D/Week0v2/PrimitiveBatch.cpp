@@ -68,6 +68,7 @@ void UPrimitiveBatch::RenderBatch(const FMatrix& View, const FMatrix& Projection
     BoundingBoxes.clear();
     Cones.clear();
     OrientedBoundingBoxes.clear();
+    FEngineLoop::renderer.PrepareShader();
 }
 void UPrimitiveBatch::InitializeVertexBuffer()
 {
