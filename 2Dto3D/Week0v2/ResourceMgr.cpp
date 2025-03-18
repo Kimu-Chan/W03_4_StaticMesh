@@ -32,15 +32,16 @@ void FResourceMgr::Initialize(FRenderer* renderer, FGraphicsDevice* device)
 
 	LoadObjNormalAsset(renderer, "Cube", L"Assets/Cube.obj");
 	LoadObjNormalAsset(renderer, "Sphere", L"Assets/Sphere.obj");
+	LoadObjNormalTextureAsset(renderer, "SkySphere", L"Assets/skySphere.obj");
 
+	
+	
 	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/ocean_sky.jpg");
 	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/font.png");
 	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/emart.png");
 	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/T_Explosion_SubUV.png");
 	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/UUID_Font.png");
-
-
-	//LoadObjNormalTextureAsset(renderer, "SkySphere", L"Assets/skySphere.obj");
+	LoadTextureFromFile(device->Device, device->DeviceContext, L"Assets/Texture/Wooden Crate_Crate_BaseColor.png");
 }
 
 void FResourceMgr::Release(FRenderer* renderer) {
@@ -225,6 +226,7 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 	TArray<uint32> indices;
 	TArray<FVector4> Colors;
 	TArray<std::pair<float, float>> UVs;
+
 	if (objFile)
 	{
 		FString line;
@@ -237,8 +239,12 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 			if (type == "v")
 			{
 				FVector vertex;
-				FVector color;
-				lineStream >> vertex.x >> vertex.y >> vertex.z >> color.x >> color.y >> color.z;
+				FVector color(1.0f, 1.0f, 1.0f); // 기본값 추가
+				lineStream >> vertex.x >> vertex.y >> vertex.z;
+
+				if (!(lineStream >> color.x >> color.y >> color.z)) {
+					color = FVector(1.0f, 1.0f, 1.0f); // 색상이 없으면 기본값 유지
+				}
 
 				positions.push_back(vertex);
 				Colors.push_back(FVector4(color.x, color.y, color.z, 1.0f));
@@ -251,9 +257,9 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 			}
 			else if (type == "vt")
 			{
-				std::pair<float, float> texcoodi;
-				lineStream >> texcoodi.first >> texcoodi.second;
-				UVs.push_back(texcoodi);
+				std::pair<float, float> texcoord;
+				lineStream >> texcoord.first >> texcoord.second;
+				UVs.push_back(texcoord);
 			}
 			else if (type == "f")
 			{
@@ -266,29 +272,35 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 				{
 					size_t firstSlash = vertexInfo.find("/");
 					size_t secondSlash = vertexInfo.find("/", firstSlash + 1);
-					if (firstSlash != std::string::npos && RpcRequestsPerSecond != FString::npos)
+
+					if (firstSlash != std::string::npos && secondSlash != std::string::npos)
 					{
 						int vIdx = std::stoi(vertexInfo.substr(0, firstSlash)) - 1;
 						int uvIdx = std::stoi(vertexInfo.substr(firstSlash + 1, secondSlash - firstSlash - 1)) - 1;
 						int nIdx = std::stoi(vertexInfo.substr(secondSlash + 1)) - 1;
+
 						faceIndices.push_back(vIdx);
 						uvIndices.push_back(uvIdx);
 						normalIndices.push_back(nIdx);
 					}
 				}
 
+				if (faceIndices.size() < 3) continue; // 유효한 삼각형이 아닐 경우 무시
+
 				std::unordered_map<std::tuple<int, int, int>, uint32_t, TupleHash> vertexCache;
 
+				// 삼각형을 여러 개로 나누어 저장
 				for (size_t i = 1; i + 1 < faceIndices.size(); ++i)
 				{
-					uint32 triangleIndices[3];
+					uint32 triangleIndices[3] = { faceIndices[0], faceIndices[i], faceIndices[i + 1] };
+
 					for (size_t j = 0; j < 3; j++)
 					{
-						int vIdx = faceIndices[j];
+						int vIdx = triangleIndices[j];
 						int uvIdx = uvIndices[j];
 						int nIdx = normalIndices[j];
 
-						std::tuple<int, int, int> key = { vIdx, uvIdx, nIdx };
+						std::tuple<int, int, int> key = { vIdx, nIdx, uvIdx };
 						auto it = vertexCache.find(key);
 
 						if (it != vertexCache.end())
@@ -298,13 +310,15 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 						else
 						{
 							FVector position = positions[vIdx];
-							FVector normal = normals[nIdx];
-							FVector4 color = Colors[vIdx];
-							std::pair<float, float> uv = UVs[uvIdx];
+							FVector normal = (nIdx >= 0 && nIdx < normals.size()) ? normals[nIdx] : FVector(0, 0, 1);
+							FVector4 color = (vIdx >= 0 && vIdx < Colors.size()) ? Colors[vIdx] : FVector4(1, 1, 1, 1);
+							std::pair<float, float> uv = (uvIdx >= 0 && uvIdx < UVs.size()) ? UVs[uvIdx] : std::pair<float, float>(0, 0);
 
 							FVertexSimple vertexSimple{
-								position.x, position.y, position.z, color.x, color.y, color.z, color.a,
-								normal.x, normal.y, normal.z, uv.first, uv.second
+								position.x, position.y, position.z,
+								color.x, color.y, color.z, color.a,
+								normal.x, normal.y, normal.z,
+								uv.first, uv.second
 							};
 
 							uint32 newIndex = static_cast<uint32>(vertices.size());
@@ -314,6 +328,7 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 						}
 					}
 
+					// 삼각형 추가
 					indices.push_back(triangleIndices[0]);
 					indices.push_back(triangleIndices[1]);
 					indices.push_back(triangleIndices[2]);
@@ -321,7 +336,10 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 			}
 		}
 	}
-
+	for (auto iter : vertices)
+{
+	UE_LOG(LogLevel::Display, "%f %f %f %f %f %f %f %f %f %f %f %f ", iter.x, iter.y, iter.z, iter.r, iter.g, iter.b, iter.a, iter.nx, iter.ny, iter.nz, iter.u,iter.v);
+}
 	if (vertices.empty()) {
 		UE_LOG(LogLevel::Error, "Error: OBJ file is empty or failed to parse!");
 		return;
@@ -348,6 +366,8 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 	}
 
 	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
+	//meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, nullptr, indices.size(), nullptr);
+
 
 	delete[] vertexArray;
 	delete[] indexArray;

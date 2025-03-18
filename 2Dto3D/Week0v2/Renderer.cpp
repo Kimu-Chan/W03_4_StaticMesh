@@ -149,6 +149,26 @@ void FRenderer::RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, I
     Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+void FRenderer::RenderTexturedModelPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState)
+{
+    if (!_TextureSRV || !_SamplerState) {
+        Console::GetInstance().AddLog(LogLevel::Warning, "SRV, Sampler Error");
+    }
+    if (numIndices <= 0)
+    {
+        Console::GetInstance().AddLog(LogLevel::Warning, "numIndices Error");
+    }
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &offset);
+    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
+
+    Graphics->DeviceContext->DrawIndexed(numIndices, 0, 0);
+}
+
 ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
     // 2. Create a vertex buffer

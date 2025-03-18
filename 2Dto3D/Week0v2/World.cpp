@@ -49,13 +49,13 @@ void UWorld::CreateBaseObject()
 
 
 	//테스트용 텍스트
-	//UObject* text = FObjectFactory::ConstructObject<UText>();
-	//UText* castText = static_cast<UText*>(text);
-	//castText->SetTexture(L"Assets/Texture/font.png");
-	//castText->SetRowColumnCount(106, 106);
-	//castText->SetText(L"안녕하세요 Jungle 1");
-	////SetText전에 RowColumn 반드시 설정
-	//GUObjectArray.push_back(text);
+	UObject* text = FObjectFactory::ConstructObject<UText>();
+	UText* castText = static_cast<UText*>(text);
+	castText->SetTexture(L"Assets/Texture/font.png");
+	castText->SetRowColumnCount(106, 106);
+	castText->SetText(L"안녕하세요 Jungle 1");
+	//SetText전에 RowColumn 반드시 설정
+	GUObjectArray.push_back(text);
 	
 
 	//테스트용 빌보드. 필요없으면 삭제
