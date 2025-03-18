@@ -45,10 +45,8 @@ void USphereComp::Render()
 	r = { r.x * scale.x,r.y * scale.y,r.z * scale.z };
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB)) {
-		UPrimitiveBatch::GetInstance().AddBoxForCube(AABB, GetWorldLocation(), Model);
-		UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 3, 5, 140, Model);
+		UPrimitiveBatch::GetInstance().RenderAABB(AABB, GetWorldLocation(), Model);
 	}
-
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
 		Super::Render();
 }

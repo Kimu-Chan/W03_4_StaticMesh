@@ -137,7 +137,7 @@ void UPrimitiveBatch::ReleaseOBBResources()
     if (pOBBBuffer) pOBBBuffer->Release();
     if (pOBBSRV) pOBBSRV->Release();
 }
-void UPrimitiveBatch::AddBoxForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
+void UPrimitiveBatch::RenderAABB(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
 {
     FVector localVertices[8] = {
          { localAABB.min.x, localAABB.min.y, localAABB.min.z },
@@ -173,7 +173,7 @@ void UPrimitiveBatch::AddBoxForCube(const FBoundingBox& localAABB, const FVector
     BoundingBox.max = max;
     BoundingBoxes.push_back(BoundingBox);
 }
-void UPrimitiveBatch::AddPlaneForCube(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
+void UPrimitiveBatch::RenderOBB(const FBoundingBox& localAABB, const FVector& center, const FMatrix& modelMatrix)
 {
     // 1) 로컬 AABB의 8개 꼭짓점
     FVector localVertices[8] =
@@ -198,56 +198,17 @@ void UPrimitiveBatch::AddPlaneForCube(const FBoundingBox& localAABB, const FVect
 
 }
 
-void UPrimitiveBatch::AddBoxForSphere(const FVector& center, bool isUniform, FVector radius, const FMatrix& modelMatrix)
-{
-    FVector minPoint, maxPoint;
-    FVector r = radius;
-
-    if (isUniform)
-    {
-        minPoint = center - r;
-        maxPoint = center + r;
-    }
-    else
-    {
-        FMatrix AbsModelMatrix = modelMatrix;
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                AbsModelMatrix.M[i][j] = fabs(AbsModelMatrix.M[i][j]);
-            }
-        }
-
-         FVector transformedRadius = FVector(
-            AbsModelMatrix.M[0][0] * r.x + AbsModelMatrix.M[1][0] * r.x + AbsModelMatrix.M[2][0] * r.x,
-            AbsModelMatrix.M[0][1] * r.y + AbsModelMatrix.M[1][1] * r.y + AbsModelMatrix.M[2][1] * r.y,
-            AbsModelMatrix.M[0][2] * r.z + AbsModelMatrix.M[1][2] * r.z + AbsModelMatrix.M[2][2] * r.z
-        );
-
-
-        FVector transformedCenter = modelMatrix.TransformPosition(center);
-
-        minPoint = transformedCenter - transformedRadius;
-        maxPoint = transformedCenter + transformedRadius;
-    }
-
-    FBoundingBox BoundingBox;
-    BoundingBox.min = minPoint;
-    BoundingBox.max = maxPoint;
-    BoundingBoxes.push_back(BoundingBox);
-}
-
-void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height, int segments, const FMatrix& modelMatrix)
+void UPrimitiveBatch::AddCone(const FVector& center, float radius, float height, int segments, const FVector4& color, const FMatrix& modelMatrix)
 {
     ConeSegmentCount = segments;
     FVector localApex = FVector(0, 0, 0);
     FCone cone;
     cone.ConeApex = center + FMatrix::TransformVector(localApex, modelMatrix);
-    FVector localBaseCenter = FVector(0, 0, height);
+    FVector localBaseCenter = FVector(height, 0, 0);
     cone.ConeBaseCenter = center + FMatrix::TransformVector(localBaseCenter, modelMatrix);
     cone.ConeRadius = radius;
     cone.ConeHeight = height;
+    cone.Color = color;
     cone.ConeSegmentCount = ConeSegmentCount;
     Cones.push_back(cone);
 }

@@ -5,17 +5,36 @@
 
 ULightComponentBase::ULightComponentBase()
 {
-	AABB.max = { 1,1,1 };
-	AABB.min = { -1,-1,-1 };
-	texture2D = new UBillboardComponent();
-	texture2D->SetTexture(L"Assets/Texture/spotLight.png");
-	texture2D->Initialize();
+	InitializeLight();
+}
 
+ULightComponentBase::ULightComponentBase(FString m_type) :UPrimitiveComponent(m_type)
+{
+	InitializeLight();
 }
 
 ULightComponentBase::~ULightComponentBase()
 {
 	delete texture2D;
+}
+void ULightComponentBase::SetColor(FVector4 newColor)
+{
+	color = newColor;
+}
+
+FVector4 ULightComponentBase::GetColor()
+{
+	return color;
+}
+
+float ULightComponentBase::GetRadius()
+{
+	return radius;
+}
+
+void ULightComponentBase::SetRadius(float r)
+{
+	radius = r;
 }
 
 void ULightComponentBase::Render()
@@ -23,8 +42,19 @@ void ULightComponentBase::Render()
 	texture2D->Render();
 	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 	//FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
-	UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), 5, 15, 140, Model);
-	UPrimitiveBatch::GetInstance().AddPlaneForCube(AABB, GetWorldLocation(), Model);
+	UPrimitiveBatch::GetInstance().AddCone(GetWorldLocation(), radius, 15, 140, color, Model);
+	UPrimitiveBatch::GetInstance().RenderOBB(AABB, GetWorldLocation(), Model);
+}
+
+void ULightComponentBase::InitializeLight()
+{
+	texture2D = new UBillboardComponent();
+	texture2D->SetTexture(L"Assets/Texture/spotLight.png");
+	texture2D->Initialize();
+	AABB.max = { 1,1,0.1 };
+	AABB.min = { -1,-1,-0.1 };
+	color = { 1,1,1,1 };
+	radius = 5;
 }
 
 void ULightComponentBase::Update(double deltaTime)
@@ -37,11 +67,6 @@ void ULightComponentBase::Update(double deltaTime)
 int ULightComponentBase::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
 {
 	 bool res =AABB.Intersect(rayOrigin, rayDirection, pfNearHitDistance);
-	 if (res)
-		 UE_LOG(LogLevel::Error, "T!!!");
-	 else 
-		 UE_LOG(LogLevel::Error, "F!!!");
-
 	 return res;
 }
 

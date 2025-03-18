@@ -139,16 +139,16 @@ struct FBoundingBox
 };
 struct FCone
 {
-	FVector ConeApex; // 원뿔의 꼭짓점
-	float padding0;
+    FVector ConeApex; // 원뿔의 꼭짓점
+    float ConeRadius; // 원뿔 밑면 반지름
 
-	FVector ConeBaseCenter; // 원뿔 밑면 중심
-	float padding1;
+    FVector ConeBaseCenter; // 원뿔 밑면 중심
+    float ConeHeight; // 원뿔 높이 (Apex와 BaseCenter 간 차이)
+    FVector4 Color;
 
-	float ConeRadius; // 원뿔 밑면 반지름
-	float ConeHeight; // 원뿔 높이 (Apex와 BaseCenter 간 차이)
-	int ConeSegmentCount; // 원뿔 밑면 분할 수
-	float padding2;
+    int ConeSegmentCount; // 원뿔 밑면 분할 수
+    float pad[3];
+
 };
 struct FPrimitiveCounts 
 {

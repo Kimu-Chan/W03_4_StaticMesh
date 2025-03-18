@@ -39,7 +39,7 @@ void UCubeComp::Render()
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_AABB))
-		UPrimitiveBatch::GetInstance().AddBoxForCube(AABB, GetWorldLocation(), Model);
+		UPrimitiveBatch::GetInstance().RenderAABB(AABB, GetWorldLocation(), Model);
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
 		Super::Render();
 }

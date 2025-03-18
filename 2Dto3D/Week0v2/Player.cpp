@@ -190,7 +190,6 @@ void UPlayer::PickObj(FVector& pickPosition)
 	}
 	if (Possible) {
 		GetWorld()->SetPickingObj(Possible);
-		UE_LOG(LogLevel::Warning, "hello");
 	}
 }
 

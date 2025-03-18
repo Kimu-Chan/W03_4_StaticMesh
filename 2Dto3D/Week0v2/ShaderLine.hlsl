@@ -28,15 +28,14 @@ struct FBoundingBoxData
 struct FConeData
 {
     float3 ConeApex; // ¿ø»ÔÀÇ ²ÀÁþÁ¡
-    float padding0;
+    float ConeRadius; // ¿ø»Ô ¹Ø¸é ¹ÝÁö¸§
     
     float3 ConeBaseCenter; // ¿ø»Ô ¹Ø¸é Áß½É
-    float padding1;
-   
-    float ConeRadius; // ¿ø»Ô ¹Ø¸é ¹ÝÁö¸§
     float ConeHeight; // ¿ø»Ô ³ôÀÌ (Apex¿Í BaseCenter °£ Â÷ÀÌ)
+    float4 Color;
+    
     int ConeSegmentCount; // ¿ø»Ô ¹Ø¸é ºÐÇÒ ¼ö
-    float padding2;
+    float pad[3];
 };
 struct FOrientedBoxCornerData
 {
@@ -272,7 +271,12 @@ PS_INPUT mainVS(VS_INPUT input)
         // ±× ´ÙÀ½ ÄÜ(Cone) ±¸°£
         uint coneInstanceID = input.instanceID - coneInstanceStart;
         pos = ComputeConePosition(coneInstanceID, input.vertexID);
-        color = float4(1.0, 1.0, 1.0, 1.0); // Èò»ö
+        int N = g_ConeData[0].ConeSegmentCount;
+        uint coneIndex = coneInstanceID / (2 * N);
+        
+        color = g_ConeData[coneIndex].Color;
+   
+        
     }
     else
     {

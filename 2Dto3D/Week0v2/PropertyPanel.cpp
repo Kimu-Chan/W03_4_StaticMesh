@@ -3,6 +3,8 @@
 #include "ImGuiManager.h"
 #include "Object.h"
 #include "Player.h"
+#include "PrimitiveComponent.h"
+#include "LightComponent.h"
 #include "SceneComponent.h"
 PropertyPanel::PropertyPanel()
 {
@@ -15,10 +17,10 @@ PropertyPanel::~PropertyPanel()
 void PropertyPanel::Draw(UWorld* world)
 {
 	float controllWindowWidth = static_cast<float>(width) * 0.178f;
-	float controllWindowHeight = static_cast<float>(height) * 0.15f;
+	float controllWindowHeight = static_cast<float>(height) * 0.43f;
 
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
-	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * .75f;
+	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) *1.f;
 
 	// 창 크기와 위치 설정
 	ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
@@ -54,23 +56,166 @@ void PropertyPanel::Draw(UWorld* world)
 	if (ImGui::Button(coordiButtonLabel.c_str(), buttonSize)) {
 		player->AddCoordiMode();
 	}
-	USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
-	if (PickObj) {
-		float pickObjLoc[3] = { PickObj->GetWorldLocation().x,PickObj->GetWorldLocation().y ,PickObj->GetWorldLocation().z };
-		float pickObjRot[3] = { PickObj->GetWorldRotation().x,PickObj->GetWorldRotation().y ,PickObj->GetWorldRotation().z };
-		float pickObjScale[3] = { PickObj->GetWorldScale().x,PickObj->GetWorldScale().y ,PickObj->GetWorldScale().z };
+    UPrimitiveComponent* PickObj = dynamic_cast<UPrimitiveComponent*>(world->GetPickingObj());
+    if (PickObj)
+    {
+        std::string objectName = PickObj->GetName().ToString();
+        ImGui::Text("%s", objectName.c_str());
 
-		ImGui::InputFloat3("Tranlsation", pickObjLoc);
-		ImGui::InputFloat3("Rotation", pickObjRot);
-		ImGui::InputFloat3("Scale", pickObjScale);
+        // 위치/회전/스케일을 float[3]에 담아둠
+        float pickObjLoc[3] = {
+            PickObj->GetWorldLocation().x,
+            PickObj->GetWorldLocation().y,
+            PickObj->GetWorldLocation().z
+        };
+        float pickObjRot[3] = {
+            PickObj->GetWorldRotation().x,
+            PickObj->GetWorldRotation().y,
+            PickObj->GetWorldRotation().z
+        };
+        float pickObjScale[3] = {
+            PickObj->GetWorldScale().x,
+            PickObj->GetWorldScale().y,
+            PickObj->GetWorldScale().z
+        };
+       
+        // ---------- 위치 (X/Y/Z) ----------
+        ImGui::Text("Position");
+        ImGui::PushItemWidth(50.0f);
+        ImGui::DragFloat("##posX", &pickObjLoc[0], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##posY", &pickObjLoc[1], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##posZ", &pickObjLoc[2], 0.6f, -FLT_MAX, FLT_MAX);
+        // ---------- 회전 (X/Y/Z) ----------
+        ImGui::Text("Rotation");
+        ImGui::DragFloat("##rotX", &pickObjRot[0], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##rotY", &pickObjRot[1], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##rotZ", &pickObjRot[2], 0.6f, -FLT_MAX, FLT_MAX);
+       
+        // ---------- 스케일 (X/Y/Z) ----------
+        ImGui::Text("Scale");
+        ImGui::DragFloat("##scaleX", &pickObjScale[0], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##scaleY", &pickObjScale[1], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::SameLine();
+        ImGui::DragFloat("##scaleZ", &pickObjScale[2], 0.6f, -FLT_MAX, FLT_MAX);
+        ImGui::PopItemWidth();
+        // 변경된 값 적용
+        PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
+        PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
+        PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
 
-		PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
-		PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
-		// 함정카드 발동! z축이 반대로 돌아가지만 여기서 보정해주는것
-		PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
+        // -------- SpotLight 처리부 ----------
+        if (objectName.rfind("SpotLight_", 0) == 0)
+        {
+            ULightComponentBase* lightObj = dynamic_cast<ULightComponentBase*>(PickObj);
+            FVector4 currColor = lightObj->GetColor();
+
+             float r = currColor.x;
+             float g = currColor.y;
+             float b = currColor.z;
+             float a = currColor.a;
+             float h, s, v;
+            float lightColor[4] = { r, g, b, a };
+
+            // 컬러 픽커 (ColorPicker4)
+            if (ImGui::ColorPicker4("SpotLight Color", lightColor,
+                ImGuiColorEditFlags_DisplayRGB |
+                ImGuiColorEditFlags_NoSidePreview |
+                ImGuiColorEditFlags_NoInputs|
+                ImGuiColorEditFlags_Float))
+
+            {
+                
+                r = lightColor[0];
+                g = lightColor[1];
+                b = lightColor[2];
+                a = lightColor[3];
+                lightObj->SetColor(FVector4(r, g, b, a));
+            }
+            RGBToHSV(r, g, b, h, s, v);
+            // RGB/HSV 슬라이더 동기화
+            bool changedRGB = false;
+            bool changedHSV = false;
+
+            // RGB 슬라이더
+            ImGui::PushItemWidth(50.0f);
+            if (ImGui::DragFloat("R##R", &r, 0.001f, 0.f, 1.f)) changedRGB = true;
+            ImGui::SameLine();
+            if (ImGui::DragFloat("G##G", &g, 0.001f, 0.f, 1.f)) changedRGB = true;
+            ImGui::SameLine();
+            if (ImGui::DragFloat("B##B", &b, 0.001f, 0.f, 1.f)) changedRGB = true;
+            
+            // HSV 슬라이더
+            if (ImGui::DragFloat("H##H", &h, 0.1f, 0.f, 360)) changedHSV = true;
+            ImGui::SameLine();
+            if (ImGui::DragFloat("S##S", &s, 0.001f, 0.f, 1)) changedHSV = true;
+            ImGui::SameLine();
+            if (ImGui::DragFloat("V##V", &v, 0.001f, 0.f, 1)) changedHSV = true;
+            ImGui::PopItemWidth();
+
+            if (changedRGB && !changedHSV)
+            {
+                // RGB만 변경 -> HSV 동기화
+                RGBToHSV(r, g, b, h, s, v);
+                lightObj->SetColor(FVector4(r, g, b, a));
+            }
+            else if (changedHSV && !changedRGB)
+            {
+                // HSV만 변경 -> RGB 동기화
+                HSVToRGB(h, s, v, r, g, b);
+                lightObj->SetColor(FVector4(r, g, b, a));
+            }
+
+            // 라이트 반경(Radius)
+            float radiusVal = lightObj->GetRadius();
+            if (ImGui::SliderFloat("Radius", &radiusVal, 1.0f, 100.0f))
+            {
+                lightObj->SetRadius(radiusVal);
+            }
+        }
+    }
+
+ 	ImGui::End();
+}
+void PropertyPanel::RGBToHSV(float r, float g, float b, float& h, float& s, float& v)
+{
+	float mx = max(r, max(g, b));
+	float mn = min(r, min(g, b));
+	float delta = mx - mn;
+
+	v = mx;
+
+	if (mx == 0.0f) {
+		s = 0.0f;
+		h = 0.0f;
+		return;
+	}
+	else {
+		s = delta / mx;
 	}
 
-	ImGui::End();
+	if (delta < 1e-6) {
+		h = 0.0f;
+	}
+	else {
+		if (r >= mx) {
+			h = (g - b) / delta;
+		}
+		else if (g >= mx) {
+			h = 2.0f + (b - r) / delta;
+		}
+		else {
+			h = 4.0f + (r - g) / delta;
+		}
+		h *= 60.0f;
+		if (h < 0.0f) {
+			h += 360.0f;
+		}
+	}
 }
 void PropertyPanel::OnResize(HWND hWnd)
 {

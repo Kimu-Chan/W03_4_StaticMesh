@@ -161,7 +161,7 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		break;
 	case OBJ_SpotLight:
 	{
-		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>();
+		UObject* spotLight = FObjectFactory::ConstructObject<ULightComponentBase>("SpotLight");
 		spotLight = static_cast<ULightComponentBase*>(spotLight);
 		ULightComponentBase* castLight = static_cast<ULightComponentBase*>(spotLight);
 
