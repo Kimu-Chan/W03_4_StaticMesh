@@ -20,7 +20,7 @@ public:
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
 	virtual void		Render();
-
+	virtual void		RenderUUID();
 
 	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
 	inline FEngineLoop&			GetEngine() { return GEngineLoop; }

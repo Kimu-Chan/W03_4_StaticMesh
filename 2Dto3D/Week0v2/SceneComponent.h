@@ -21,7 +21,6 @@ public:
 
 	void				AddChild(USceneComponent* _newChild);
 
-	//void				SetAttachedUUID(UTextUUID* attachedUUID);
 protected:
 	FVector				RelativeLocation;
 	FVector				RelativeRotation;
@@ -47,6 +46,8 @@ public:
 	inline void					SetParent(USceneComponent* _parent) { AttachParent = _parent; }
 
 private:
-
+	class UTextUUID*				uuidText = nullptr;
+public:
+	virtual void				RenderUUID() override;
 };
 

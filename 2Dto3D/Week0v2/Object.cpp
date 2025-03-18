@@ -32,6 +32,9 @@ void UObject::Release()
 void UObject::Render()
 {
 }
+void UObject::RenderUUID()
+{
+}
 bool UObject::IsA(UClass* TargetClass) const
 {
 	UClass* CurrentClass = GetClass();

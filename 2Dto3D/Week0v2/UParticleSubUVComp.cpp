@@ -46,6 +46,7 @@ void UParticleSubUVComp::Update(double deltaTime)
 		indexU = 0;
 		indexV = 0;
 		GetWorld()->ThrowAwayObj(this);
+		GetWorld()->SetPickingObj(nullptr);
 		GetWorld()->CleanUp();
 	}
 

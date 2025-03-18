@@ -9,10 +9,17 @@ USceneComponent::USceneComponent() :RelativeLocation(FVector(0.f, 0.f, 0.f)), Re
 
 USceneComponent::~USceneComponent()
 {
+	if (uuidText) delete uuidText;
 }
 void USceneComponent::Initialize()
 {
-
+	//테스트용 텍스트
+	uuidText = new UTextUUID();
+	uuidText->SetTexture(L"Assets/Texture/UUID_Font.png");
+	uuidText->SetRowColumnCount(1, 11);
+	uuidText->SetUUID(UUID);
+	uuidText->SetUUIDParent(this);
+	//SetText전에 RowColumn 반드시 설정
 
 	Super::Initialize();
 }
@@ -115,4 +122,9 @@ void USceneComponent::SetRotation(FVector _newRot)
 {
 	RelativeRotation = _newRot;
 	QuatRotation = JungleMath::EulerToQuaternion(_newRot);
+}
+
+void USceneComponent::RenderUUID()
+{
+	if (uuidText) uuidText->Render();
 }
