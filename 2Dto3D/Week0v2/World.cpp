@@ -168,15 +168,15 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		GUObjectArray.push_back(spotLight);
 		break;
 	}
-	//case OBJ_PARTICLE:
-	//	{
-	//	UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
-	//	UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
-	//	castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
-	//	castParticle->SetRowColumnCount(6, 6);
-	//	GUObjectArray.push_back(castParticle);
-	//	}
-	//	break;
+	case OBJ_PARTICLE:
+		{
+		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
+		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+		castParticle->SetRowColumnCount(6, 6);
+		GUObjectArray.push_back(castParticle);
+		}
+		break;
 	default:
 		break;
 	}
