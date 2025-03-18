@@ -16,7 +16,7 @@ public:
 	virtual void		Release();
 
 	void				Input();
-	void				PickGizmo(FVector& rayOrigin);
+	bool				PickGizmo(FVector& rayOrigin);
 	void				PickObj(FVector& pickPosition);
 	void				AddControlMode();
 	void				AddCoordiMode();

@@ -58,8 +58,8 @@ void UPlayer::Input()
 			FVector pickPosition;
 		
 			ScreenToNDC(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, pickPosition);
-			PickObj(pickPosition);
-			PickGizmo(pickPosition);
+			bool res = PickGizmo(pickPosition);
+			if(!res) PickObj(pickPosition);
 		}
 		else
 		{
@@ -122,8 +122,9 @@ void UPlayer::Input()
 	}
 }
 
-void UPlayer::PickGizmo(FVector& pickPosition)
+bool UPlayer::PickGizmo(FVector& pickPosition)
 {
+	bool isPickedGizmo = false;
 	if (GetWorld()->GetPickingObj()) {
 		if (cMode == CM_TRANSLATION) {
 			for (auto iter : GetWorld()->LocalGizmo->GetArrowArr())
@@ -135,12 +136,18 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 				if (!iter) continue;
 				if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
 				{
-					if (currentIntersectCount > maxIntersect && minDistance > Distance)
-					{
-						GetWorld()->SetPickingGizmo(iter);
+					if (Distance < minDistance) {
 						minDistance = Distance;
 						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
 					}
+					else if (abs(Distance - minDistance) < FLT_EPSILON && currentIntersectCount > maxIntersect) {
+						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
+					}
+
 				}
 			}
 		}
@@ -155,11 +162,16 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 				if (!iter) continue;
 				if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
 				{
-					if (currentIntersectCount > maxIntersect && minDistance > Distance)
-					{
-						GetWorld()->SetPickingGizmo(iter);
+					if (Distance < minDistance) {
 						minDistance = Distance;
 						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
+					}
+					else if (abs(Distance - minDistance) < FLT_EPSILON && currentIntersectCount > maxIntersect) {
+						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
 					}
 				}
 			}
@@ -172,18 +184,23 @@ void UPlayer::PickGizmo(FVector& pickPosition)
 				float Distance = 0.0f;
 				int currentIntersectCount = 0;
 				if (!iter) continue;
-				if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount))
-				{
-					if (currentIntersectCount > maxIntersect && minDistance > Distance)
-					{
-						GetWorld()->SetPickingGizmo(iter);
+				if (RayIntersectsObject(pickPosition, iter, Distance, currentIntersectCount)) {
+					if (Distance < minDistance) {
 						minDistance = Distance;
 						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
+					}
+					else if (abs(Distance - minDistance) < FLT_EPSILON && currentIntersectCount > maxIntersect) {
+						maxIntersect = currentIntersectCount;
+						GetWorld()->SetPickingGizmo(iter);
+						isPickedGizmo = true;
 					}
 				}
 			}
 		}
 	}
+	return isPickedGizmo;
 }
 void UPlayer::PickObj(FVector& pickPosition)
 {
@@ -206,13 +223,14 @@ void UPlayer::PickObj(FVector& pickPosition)
 			int currentIntersectCount = 0;
 			if (RayIntersectsObject(pickPosition, pObj, Distance, currentIntersectCount))
 			{
-				if (minDistance > Distance) {
+				if (Distance < minDistance) {
 					minDistance = Distance;
-					if (currentIntersectCount > 0) {
-						maxIntersect = currentIntersectCount;
-						Possible = pObj;
-
-					}
+					maxIntersect = currentIntersectCount;
+					Possible = pObj;
+				}
+				else if ( abs(Distance - minDistance) < FLT_EPSILON && currentIntersectCount > maxIntersect) {
+					maxIntersect = currentIntersectCount;
+					Possible = pObj;
 				}
 			}
 		}
