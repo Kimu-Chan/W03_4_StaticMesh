@@ -43,8 +43,6 @@ void USkySphereComponent::Render()
 		UPrimitiveBatch::GetInstance().RenderAABB(AABB, GetWorldLocation(), Model);
 	}
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_Primitives))
-	if (!staticMesh || !staticMesh->vertexBuffer) return;
-	if (staticMesh->indexBuffer)
 		FEngineLoop::renderer.RenderTexturedModelPrimitive(staticMesh->vertexBuffer,
 			staticMesh->numVertices, staticMesh->indexBuffer, staticMesh->numIndices,
 			Texture->TextureSRV, Texture->SamplerState
