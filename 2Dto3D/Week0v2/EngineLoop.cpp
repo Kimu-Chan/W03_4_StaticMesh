@@ -85,7 +85,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	UIMgr = new UImGuiManager;
 	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
 	
-	resourceMgr.Initialize(&renderer);
+	resourceMgr.Initialize(&renderer, &graphicDevice);
 	
 	viewportClient = std::make_shared<FEditorViewportClient>();
 

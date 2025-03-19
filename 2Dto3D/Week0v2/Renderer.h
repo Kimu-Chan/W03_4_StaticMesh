@@ -28,6 +28,8 @@ public:
 
 
     uint32 Stride;
+    uint32 Stride2;
+
     ID3D11Buffer* NormalConstantBuffer = nullptr;
     struct FConstants {
         FMatrix MVP;      // ¸ðµ¨
@@ -51,7 +53,7 @@ public:
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
    
-    
+    void RenderTexturedModelPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState);
     //Release
     void Release();
     void ReleaseShader();

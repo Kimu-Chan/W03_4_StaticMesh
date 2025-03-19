@@ -31,7 +31,10 @@ struct VS_INPUT
     float4 position : POSITION; // 버텍스 위치
     float4 color : COLOR; // 버텍스 색상
     float3 normal : NORMAL; // 버텍스 노멀
+    float2 texcoord : TEXCOORD;
 };
+Texture2D Texture : register(t0);
+SamplerState Sampler : register(s0);
 
 struct PS_INPUT
 {
@@ -39,6 +42,7 @@ struct PS_INPUT
     float4 color : COLOR; // 전달할 색상
     float3 normal : NORMAL; // 정규화된 노멀 벡터
     float normalFlag : TEXCOORD0; // 노멀 유효성 플래그 (1.0: 유효, 0.0: 무효)
+    float2 texcoord : TEXCOORD1;
 };
 
 PS_INPUT mainVS(VS_INPUT input)
@@ -64,7 +68,7 @@ PS_INPUT mainVS(VS_INPUT input)
         output.normal = mul(input.normal, MInverseTranspose);
         output.normalFlag = 1.0;
     }
-    
+    output.texcoord = input.texcoord;
     return output;
 }
 
@@ -100,7 +104,19 @@ float4 PaperTexture(float3 originalColor)
 
 float4 mainPS(PS_INPUT input) : SV_Target
 {
-    float3 color = saturate(input.color.rgb);
+    // 기존의 색상과 텍스처 색상을 조합
+    //input.texcoord
+    float4 texColor = Texture.Sample(Sampler, input.texcoord);
+    //texColor = float4(1, 1, 1, 1);
+    float3 color;
+    if (input.texcoord.g == 0) // 텍스처가 없으면 기본 색상 유지
+    {
+        color = saturate(input.color.rgb);
+    }
+    else
+        color = saturate(input.color.rgb * texColor.rgb);
+
+    //float3 color = saturate(input.color.rgb);
 
     if (isLit == 1) // 조명이 적용되는 경우
     {
@@ -121,4 +137,5 @@ float4 mainPS(PS_INPUT input) : SV_Target
         }
         return PaperTexture(color);
     }
+    return float4(color, 1.0);
 }

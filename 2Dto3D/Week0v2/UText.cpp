@@ -148,8 +148,8 @@ void UText::SetText(FWString _text)
 	int textSize = _text.size();
 
 
-	float BitmapWidth = m_texture.m_width;
-	float BitmapHeight = m_texture.m_height;
+	float BitmapWidth = Texture->width;
+	float BitmapHeight = Texture->height;
 
 	float CellWidth = BitmapWidth/ColumnCount;
 	float CellHeight = BitmapHeight/RowCount;
@@ -341,7 +341,7 @@ void UText::TextMVPRendering()
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 		FEngineLoop::renderer.RenderTextPrimitive(vertexTextBuffer, numTextVertices,
-			m_texture.m_TextureSRV, m_texture.m_SamplerState);
+			Texture->TextureSRV, Texture->SamplerState);
 	}
 	//Super::Render();
 

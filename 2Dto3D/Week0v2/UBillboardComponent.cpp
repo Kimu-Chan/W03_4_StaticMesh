@@ -67,9 +67,8 @@ void UBillboardComponent::Render()
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 
 	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
-		indexTextureBuffer,numIndices,m_texture.m_TextureSRV,m_texture.m_SamplerState);
+		indexTextureBuffer,numIndices,Texture->TextureSRV,Texture->SamplerState);
 	}
-	//Super::Render();
 
 	FEngineLoop::renderer.PrepareShader();
 }
@@ -124,7 +123,7 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
 void UBillboardComponent::SetTexture(FWString _fileName)
 {
-	m_texture.init(_fileName);
+	Texture = FEngineLoop::resourceMgr.GetTexture(_fileName);
 }
 
 void UBillboardComponent::SetUUIDParent(USceneComponent* _parent)
