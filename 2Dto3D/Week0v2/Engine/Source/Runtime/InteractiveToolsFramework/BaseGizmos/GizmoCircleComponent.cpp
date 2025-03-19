@@ -1,6 +1,6 @@
 ﻿#include "GizmoCircleComponent.h"
-#include "JungleMath.h"
-#include "Player.h"
+#include "Engine/Source/Runtime/Core/Math/JungleMath.h"
+#include "Components/Player.h"
 #define DISC_RESOLUTION 128
 
 static const FVector Colors[] = {

@@ -1,6 +1,6 @@
-#include "Outliner.h"
-#include "Engine/Source/Runtime/Engine/World.h"
-#include "PrimitiveComponent.h"
+#include "Editor/Outliner.h"
+#include "World.h"
+#include "Components/PrimitiveComponent.h"
 
 Outliner::Outliner()
 {

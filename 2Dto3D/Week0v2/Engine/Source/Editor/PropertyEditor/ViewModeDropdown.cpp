@@ -1,7 +1,7 @@
 #include "Engine/Source/Runtime/Engine/World.h"
 #include "ImGuiManager.h"
 #include "EngineLoop.h"
-#include "ViewModeDropdown.h"
+#include "Engine/Source/Editor/PropertyEditor/ViewModeDropdown.h"
 
 ViewModeDropdown& ViewModeDropdown::GetInstance()
 {

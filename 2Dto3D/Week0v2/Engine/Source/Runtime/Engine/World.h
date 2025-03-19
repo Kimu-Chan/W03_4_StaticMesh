@@ -1,6 +1,6 @@
 #pragma once
 #include "Define.h"
-#include "SceneMgr.h"
+#include "UnrealEd/SceneMgr.h"
 class UObject;
 class UGizmoArrowComponent;
 class UCameraComponent;
@@ -20,7 +20,6 @@ public:
 	void RenderBaseObject();
 	void Tick(double deltaTime);
 	void Release();
-	void Render();
 	void Input();
 	void SpawnObject(OBJECTS _Obj);
 	void LoadData(SceneData& _Data);
@@ -30,6 +29,7 @@ public:
 	void	DeleteObj(UObject* _Obj);
 	void	ThrowAwayObj(UObject* _Obj);
 	void	CleanUp();
+	void	Render();
 	
 private:
 

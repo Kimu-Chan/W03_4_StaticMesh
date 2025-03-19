@@ -1,6 +1,6 @@
 #include "GizmoArrowComponent.h"
-#include "JungleMath.h"
-#include "Player.h"
+#include "Engine/Source/Runtime/Core/Math/JungleMath.h"
+#include "Components/Player.h"
 UGizmoArrowComponent::UGizmoArrowComponent()
 {
 }

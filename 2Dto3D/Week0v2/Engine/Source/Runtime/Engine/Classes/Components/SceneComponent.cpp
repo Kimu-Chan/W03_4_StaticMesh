@@ -1,7 +1,7 @@
-#include "SceneComponent.h"
-#include "Engine/Source/Runtime/Engine/World.h"
-#include "JungleMath.h"
-#include "ObjectFactory.h"
+#include "Components/SceneComponent.h"
+#include "World.h"
+#include "Math/JungleMath.h"
+#include "UObject/ObjectFactory.h"
 #include "UTextUUID.h"
 USceneComponent::USceneComponent() :RelativeLocation(FVector(0.f, 0.f, 0.f)), RelativeRotation(FVector(0.f, 0.f, 0.f)), RelativeScale3D(FVector(1.f, 1.f, 1.f))
 {

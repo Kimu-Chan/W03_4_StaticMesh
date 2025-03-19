@@ -1,11 +1,11 @@
-#include "PropertyPanel.h"
-#include "Engine/Source/Runtime/Engine/World.h"
+#include "PropertyEditor/PropertyPanel.h"
+#include "World.h"
 #include "ImGuiManager.h"
-#include "Object.h"
-#include "Player.h"
-#include "PrimitiveComponent.h"
-#include "LightComponent.h"
-#include "SceneComponent.h"
+#include "UObject/Object.h"
+#include "Components/Player.h"
+#include "Components/PrimitiveComponent.h"
+#include "Components/LightComponent.h"
+#include "Components/SceneComponent.h"
 PropertyPanel::PropertyPanel()
 {
 }

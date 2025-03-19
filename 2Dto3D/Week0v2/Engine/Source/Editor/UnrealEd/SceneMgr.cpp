@@ -1,13 +1,13 @@
-﻿#include "SceneMgr.h"
-#include "json.hpp"
-#include "Object.h"
-#include "SphereComp.h"
-#include "CubeComp.h"
-#include "GizmoArrowComponent.h"
-#include "ObjectFactory.h"
+﻿#include "UnrealEd/SceneMgr.h"
+#include "JSON/json.hpp"
+#include "UObject/Object.h"
+#include "Components/SphereComp.h"
+#include "Components/CubeComp.h"
+#include "BaseGizmos/GizmoArrowComponent.h"
+#include "UObject/ObjectFactory.h"
 #include <fstream>
-#include "UBillboardComponent.h"
-#include "LightComponent.h"
+#include "Components/UBillboardComponent.h"
+#include "Components/LightComponent.h"
 using json = nlohmann::json;
 
 SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)

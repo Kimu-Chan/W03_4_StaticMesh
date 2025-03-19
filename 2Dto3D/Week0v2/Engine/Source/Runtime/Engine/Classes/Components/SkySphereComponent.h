@@ -1,6 +1,6 @@
 #pragma once
 #include "PrimitiveComponent.h"
-#include "Texture.h"
+#include "Engine/Texture.h"
 class USkySphereComponent : public UPrimitiveComponent
 {
 	DECLARE_CLASS(USkySphereComponent, UPrimitiveComponent)

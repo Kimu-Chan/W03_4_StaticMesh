@@ -1,6 +1,6 @@
-#include "ShowFlags.h"
-#include "Engine/Source/Runtime/Engine/World.h"
-#include "PrimitiveComponent.h"
+#include "PropertyEditor/ShowFlags.h"
+#include "World.h"
+#include "Components/PrimitiveComponent.h"
 
 ShowFlags::ShowFlags()
 {

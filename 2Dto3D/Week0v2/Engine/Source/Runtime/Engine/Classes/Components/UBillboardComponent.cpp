@@ -1,7 +1,7 @@
 #include "UBillboardComponent.h"
-#include "JungleMath.h"
-#include "Player.h"
-#include "ShowFlags.h"
+#include "Engine/Source/Runtime/Core/Math/JungleMath.h"
+#include "Components/Player.h"
+#include "Engine/Source/Editor/PropertyEditor/ShowFlags.h"
 #include "QuadTexture.h"
 #include "Define.h"
 #include <DirectXMath.h>

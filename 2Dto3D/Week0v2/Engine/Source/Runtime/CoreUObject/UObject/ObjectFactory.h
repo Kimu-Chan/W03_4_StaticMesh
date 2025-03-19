@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "Engine/Source/Runtime/CoreUObject/UObject/Object.h"
 #include "EngineStatics.h"
 
 class FObjectFactory

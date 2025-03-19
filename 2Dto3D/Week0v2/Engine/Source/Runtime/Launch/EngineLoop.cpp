@@ -1,14 +1,14 @@
 #include "EngineLoop.h"
 #include "ImGuiManager.h"
-#include "Engine/Source/Runtime/Engine/Engine/Source/Runtime/Engine/World.h"
-#include "CameraComponent.h"
-#include "JungleMath.h"
-#include "ControlPaner.h"
-#include "PropertyPanel.h"
-#include "ViewModeDropdown.h"
-#include "ShowFlags.h"
+#include "World.h"
+#include "Camera/CameraComponent.h"
+#include "Math/JungleMath.h"
+#include "PropertyEditor/ControlPanel.h"
+#include "PropertyEditor/PropertyPanel.h"
+#include "PropertyEditor/ViewModeDropdown.h"
+#include "PropertyEditor/ShowFlags.h"
 #include "Outliner.h"
-#include "EditorViewportClient.h"
+#include "UnrealEd/EditorViewportClient.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern FEngineLoop GEngineLoop;

@@ -1,6 +1,6 @@
 #pragma once
 #include "Define.h"
-#include "GraphicDevice.h"
+#include "D3D11RHI/GraphicDevice.h"
 class FStaticMesh {
 public:
     ID3D11Buffer* vertexBuffer = nullptr;

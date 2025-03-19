@@ -1,21 +1,17 @@
 ﻿#include "ResourceMgr.h"
-#include "GraphicDevice.h"
+#include "D3D11RHI/GraphicDevice.h"
 #include <fstream>
 #include <sstream>
 #include "Sphere.h"
-#include "Cube.h"
-#include "Gizmo.h"
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 #include "Define.h"
 #include "Arrow.h"
-#include "Quad.h"
+#include "Components/Quad.h"
 #include <wincodec.h>
 void FResourceMgr::Initialize(FRenderer* renderer, FGraphicsDevice* device)
 {
 	//GenerateSphere();
 	//RegisterMesh(renderer, "Sphere", sphere_vertices, sizeof(sphere_vertices) / sizeof(FVertexSimple), nullptr, 0);
-	RegisterMesh(renderer, "Cube", cube_vertices, sizeof(cube_vertices) / sizeof(FVertexSimple), cube_indices, sizeof(cube_indices) / sizeof(uint32));
-    RegisterMesh(renderer, "Gizmo", gizmoVertices, sizeof(gizmoVertices) / sizeof(FVertexSimple), nullptr, 0);
     RegisterMesh(renderer, "Quad", quadVertices, sizeof(quadVertices) / sizeof(FVertexSimple), quadInices, sizeof(quadInices)/sizeof(uint32));
 
     LoadObjAsset(renderer, "ArrowX", L"Assets/AxisArrowX.obj");

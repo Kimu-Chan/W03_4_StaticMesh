@@ -1,11 +1,11 @@
 #pragma once
 #include "Define.h"
 #include <Windows.h>
-#include "GraphicDevice.h"
-#include "Renderer.h"
-#include "PrimitiveBatch.h"
-#include "ResourceMgr.h"
-//#include "EditorViewportClient.h"
+#include "D3D11RHI/GraphicDevice.h"
+#include "Renderer/Renderer.h"
+#include "UnrealEd/PrimitiveBatch.h"
+#include "Engine/ResourceMgr.h"
+//#include "Engine/Source/Editor/UnrealEd/EditorViewportClient.h"
 class UImGuiManager;
 class UWorld;
 class FEditorViewportClient;

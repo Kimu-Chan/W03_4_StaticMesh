@@ -4,8 +4,8 @@
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ImGUI/imgui_impl_win32.h"
 #include "Define.h"
-#include "EditorWIndow.h"
-#include "IWindowToggleable.h"
+#include "UnrealEd/EditorWindow.h"
+#include "PropertyEditor/IWindowToggleable.h"
 
 #include <Windows.h>
 enum class LogLevel { Display, Warning, Error };

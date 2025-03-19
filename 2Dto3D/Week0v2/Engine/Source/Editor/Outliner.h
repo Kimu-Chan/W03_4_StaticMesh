@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include "IWindowToggleable.h"
+#include "PropertyEditor/IWindowToggleable.h"
 class UWorld;
 class Outliner : public IWindowToggleable
 {

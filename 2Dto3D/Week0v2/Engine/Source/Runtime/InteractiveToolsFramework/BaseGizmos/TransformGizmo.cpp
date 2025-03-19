@@ -1,9 +1,9 @@
 #include "TransformGizmo.h"
 #include "GizmoArrowComponent.h"
 #include "Define.h"
-#include "ObjectFactory.h"
+#include "UObject/ObjectFactory.h"
 #include "GizmoCircleComponent.h"
-#include "Player.h"
+#include "Components/Player.h"
 #include "GizmoRectangleComponent.h"
 UTransformGizmo::UTransformGizmo()
 {

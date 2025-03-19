@@ -1,5 +1,5 @@
-#include "Object.h"
-#include "JungleMath.h"
+#include "Engine/Source/Runtime/CoreUObject/UObject/Object.h"
+#include "Engine/Source/Runtime/Core/Math/JungleMath.h"
 
 UObject::UObject() : Name(FName("DefaultObjectName"))
 {

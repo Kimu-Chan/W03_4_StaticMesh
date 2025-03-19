@@ -7,15 +7,15 @@
 
 
 // 수학 관련
-#include "MathDefines.h"
-#include "Vector.h"
-#include "Vector4.h"
-#include "Matrix.h"
-#include "Quat.h"
+#include "Math/MathDefines.h"
+#include "Math/Vector.h"
+#include "Math/Vector4.h"
+#include "Math/Matrix.h"
+#include "Math/Quat.h"
 
 // 객체 매크로 정의 
-#include "ObjectMacros.h"
-#include "ObjectTypes.h"
+#include "UObject/ObjectMacros.h"
+#include "UObject/ObjectTypes.h"
 
 
 #pragma once
@@ -25,7 +25,7 @@
 #define Super __super
 
 
-#include "Console.h"
+#include "UserInterface/Console.h"
 #include "NameTypes.h"
 
 struct FVertexSimple

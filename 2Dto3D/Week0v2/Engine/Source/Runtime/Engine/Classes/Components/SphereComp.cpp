@@ -1,7 +1,7 @@
 #include "SphereComp.h"
-#include "JungleMath.h"
+#include "Engine/Source/Runtime/Core/Math/JungleMath.h"
 #include "Engine/Source/Runtime/Engine/World.h"
-#include "ShowFlags.h"
+#include "Engine/Source/Editor/PropertyEditor/ShowFlags.h"
 
 USphereComp::USphereComp() : UPrimitiveComponent("Sphere")
 {

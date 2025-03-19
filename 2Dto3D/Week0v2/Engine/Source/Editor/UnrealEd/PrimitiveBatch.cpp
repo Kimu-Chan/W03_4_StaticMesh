@@ -1,6 +1,6 @@
 #include "PrimitiveBatch.h"
 #include "EngineLoop.h"
-#include "EditorViewportClient.h"
+#include "UnrealEd/EditorViewportClient.h"
 extern FEngineLoop GEngineLoop;
 
 UPrimitiveBatch::UPrimitiveBatch()

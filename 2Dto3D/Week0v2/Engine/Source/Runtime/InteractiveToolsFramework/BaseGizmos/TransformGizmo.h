@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneComponent.h"
+#include "Engine/Source/Runtime/Engine/Classes/Components/SceneComponent.h"
 
 class UGizmoArrowComponent;
 class UGizmoCircleComponent;

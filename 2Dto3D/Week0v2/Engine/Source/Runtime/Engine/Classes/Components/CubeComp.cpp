@@ -1,8 +1,8 @@
 #include "CubeComp.h"
-#include "JungleMath.h"
-#include "Engine/Source/Runtime/Engine/World.h"
-#include "ShowFlags.h"
-#include "PrimitiveBatch.h"
+#include "Math/JungleMath.h"
+#include "World.h"
+#include "PropertyEditor/ShowFlags.h"
+#include "UnrealEd/PrimitiveBatch.h"
 UCubeComp::UCubeComp() : UPrimitiveComponent("Cube")
 {
 	AABB.max = { 1,1,1 };

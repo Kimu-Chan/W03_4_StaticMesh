@@ -1,4 +1,4 @@
-#include "ShowFlags.h"
+#include "Engine/Source/Editor/PropertyEditor/ShowFlags.h"
 #include "UParticleSubUVComp.h"
 
 UParticleSubUVComp::UParticleSubUVComp() :UBillboardComponent("Quad")

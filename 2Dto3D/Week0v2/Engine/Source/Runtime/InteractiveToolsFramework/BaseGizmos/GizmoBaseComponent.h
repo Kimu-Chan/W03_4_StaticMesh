@@ -1,5 +1,5 @@
 #pragma once
-#include "PrimitiveComponent.h"
+#include "Components/PrimitiveComponent.h"
 class UGizmoBaseComponent : public UPrimitiveComponent
 {
 	DECLARE_CLASS(UGizmoBaseComponent, UPrimitiveComponent)
