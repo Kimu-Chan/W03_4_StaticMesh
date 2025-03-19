@@ -15,7 +15,7 @@ void USceneComponent::Initialize()
 {
 	//테스트용 텍스트
 	uuidText = new UTextUUID();
-	uuidText->SetTexture(L"Assets/Texture/UUID_Font.png");
+	uuidText->SetTexture(L"Assets/Texture/UUID_Font.dds");
 	uuidText->SetRowColumnCount(1, 11);
 	uuidText->SetUUID(UUID);
 	uuidText->SetUUIDParent(this);
