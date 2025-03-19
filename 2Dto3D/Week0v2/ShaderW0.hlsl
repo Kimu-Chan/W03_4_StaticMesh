@@ -109,7 +109,7 @@ float4 mainPS(PS_INPUT input) : SV_Target
     float4 texColor = Texture.Sample(Sampler, input.texcoord);
     //texColor = float4(1, 1, 1, 1);
     float3 color;
-    if (texColor.a == 0) // 텍스처가 없으면 기본 색상 유지
+    if (input.texcoord.g == 0) // 텍스처가 없으면 기본 색상 유지
     {
         color = saturate(input.color.rgb);
     }
@@ -118,24 +118,24 @@ float4 mainPS(PS_INPUT input) : SV_Target
 
     //float3 color = saturate(input.color.rgb);
 
-    //if (isLit == 1) // 조명이 적용되는 경우
-    //{
-    //    if (input.normalFlag > 0.5)
-    //    {
-    //        float3 N = normalize(input.normal);
-    //        float3 L = normalize(LightDirection);
-    //        float diffuse = saturate(dot(N, L));
-    //        color = AmbientFactor * color + diffuse * LightColor * color;
-    //    }
-    //    return float4(color, 1.0);
-    //}
-    //else // unlit 상태일 때 PaperTexture 효과 적용
-    //{
-    //    if (input.normalFlag < 0.5)
-    //    {
-    //        return float4(color, 1.0);
-    //    }
-    //    return PaperTexture(color);
-    //}
+    if (isLit == 1) // 조명이 적용되는 경우
+    {
+        if (input.normalFlag > 0.5)
+        {
+            float3 N = normalize(input.normal);
+            float3 L = normalize(LightDirection);
+            float diffuse = saturate(dot(N, L));
+            color = AmbientFactor * color + diffuse * LightColor * color;
+        }
+        return float4(color, 1.0);
+    }
+    else // unlit 상태일 때 PaperTexture 효과 적용
+    {
+        if (input.normalFlag < 0.5)
+        {
+            return float4(color, 1.0);
+        }
+        return PaperTexture(color);
+    }
     return float4(color, 1.0);
 }
