@@ -15,30 +15,9 @@ UPrimitiveBatch::~UPrimitiveBatch()
         pVertexBuffer->Release();
         pVertexBuffer = nullptr;
     }
-    if (pBoundingBoxBuffer) {
-        pBoundingBoxBuffer->Release();
-        pBoundingBoxBuffer = nullptr;
-    }
-    if (pBoundingBoxSRV) {
-        pBoundingBoxSRV->Release();
-        pBoundingBoxSRV = nullptr;
-    }
-    if (pConesBuffer) {
-        pConesBuffer->Release();
-        pConesBuffer = nullptr;
-    }
-    if (pConesSRV) {
-        pConesSRV->Release();
-        pConesSRV = nullptr;
-    } 
-    if (pOBBSRV) {
-        pOBBSRV->Release();
-        pOBBSRV = nullptr;
-    }  
-    if (pOBBBuffer) {
-        pOBBBuffer->Release();
-        pOBBBuffer = nullptr;
-    }
+    ReleaseOBBResources();
+    ReleaseBoundingBoxResources();
+    ReleaseConeResources();
 }
 
 void UPrimitiveBatch::GenerateGrid(float spacing, int gridCount)

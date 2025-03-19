@@ -14,13 +14,11 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
 void FRenderer::Release() {
     ReleaseShader();
     ReleaseTextureShader();
+    ReleaseLineShader();
     if (ConstantBuffer) ConstantBuffer->Release();
     if (LightingBuffer) LightingBuffer->Release();
     if (NormalConstantBuffer) NormalConstantBuffer->Release();
     if (LitUnlitBuffer) LitUnlitBuffer->Release();
-    if (GridConstantBuffer) GridConstantBuffer->Release();
-    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
-
 }
 
 
@@ -272,9 +270,6 @@ void FRenderer::CreateConstantBuffer()
     // create FNormalConstans buffer 
     constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
-
-    constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
-    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
     
     constantbufferdesc.ByteWidth = sizeof(FGridParameters) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &GridConstantBuffer);
@@ -429,6 +424,10 @@ void FRenderer::ReleaseTextureShader()
     {
         VertexTextureShader->Release();
         VertexTextureShader = nullptr;
+    }
+    if (SubUVConstantBuffer) {
+        SubUVConstantBuffer->Release();
+        SubUVConstantBuffer = nullptr;
     }
 }
 
@@ -619,7 +618,10 @@ void FRenderer::CreateLineShader()
 
 void FRenderer::ReleaseLineShader()
 {
-
+    if (GridConstantBuffer) GridConstantBuffer->Release();
+    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
+    if (VertexLineShader) VertexLineShader->Release();
+    if (PixelLineShader) PixelLineShader->Release();
 }
 
 ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer()

@@ -47,7 +47,7 @@ void UWorld::CreateBaseObject()
 	UObject* pObj = FObjectFactory::ConstructObject<USkySphereComponent>("SkySphere");
 	USkySphereComponent* skySphere = static_cast<USkySphereComponent*>(pObj);
 	skySphere->SetTexture(L"Assets/Texture/ocean_sky.jpg");
-	skySphere->SetScale(FVector( -1000.0f, -1000.0f, -1000.0f));
+	skySphere->SetScale(FVector( -300.0f, -300.0f, -300.0f));
 	skySphere->SetRotation(FVector(-167.0f, 25.0f, -135.0f));
 
 	GUObjectArray.push_back(skySphere);
