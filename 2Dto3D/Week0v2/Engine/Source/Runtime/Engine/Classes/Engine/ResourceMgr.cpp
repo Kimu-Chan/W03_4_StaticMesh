@@ -8,7 +8,7 @@
 #include "Arrow.h"
 #include "Components/Quad.h"
 #include <wincodec.h>
-#include "External/DirectXTK/Include/DDSTextureLoader.h"
+#include "DirectXTK/Include/DDSTextureLoader.h"
 void FResourceMgr::Initialize(FRenderer* renderer, FGraphicsDevice* device)
 {
 	//GenerateSphere();
