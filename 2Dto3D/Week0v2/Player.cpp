@@ -298,8 +298,6 @@ int UPlayer::RayIntersectsObject(const FVector& pickPosition, UPrimitiveComponen
 	FVector pickRayOrigin = inverseMatrix.TransformPosition(cameraOrigin);
 	FVector rayDirection = inverseMatrix.TransformPosition(pickPosition);
 	rayDirection = (rayDirection - pickRayOrigin).Normalize(); // local ��ǥ���� ray
-	float dist;
-	
 	intersectCount = obj->CheckRayIntersection(pickRayOrigin, rayDirection, hitDistance);
 	
 	return intersectCount;
@@ -373,10 +371,12 @@ void UPlayer::ControlRotation(USceneComponent* pObj, UPrimitiveComponent* Gizmo,
 
 void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
+	float deltaXf = static_cast<float>(deltaX);
+	float deltaYf = static_cast<float>(deltaY);
 	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
 	FVector cameraRight = GetWorld()->GetCamera()->GetRightVector();
 	FVector cameraUp = GetWorld()->GetCamera()->GetUpVector();
-	FVector worldMoveDir = (cameraRight * deltaX + cameraUp * -deltaY) * 0.01f;
+	FVector worldMoveDir = (cameraRight * deltaXf + cameraUp * -deltaYf) * 0.01f;
 
 	if (cdMode == CDM_LOCAL) {
 		if (Gizmo->GetType() == "ArrowX") {
@@ -408,9 +408,9 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 			//UE_LOG(LogLevel::Error, "%f", degree);
 
 			if ( 0 < degree && degree <  180.0f)
-				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
+				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaXf * 0.01f);
 			else if (degree < 0 && degree > -180.0f) {
-				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+				pObj->AddLocation(FVector(1.0f, 0.0f, 0.0f) * deltaXf * -0.01f);
 			}
 		}
 		else if (Gizmo->GetType() == "ArrowY")
@@ -425,13 +425,13 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 				degree *= -1.0f;
 			//UE_LOG(LogLevel::Error, "%f", degree);
 			if (0 < degree && degree < 180)
-				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaXf * 0.01f);
 			else
-				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
+				pObj->AddLocation(FVector(0.0f, 1.0f, 0.0f) * deltaXf * -0.01f);
 		}	
 		else if (Gizmo->GetType() == "ArrowZ")
 		{
-			pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
+			pObj->AddLocation(FVector(0.0f, 0.0f, 1.0f) * deltaYf * -0.01f);
 		}
 	}
 }
@@ -439,7 +439,8 @@ void UPlayer::ControlTranslation(USceneComponent* pObj, UPrimitiveComponent* Giz
 void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, int32 deltaX, int32 deltaY)
 {
 	FVector vecObjToCamera = GetWorld()->GetCamera()->GetWorldLocation() - pObj->GetWorldLocation();
-
+	float deltaXf = static_cast<float>(deltaX);
+	float deltaYf = static_cast<float>(deltaY);
 	if (Gizmo->GetType() == "ScaleX")
 	{
 		vecObjToCamera = FVector(vecObjToCamera.x, vecObjToCamera.y, pObj->GetLocalLocation().z);
@@ -453,9 +454,9 @@ void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, in
 		//UE_LOG(LogLevel::Error, "%f", degree);
 
 		if (0 < degree && degree < 180.0f)
-			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f);
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaXf * 0.01f);
 		else if (degree < 0 && degree > -180.0f) {
-			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f);
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaXf * -0.01f);
 		}
 	}
 	else if (Gizmo->GetType() == "ScaleY")
@@ -470,12 +471,12 @@ void UPlayer::ControlScale(USceneComponent* pObj, UPrimitiveComponent* Gizmo, in
 			degree *= -1.0f;
 		//UE_LOG(LogLevel::Error, "%f", degree);
 		if (0 < degree && degree < 180)
-			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.01f);
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaXf * 0.01f);
 		else
-			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.01f);
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaXf * -0.01f);
 	}
 	else if (Gizmo->GetType() == "ScaleZ")
 	{
-		pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaY * -0.01f);
+		pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaYf * -0.01f);
 	}
 }

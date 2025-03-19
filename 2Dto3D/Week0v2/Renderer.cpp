@@ -326,7 +326,7 @@ void FRenderer::UpdateLightBuffer()
         constants->lightColorX = 1.0f;
         constants->lightColorY = 1.0f;
         constants->lightColorZ = 1.0f;
-        constants->AmbientFactor = .06;
+        constants->AmbientFactor =0.06f;
     }
     Graphics->DeviceContext->Unmap(LightingBuffer, 0);
 
@@ -639,7 +639,7 @@ ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer()
  
 }
 
-ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
+ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(UINT numBoundingBoxes)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
@@ -654,7 +654,7 @@ ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
     return BoundingBoxBuffer;
 }
 
-ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
+ID3D11Buffer* FRenderer::CreateOBBBuffer(UINT numBoundingBoxes)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
@@ -669,7 +669,7 @@ ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
     return BoundingBoxBuffer;
 }
 
-ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
+ID3D11Buffer* FRenderer::CreateConeBuffer(UINT numCones)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -684,7 +684,7 @@ ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
     return ConeBuffer;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, UINT numBoundingBoxes)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
@@ -697,7 +697,7 @@ ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundin
     return pBBSRV;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, UINT numBoundingBoxes)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
@@ -708,7 +708,7 @@ ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuff
     return pOBBSRV;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, int numCones)
+ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, UINT numCones)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN

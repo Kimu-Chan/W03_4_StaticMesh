@@ -51,6 +51,7 @@ struct FGridParameters
 struct FSimpleVertex
 {
 	float dummy; // 내용은 사용되지 않음
+    float padding[9];
 };
 struct FOBB {
     FVector corners[8];

@@ -33,7 +33,7 @@ public:
 public:
 	static void* operator new(size_t size) {
 		UE_LOG(LogLevel::Display, "UObject Created : %d", size);
-		FEngineLoop::TotalAllocationBytes+=size;
+		FEngineLoop::TotalAllocationBytes += static_cast<uint32>(size);
 		FEngineLoop::TotalAllocationCount++;
 
 		UE_LOG(LogLevel::Display, "TotalAllocationBytes : %d, TotalAllocationCount : %d", FEngineLoop::TotalAllocationBytes, FEngineLoop::TotalAllocationCount);

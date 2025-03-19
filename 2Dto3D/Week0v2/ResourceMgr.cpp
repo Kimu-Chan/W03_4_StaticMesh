@@ -200,8 +200,8 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 	}
 
 	UE_LOG(LogLevel::Error, "Arrow Vertex Size : %d", vertices.size());
-	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, vertices.size() * sizeof(FVertexSimple));
-	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
+	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, static_cast<UINT>(vertices.size() * sizeof(FVertexSimple)));
+	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, static_cast<UINT>(indices.size() * sizeof(UINT))) : nullptr;
 
 	if (!vertexBuffer || !indexBuffer) {
 		UE_LOG(LogLevel::Error, "Error: Failed to create buffers for OBJ: %s", filepath.c_str());
@@ -210,7 +210,7 @@ void FResourceMgr::LoadObjNormalAsset(FRenderer* renderer, const FString& meshNa
 		return;
 	}
 
-	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
+	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, static_cast<UINT>(vertices.size()), vertexArray, indexBuffer, static_cast<UINT>(indices.size()), indexArray);
 
 	delete[] vertexArray;
 	delete[] indexArray;
@@ -314,7 +314,7 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 							FVector position = positions[vIdx];
 							FVector normal = (nIdx >= 0 && nIdx < normals.size()) ? normals[nIdx] : FVector(0, 0, 1);
 							FVector4 color = (vIdx >= 0 && vIdx < Colors.size()) ? Colors[vIdx] : FVector4(1, 1, 1, 1);
-							std::pair<float, float> uv = (uvIdx >= 0 && uvIdx < UVs.size()) ? UVs[uvIdx] : std::pair<float, float>(0, 0);
+							std::pair<float, float> uv = (uvIdx >= 0 && uvIdx < UVs.size()) ? UVs[uvIdx] : std::pair<float, float>(0.f, 0.f);
 
 							FVertexSimple vertexSimple{
 								position.x, position.y, position.z,
@@ -357,8 +357,8 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 	}
 
 	UE_LOG(LogLevel::Error, "Arrow Vertex Size : %d", vertices.size());
-	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, vertices.size() * sizeof(FVertexSimple));
-	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
+	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, static_cast<UINT>(vertices.size() * sizeof(FVertexSimple)));
+	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, static_cast<UINT>(indices.size() * sizeof(UINT))) : nullptr;
 
 	if (!vertexBuffer || !indexBuffer) {
 		UE_LOG(LogLevel::Error, "Error: Failed to create buffers for OBJ: %s", filepath.c_str());
@@ -367,7 +367,7 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 		return;
 	}
 
-	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
+	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, static_cast<UINT>(vertices.size()), vertexArray, indexBuffer, static_cast<UINT>(indices.size()), indexArray);
 	//meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, nullptr, indices.size(), nullptr);
 
 
@@ -439,15 +439,15 @@ void FResourceMgr::LoadObjAsset(FRenderer* renderer, const FString& meshName, co
 
 
 	UE_LOG(LogLevel::Error, "Arrow Vertex Size : %d", vertices.size());
-	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, vertices.size() * sizeof(FVertexSimple));
-	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, indices.size() * sizeof(UINT)) : nullptr;
+	ID3D11Buffer* vertexBuffer = renderer->CreateVertexBuffer(vertexArray, static_cast<UINT>(vertices.size() * sizeof(FVertexSimple)));
+	ID3D11Buffer* indexBuffer = (indexArray) ? renderer->CreateIndexBuffer(indexArray, static_cast<UINT>(indices.size() * sizeof(UINT))) : nullptr;
 	if (!vertexBuffer) {
 		UE_LOG(LogLevel::Error, "Error: Failed to create buffers for OBJ: %s", filepath.c_str());
 		delete[] vertexArray;
 		delete[] indexArray;
 		return;
 	}
-	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
+	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, static_cast<UINT>(vertices.size()), vertexArray, indexBuffer, static_cast<UINT>(indices.size()), indexArray);
 
 	delete[] vertexArray;
 	delete[] indexArray;

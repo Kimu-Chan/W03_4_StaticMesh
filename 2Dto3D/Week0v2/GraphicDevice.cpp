@@ -292,9 +292,6 @@ void FGraphicsDevice::OnResize(HWND hWindow) {
     HRESULT hr;
     hr = SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0);  // DXGI_FORMAT_B8G8R8A8_UNORM으로 시도
     if (FAILED(hr)) {
-        // HRESULT 값 로그로 출력
-        wchar_t errorMsg[256];
-        //swprintf_s(errorMsg, L"ResizeBuffers failed with HRESULT: 0x%08X", hr);
         MessageBox(hWindow, L"failed", L"ResizeBuffers failed ", MB_ICONERROR | MB_OK);
         return;
     }
