@@ -45,6 +45,10 @@ void UText::Render()
 {
 	TextMVPRendering();
 }
+void UText::ClearText()
+{
+	vertexTextureArr.clear();
+}
 void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn) 
 {
 	RowCount = _cellsPerRow;
@@ -140,11 +144,22 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 
 void UText::SetText(FWString _text)
 {
+	text = _text;
 	if (_text.empty())
 	{
 		Console::GetInstance().AddLog(LogLevel::Warning, "Text is empty");
-	}
 
+		vertexTextureArr.clear();
+		quad.clear();
+
+		// 기존 버텍스 버퍼가 있다면 해제
+		if (vertexTextBuffer)
+		{
+			vertexTextBuffer->Release();
+			vertexTextBuffer = nullptr;
+		}
+		return;
+	}
 	int textSize = static_cast<int>(_text.size());
 
 

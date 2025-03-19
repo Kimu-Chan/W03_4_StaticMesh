@@ -6,6 +6,7 @@
 #include "PrimitiveComponent.h"
 #include "LightComponent.h"
 #include "SceneComponent.h"
+#include "UText.h"
 PropertyPanel::PropertyPanel()
 {
 }
@@ -60,7 +61,7 @@ void PropertyPanel::Draw(UWorld* world)
     USceneComponent* PickObj = static_cast<USceneComponent*>(world->GetPickingObj());
     if (PickObj)
     {
-        std::string objectName = PickObj->GetName().ToString();
+        FString objectName = PickObj->GetName().ToString();
         ImGui::Text("%s", objectName.c_str());
 
         // 위치/회전/스케일을 float[3]에 담아둠
@@ -79,7 +80,7 @@ void PropertyPanel::Draw(UWorld* world)
             PickObj->GetWorldScale().y,
             PickObj->GetWorldScale().z
         };
-       
+
         // ---------- 위치 (X/Y/Z) ----------
         ImGui::Text("Position");
         ImGui::PushItemWidth(50.0f);
@@ -95,7 +96,7 @@ void PropertyPanel::Draw(UWorld* world)
         ImGui::DragFloat("##rotY", &pickObjRot[1], 0.6f, -FLT_MAX, FLT_MAX);
         ImGui::SameLine();
         ImGui::DragFloat("##rotZ", &pickObjRot[2], 0.6f, -FLT_MAX, FLT_MAX);
-       
+
         // ---------- 스케일 (X/Y/Z) ----------
         ImGui::Text("Scale");
         ImGui::DragFloat("##scaleX", &pickObjScale[0], 0.6f, -FLT_MAX, FLT_MAX);
@@ -108,6 +109,7 @@ void PropertyPanel::Draw(UWorld* world)
         PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
         PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
         PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
+        bool reclaimFocus = false;
 
         // -------- SpotLight 처리부 ----------
         if (objectName.rfind("SpotLight_", 0) == 0)
@@ -115,22 +117,22 @@ void PropertyPanel::Draw(UWorld* world)
             ULightComponentBase* lightObj = dynamic_cast<ULightComponentBase*>(PickObj);
             FVector4 currColor = lightObj->GetColor();
 
-             float r = currColor.x;
-             float g = currColor.y;
-             float b = currColor.z;
-             float a = currColor.a;
-             float h, s, v;
+            float r = currColor.x;
+            float g = currColor.y;
+            float b = currColor.z;
+            float a = currColor.a;
+            float h, s, v;
             float lightColor[4] = { r, g, b, a };
 
             // 컬러 픽커 (ColorPicker4)
             if (ImGui::ColorPicker4("SpotLight Color", lightColor,
                 ImGuiColorEditFlags_DisplayRGB |
                 ImGuiColorEditFlags_NoSidePreview |
-                ImGuiColorEditFlags_NoInputs|
+                ImGuiColorEditFlags_NoInputs |
                 ImGuiColorEditFlags_Float))
 
             {
-                
+
                 r = lightColor[0];
                 g = lightColor[1];
                 b = lightColor[2];
@@ -149,7 +151,7 @@ void PropertyPanel::Draw(UWorld* world)
             if (ImGui::DragFloat("G##G", &g, 0.001f, 0.f, 1.f)) changedRGB = true;
             ImGui::SameLine();
             if (ImGui::DragFloat("B##B", &b, 0.001f, 0.f, 1.f)) changedRGB = true;
-            
+
             // HSV 슬라이더
             if (ImGui::DragFloat("H##H", &h, 0.1f, 0.f, 360)) changedHSV = true;
             ImGui::SameLine();
@@ -176,6 +178,34 @@ void PropertyPanel::Draw(UWorld* world)
             if (ImGui::SliderFloat("Radius", &radiusVal, 1.0f, 100.0f))
             {
                 lightObj->SetRadius(radiusVal);
+            }
+        }
+        if (objectName.rfind("Quad", 0) == 0) {
+            UText* textOBj = dynamic_cast<UText*>(PickObj);
+            if (textOBj) {
+                textOBj->SetTexture(L"Assets/Texture/font.png");
+                textOBj->SetRowColumnCount(106, 106);
+                FWString wText = textOBj->GetText();
+                int len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, nullptr, 0, nullptr, nullptr);
+                FString u8Text(len, '\0');
+                WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, &u8Text[0], len, nullptr, nullptr);
+
+                static char buf[256];
+                strcpy_s(buf, u8Text.c_str());
+               
+                if (ImGui::InputText(u8"수정", buf, 256, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    textOBj->ClearText();
+                    int wlen = MultiByteToWideChar(CP_UTF8, 0, buf, -1, nullptr, 0);
+                    FWString newWText(wlen, L'\0');
+                    MultiByteToWideChar(CP_UTF8, 0, buf, -1, &newWText[0], wlen);
+                    textOBj->SetText(newWText.c_str());
+                   
+                    reclaimFocus = true;
+                }
+                if (reclaimFocus) {
+                    ImGui::SetKeyboardFocusHere(1);
+                }
             }
         }
     }

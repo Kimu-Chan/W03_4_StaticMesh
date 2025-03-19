@@ -25,7 +25,13 @@ public:
         }
     }
     ~FStaticMesh() {
-        if (vertexBuffer) vertexBuffer->Release();
-        if (indexBuffer) indexBuffer->Release();
+        if (vertexBuffer) {
+            vertexBuffer->Release();
+            vertexBuffer = nullptr;
+        }
+        if (indexBuffer) {
+            indexBuffer->Release();
+            indexBuffer = nullptr;
+        }
     }
 };

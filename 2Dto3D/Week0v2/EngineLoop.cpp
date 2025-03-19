@@ -9,7 +9,6 @@
 #include "ShowFlags.h"
 #include "Outliner.h"
 #include "EditorViewportClient.h"
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern FEngineLoop GEngineLoop;
 
@@ -186,6 +185,8 @@ void FEngineLoop::Exit()
 	resourceMgr.Release(&renderer);
 	renderer.Release();
 	graphicDevice.Release();
+
+
 }
 
 void FEngineLoop::WindowInit(HINSTANCE hInstance)

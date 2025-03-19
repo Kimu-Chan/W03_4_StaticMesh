@@ -11,13 +11,16 @@ public:
 	virtual void		Update(double deltaTime)	override;
 	virtual void		Release()					override;
 	virtual void		Render()					override;
+	void				ClearText();
 	void				SetText(FWString _text);
+	FWString			GetText() { return text; }
 	void SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn);
 	virtual int			CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance);
 
 protected:
 
 	ID3D11Buffer* vertexTextBuffer;
+	FWString text;
 	TArray<FVertexTexture> vertexTextureArr;
 	UINT numTextVertices;
 

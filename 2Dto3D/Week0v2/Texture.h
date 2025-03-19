@@ -8,9 +8,12 @@ struct FTexture
 	{}
 	~FTexture()
 	{
-		TextureSRV->Release();
-		Texture->Release();
-		SamplerState->Release();
+		
+	}
+	void Release() {
+		if (TextureSRV) { TextureSRV->Release(); TextureSRV = nullptr; }
+		if (Texture) { Texture->Release(); Texture = nullptr; }
+		if (SamplerState) { SamplerState->Release(); SamplerState = nullptr; }
 	}
 	ID3D11ShaderResourceView* TextureSRV = nullptr;
 	ID3D11Texture2D* Texture = nullptr;

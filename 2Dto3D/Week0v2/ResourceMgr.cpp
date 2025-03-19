@@ -11,7 +11,6 @@
 #include "Quad.h"
 #include <wincodec.h>
 #include "DDSTextureLoader.h"
-
 void FResourceMgr::Initialize(FRenderer* renderer, FGraphicsDevice* device)
 {
 	//GenerateSphere();
@@ -55,9 +54,9 @@ void FResourceMgr::Release(FRenderer* renderer) {
         renderer->ReleaseBuffer(mesh->vertexBuffer);
         renderer->ReleaseBuffer(mesh->indexBuffer);
     }
-	for (auto& pair : textureMap)
-	{
-		FTexture* texture = pair.second.get();
+	for (auto& pair : textureMap) {
+		FTexture* texture =	pair.second.get();
+		texture->Release();
 	}
 }
 

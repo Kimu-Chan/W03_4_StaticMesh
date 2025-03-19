@@ -234,6 +234,10 @@ void FGraphicsDevice::ReleaseDepthStencilResources()
         DepthStencilState->Release();
         DepthStencilState = nullptr;
     }
+    if (DepthStateDisable) {
+        DepthStateDisable->Release();
+        DepthStateDisable = nullptr;
+    }
 }
 
 void FGraphicsDevice::Release() 

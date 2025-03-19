@@ -54,13 +54,7 @@ void UWorld::CreateBaseObject()
 
 
 	//테스트용 텍스트
-	//UObject* text = FObjectFactory::ConstructObject<UText>();
-	//UText* castText = static_cast<UText*>(text);
-	//castText->SetTexture(L"Assets/Texture/font.png");
-	//castText->SetRowColumnCount(106, 106);
-	//castText->SetText(L"안녕하세요 Jungle 1");
-	////SetText전에 RowColumn 반드시 설정
-	//GUObjectArray.push_back(text);
+	
 	
 /*
 
@@ -173,15 +167,26 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		break;
 	}
 	case OBJ_PARTICLE:
-		{
+	{
 		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>("FireParticle");
 		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
 		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
 		castParticle->SetRowColumnCount(6, 6);
 		castParticle->SetScale(FVector(10.0f, 10.0f, 1.0f));
 		GUObjectArray.push_back(castParticle);
-		}
-		break;
+	}
+	break;
+	case OBJ_Text:
+	{
+		UObject* text = FObjectFactory::ConstructObject<UText>("Quad");
+		UText* castText = static_cast<UText*>(text);
+		castText->SetTexture(L"Assets/Texture/font.png");
+		castText->SetRowColumnCount(106, 106);
+		castText->SetText(L"안녕하세요 Jungle 1");
+		//SetText전에 RowColumn 반드시 설정
+		GUObjectArray.push_back(text);
+	}
+	break;
 	default:
 		break;
 	}

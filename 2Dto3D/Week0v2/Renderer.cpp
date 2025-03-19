@@ -429,6 +429,10 @@ void FRenderer::ReleaseTextureShader()
         SubUVConstantBuffer->Release();
         SubUVConstantBuffer = nullptr;
     }
+    if (ConstantBuffer) {
+        ConstantBuffer->Release();
+        ConstantBuffer = nullptr;
+    }
 }
 
 void FRenderer::PrepareTextureShader()
