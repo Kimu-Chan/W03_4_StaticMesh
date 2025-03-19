@@ -1,5 +1,5 @@
 #include "SceneComponent.h"
-#include "World.h"
+#include "Engine/Source/Runtime/Engine/World.h"
 #include "JungleMath.h"
 #include "ObjectFactory.h"
 #include "UTextUUID.h"

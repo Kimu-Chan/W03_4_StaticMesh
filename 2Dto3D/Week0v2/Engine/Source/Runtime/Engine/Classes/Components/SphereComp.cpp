@@ -1,6 +1,6 @@
 #include "SphereComp.h"
 #include "JungleMath.h"
-#include "World.h"
+#include "Engine/Source/Runtime/Engine/World.h"
 #include "ShowFlags.h"
 
 USphereComp::USphereComp() : UPrimitiveComponent("Sphere")
