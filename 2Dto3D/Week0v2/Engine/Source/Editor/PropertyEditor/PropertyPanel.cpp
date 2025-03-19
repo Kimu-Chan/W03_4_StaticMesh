@@ -6,6 +6,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Components/LightComponent.h"
 #include "Components/SceneComponent.h"
+#include "Components/UText.h"
 PropertyPanel::PropertyPanel()
 {
 }
