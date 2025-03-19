@@ -51,164 +51,161 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Launch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_demo.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_draw.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_impl_dx11.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_impl_win32.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_tables.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUI\imgui_widgets.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>소스 파일\UWorld</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="PrimitiveComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="JungleMath.cpp">
-      <Filter>소스 파일\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Define.cpp">
-      <Filter>소스 파일\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereComp.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="CubeComp.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectFactory.cpp">
-      <Filter>소스 파일\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Console.cpp">
+    <ClCompile Include="Engine\Source\Runtime\Launch\ImGuiManager.cpp">
       <Filter>소스 파일\UI</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiManager.cpp">
-      <Filter>소스 파일\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineLoop.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceMgr.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="ControlPaner.cpp">
-      <Filter>소스 파일\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertyPanel.cpp">
-      <Filter>소스 파일\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneMgr.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineStatics.cpp">
-      <Filter>소스 파일\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="UClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Outliner.cpp">
-      <Filter>소스 파일\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="PrimitiveBatch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="UBillboardComponent.cpp">
+    <ClCompile Include="Engine\Source\Runtime\CoreUObject\UObject\UClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UTexture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TransformGizmo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="UParticleSubUVComp.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="UText.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoArrowComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoBaseComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoCircleComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoRectangleComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameUserSettings.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorViewportClient.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ShowFlags.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ViewModeDropdown.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ShowFlags.cpp">
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\QuadTexture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UHangulText.cpp">
+    <ClCompile Include="Engine\Source\Runtime\Core\Math\JungleMath.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ViewModeDropdown.cpp">
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\ActorComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UTextUUID.cpp">
+    <ClCompile Include="Engine\Source\Editor\UnrealEd\EditorViewportClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="QuadTexture.cpp">
+    <ClCompile Include="Engine\Source\Runtime\Engine\UserInterface\ImGuiManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SkySphereComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
+    <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoArrowComponent.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="LightComponent.cpp">
-      <Filter>소스 파일\UObject</Filter>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Camera\CameraComponent.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicDevice.cpp">
-      <Filter>소스 파일\Engine</Filter>
+    <ClCompile Include="Engine\Source\Runtime\Engine\UserInterface\Console.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\ControlPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\CubeComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Core\Math\Define.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoBaseComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoCircleComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Launch\EngineLoop.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_demo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_draw.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_impl_dx11.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_impl_win32.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_tables.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\ThirdParty\include\ImGUI\imgui_widgets.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\LightComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\ShowFlags.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SkySphereComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\TransformGizmo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Launch\Launch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\CoreUObject\UObject\Object.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\CoreUObject\UObject\ObjectFactory.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\Outliner.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\UnrealEd\PrimitiveBatch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\PrimitiveComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\PropertyPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Renderer\Renderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Engine\ResourceMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoRectangleComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SceneComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\UnrealEd\SceneMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\SphereComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\Player.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\UBillboardComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\UParticleSubUVComp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\UText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Components\UTextUUID.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\ViewModeDropdown.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\World.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Core\EngineStatics.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,109 +223,28 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImGUI\imconfig.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imgui.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imgui_impl_dx11.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imgui_impl_win32.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imgui_internal.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_rectpack.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_textedit.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUI\imstb_truetype.h">
-      <Filter>ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicDevice.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
+    <ClInclude Include="Engine\Source\Runtime\Engine\World.h">
       <Filter>헤더 파일\UWorld</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Define.h">
+    <ClInclude Include="Engine\Source\Runtime\Launch\Define.h">
       <Filter>헤더 파일\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="PrimitiveComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="JungleMath.h">
-      <Filter>헤더 파일\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereComp.h">
-      <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="CubeComp.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Gizmo.h">
-      <Filter>헤더 파일\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectFactory.h">
-      <Filter>헤더 파일\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>헤더 파일\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiManager.h">
-      <Filter>헤더 파일\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineLoop.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceMgr.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="ControlPaner.h">
-      <Filter>헤더 파일\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertyPanel.h">
+    <ClInclude Include="Engine\Source\Runtime\Launch\ImGuiManager.h">
       <Filter>헤더 파일\UI</Filter>
     </ClInclude>
     <ClInclude Include="Arrow.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="json.hpp">
-      <Filter>헤더 파일\Util</Filter>
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\UClass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SceneMgr.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineStatics.h">
-      <Filter>헤더 파일\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="UClass.h">
+    <ClInclude Include="Engine\Source\Editor\UnrealEd\EditorWindow.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Font\IconDefs.h">
@@ -337,92 +253,167 @@
     <ClInclude Include="Font\RawFonts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="IWindowToggleable.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ActorComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="NameTypes.h">
+    <ClInclude Include="Engine\Source\Runtime\Launch\NameTypes.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Outliner.h">
-      <Filter>헤더 파일\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PrimitiveBatch.h">
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\Quad.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Quad.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="QuadTexture.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UBillboardComponent.h">
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\QuadTexture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UTexture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TransformGizmo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UParticleSubUVComp.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UText.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoRectangleComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoBaseComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoCircleComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoArrowComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewModeDropdown.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticMesh.h">
-      <Filter>소스 파일\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="ShowFlags.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UHangulText.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ViewModeDropdown.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="UTextUUID.h">
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\JungleMath.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\ActorComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="LightComponent.h">
-      <Filter>헤더 파일\UObject</Filter>
+    <ClInclude Include="Engine\Source\Editor\UnrealEd\EditorViewportClient.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SkySphereComponent.h">
-      <Filter>헤더 파일\UI</Filter>
+    <ClInclude Include="Engine\Source\Runtime\Engine\UserInterface\ImGuiManager.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameUserSettings.h">
-      <Filter>헤더 파일\UI</Filter>
+    <ClInclude Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoArrowComponent.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EditorWindow.h">
-      <Filter>헤더 파일\UI</Filter>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Camera\CameraComponent.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EditorViewportClient.h">
-      <Filter>헤더 파일\UI</Filter>
+    <ClInclude Include="Engine\Source\Runtime\Engine\UserInterface\Console.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ShowFlags.h">
-      <Filter>헤더 파일\UI</Filter>
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\ControlPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\CubeComp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoCircleComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Launch\EngineLoop.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoBaseComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imconfig.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imgui.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imgui_impl_dx11.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imgui_impl_win32.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imgui_internal.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imstb_rectpack.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imstb_textedit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\include\ImGUI\imstb_truetype.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\IWindowToggleable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\JSON\json.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\LightComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\ShowFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkySphereComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\Texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\TransformGizmo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\ObjectFactory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\Outliner.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\UnrealEd\PrimitiveBatch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\PrimitiveComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\PropertyPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\ResourceMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoRectangleComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SceneComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\UnrealEd\SceneMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\Object.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Renderer\Renderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SphereComp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\Player.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Engine\StaticMesh.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\UBillboardComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\UParticleSubUVComp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\UText.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\UTextUUID.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\ViewModeDropdown.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Core\EngineStatics.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
