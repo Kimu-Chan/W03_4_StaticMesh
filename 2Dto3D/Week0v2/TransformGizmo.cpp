@@ -33,21 +33,21 @@ UTransformGizmo::UTransformGizmo()
 	AttachChildren.push_back(ArrowZ);
 	ArrowArr.push_back(ArrowZ);
 
-	UGizmoCircleComponent* disc = new UGizmoCircleComponent(EPrimitiveColor::RED_X, 0.90, "DiscX");;
+	UGizmoCircleComponent* disc = new UGizmoCircleComponent(EPrimitiveColor::RED_X, 0.9f, "DiscX");;
 	disc->SetType("CircleX");
 	disc->SetRotation(FVector(0.0f,0.0f,0.0f));
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	CircleArr.push_back(disc);
 
-	disc = new UGizmoCircleComponent(EPrimitiveColor::GREEN_Y, 0.90, "DiscY");
+	disc = new UGizmoCircleComponent(EPrimitiveColor::GREEN_Y, 0.9f, "DiscY");
 	disc->SetType("CircleY");
 	disc->SetParent(this);
 	AttachChildren.push_back(disc);
 	CircleArr.push_back(disc);
 
 
-	disc = new UGizmoCircleComponent(EPrimitiveColor::BLUE_Z, 0.9, "DiscZ");
+	disc = new UGizmoCircleComponent(EPrimitiveColor::BLUE_Z, 0.9f, "DiscZ");
 	disc->SetType("CircleZ");
 	disc->SetParent(this);
 	disc->SetRotation(FVector(0.0f,0.0f,0.0f));

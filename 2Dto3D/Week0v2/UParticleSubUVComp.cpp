@@ -24,13 +24,13 @@ void UParticleSubUVComp::Initialize()
 void UParticleSubUVComp::Update(double deltaTime)
 {
 
-	float CellWidth = Texture->width / CellsPerColumn;
-	float CellHeight = Texture->height / CellsPerColumn;
+	uint32 CellWidth = Texture->width / CellsPerColumn;
+	uint32 CellHeight = Texture->height / CellsPerColumn;
 
 	static int indexU = 0;
 	static int indexV = 0;
 	static float second = 0;
-	second += deltaTime;
+	second += static_cast<float>(deltaTime);
 	if (second >= 75)
 	{
 		indexU++;
@@ -47,7 +47,6 @@ void UParticleSubUVComp::Update(double deltaTime)
 		indexV = 0;
 		GetWorld()->ThrowAwayObj(this);
 		GetWorld()->SetPickingObj(nullptr);
-		GetWorld()->CleanUp();
 	}
 
 
@@ -117,8 +116,8 @@ void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertic
 void UParticleSubUVComp::CreateSubUVVertexBuffer()
 {
 
-	float CellWidth = Texture->width/CellsPerColumn;
-	float CellHeight = Texture->height/ CellsPerColumn;
+	uint32 CellWidth = Texture->width/CellsPerColumn;
+	uint32 CellHeight = Texture->height/ CellsPerColumn;
 	float normalWidthOffset = float(CellWidth) / float(Texture->width);
 	float normalHeightOffset = float(CellHeight) / float(Texture->height);
 
@@ -135,6 +134,6 @@ void UParticleSubUVComp::CreateSubUVVertexBuffer()
 	vertices[3].u = normalWidthOffset;
 	vertices[3].v = normalHeightOffset;
 
-	vertexSubUVBuffer = FEngineLoop::renderer.CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(FVertexTexture));
-	numTextVertices = vertices.size();
+	vertexSubUVBuffer = FEngineLoop::renderer.CreateVertexBuffer(vertices.data(), static_cast<UINT>(vertices.size() * sizeof(FVertexTexture)));
+	numTextVertices = static_cast<UINT>(vertices.size());
 }

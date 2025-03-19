@@ -114,7 +114,7 @@ FVector JungleMath::QuaternionToEuler(const FQuat& quat)
     float sinPitch = 2.0f * (q.w * q.y - q.z * q.x);
     if (fabs(sinPitch) >= 1.0f)
     {
-        euler.y = RadToDeg(copysign(PI / 2, sinPitch)); // 🔥 Gimbal Lock 방지
+        euler.y = RadToDeg(static_cast<float>(copysign(PI / 2, sinPitch))); // 🔥 Gimbal Lock 방지
     }
     else
     {
@@ -157,10 +157,10 @@ FMatrix JungleMath::CreateRotationMatrix(FVector rotation)
 
 float JungleMath::RadToDeg(float radian)
 {
-    return radian * (180.0f / PI);
+    return static_cast<float>(radian * (180.0f / PI));
 }
 
 float JungleMath::DegToRad(float degree)
 {
-    return degree * (PI / 180.0f);
+    return static_cast<float>(degree * (PI / 180.0f));
 }

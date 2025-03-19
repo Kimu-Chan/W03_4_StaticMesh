@@ -96,7 +96,7 @@ FString FSceneMgr::LoadSceneFromFile(const std::string& filename)
         inFile >> j; // JSON 파일 읽기
     }
     catch (const std::exception& e) {
-        UE_LOG(LogLevel::Error, "Error parsing JSON: ");
+        UE_LOG(LogLevel::Error, "Error parsing JSON: %s", e.what());
         return FString();
     }
 

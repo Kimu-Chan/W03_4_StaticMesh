@@ -7,17 +7,17 @@ void UHangulText::SetText(FWString _text)
 		Console::GetInstance().AddLog(LogLevel::Warning, "Text is empty");
 	}
 
-	int textSize = _text.size();
+	int textSize = static_cast<int>(_text.size());
 
 
-	float BitmapWidth = Texture->width;
-	float BitmapHeight = Texture->height;
+	uint32 BitmapWidth = Texture->width;
+	uint32 BitmapHeight = Texture->height;
 
-	float CellWidth = BitmapWidth / ColumnCount;
-	float CellHeight = BitmapHeight / RowCount;
+	uint32 CellWidth = BitmapWidth / ColumnCount;
+	uint32 CellHeight = BitmapHeight / RowCount;
 
-	float nTexelUOffset = CellWidth / BitmapWidth;
-	float nTexelVOffset = CellHeight / BitmapHeight;
+	uint32 nTexelUOffset = CellWidth / BitmapWidth;
+	uint32 nTexelVOffset = CellHeight / BitmapHeight;
 
 	for (int i = 0; i < _text.size(); i++)
 	{
@@ -55,7 +55,7 @@ void UHangulText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
 	}
-	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
+	UINT byteWidth = static_cast<UINT>(vertexTextureArr.size() * sizeof(FVertexTexture));
 
 	CreateTextTextureVertexBuffer(vertexTextureArr, byteWidth);
 }
@@ -80,6 +80,6 @@ void UHangulText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
 	int offsetV = (offset + StartU) / ColumnCount;
 	int offsetU = (offset + StartU) % ColumnCount;
 
-	outStartU = offsetU;
-	outStartV = StartV + offsetV;
+	outStartU = static_cast<float>(offsetU);
+	outStartV = static_cast<float>(StartV + offsetV);
 }

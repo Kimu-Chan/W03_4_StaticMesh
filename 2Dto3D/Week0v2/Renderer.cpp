@@ -14,13 +14,11 @@ void FRenderer::Initialize(FGraphicsDevice* graphics) {
 void FRenderer::Release() {
     ReleaseShader();
     ReleaseTextureShader();
+    ReleaseLineShader();
     if (ConstantBuffer) ConstantBuffer->Release();
     if (LightingBuffer) LightingBuffer->Release();
     if (NormalConstantBuffer) NormalConstantBuffer->Release();
     if (LitUnlitBuffer) LitUnlitBuffer->Release();
-    if (GridConstantBuffer) GridConstantBuffer->Release();
-    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
-
 }
 
 
@@ -162,7 +160,7 @@ void FRenderer::RenderTexturedModelPrimitive(ID3D11Buffer* pVertexBuffer, UINT n
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &offset);
     Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     Graphics->DeviceContext->PSSetShaderResources(0, 1, &_TextureSRV);
     Graphics->DeviceContext->PSSetSamplers(0, 1, &_SamplerState);
 
@@ -272,9 +270,6 @@ void FRenderer::CreateConstantBuffer()
     // create FNormalConstans buffer 
     constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
-
-    constantbufferdesc.ByteWidth = sizeof(FNormalConstants) + 0xf & 0xfffffff0;
-    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &NormalConstantBuffer);
     
     constantbufferdesc.ByteWidth = sizeof(FGridParameters) + 0xf & 0xfffffff0;
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &GridConstantBuffer);
@@ -326,7 +321,7 @@ void FRenderer::UpdateLightBuffer()
         constants->lightColorX = 1.0f;
         constants->lightColorY = 1.0f;
         constants->lightColorZ = 1.0f;
-        constants->AmbientFactor = .06;
+        constants->AmbientFactor =0.06f;
     }
     Graphics->DeviceContext->Unmap(LightingBuffer, 0);
 
@@ -429,6 +424,10 @@ void FRenderer::ReleaseTextureShader()
     {
         VertexTextureShader->Release();
         VertexTextureShader = nullptr;
+    }
+    if (SubUVConstantBuffer) {
+        SubUVConstantBuffer->Release();
+        SubUVConstantBuffer = nullptr;
     }
 }
 
@@ -619,7 +618,10 @@ void FRenderer::CreateLineShader()
 
 void FRenderer::ReleaseLineShader()
 {
-
+    if (GridConstantBuffer) GridConstantBuffer->Release();
+    if (LinePrimitiveBuffer) LinePrimitiveBuffer->Release();
+    if (VertexLineShader) VertexLineShader->Release();
+    if (PixelLineShader) PixelLineShader->Release();
 }
 
 ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer()
@@ -639,7 +641,7 @@ ID3D11Buffer* FRenderer::CreateStaticVerticesBuffer()
  
 }
 
-ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
+ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(UINT numBoundingBoxes)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
@@ -654,7 +656,7 @@ ID3D11Buffer* FRenderer::CreateBoundingBoxBuffer(int numBoundingBoxes)
     return BoundingBoxBuffer;
 }
 
-ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
+ID3D11Buffer* FRenderer::CreateOBBBuffer(UINT numBoundingBoxes)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 자주 업데이트할 경우 DYNAMIC, 그렇지 않으면 DEFAULT
@@ -669,7 +671,7 @@ ID3D11Buffer* FRenderer::CreateOBBBuffer(int numBoundingBoxes)
     return BoundingBoxBuffer;
 }
 
-ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
+ID3D11Buffer* FRenderer::CreateConeBuffer(UINT numCones)
 {
     D3D11_BUFFER_DESC bufferDesc = {};
     bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -684,7 +686,7 @@ ID3D11Buffer* FRenderer::CreateConeBuffer(int numCones)
     return ConeBuffer;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundingBoxBuffer, UINT numBoundingBoxes)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
@@ -697,7 +699,7 @@ ID3D11ShaderResourceView* FRenderer::CreateBoundingBoxSRV(ID3D11Buffer* pBoundin
     return pBBSRV;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, int numBoundingBoxes)
+ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuffer, UINT numBoundingBoxes)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN
@@ -708,7 +710,7 @@ ID3D11ShaderResourceView* FRenderer::CreateOBBSRV(ID3D11Buffer* pBoundingBoxBuff
     return pOBBSRV;
 }
 
-ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, int numCones)
+ID3D11ShaderResourceView* FRenderer::CreateConeSRV(ID3D11Buffer* pConeBuffer, UINT numCones)
 {
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 구조체 버퍼의 경우 UNKNOWN

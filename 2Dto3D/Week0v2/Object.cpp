@@ -19,7 +19,7 @@ UObject::~UObject()
 
 void UObject::Initialize()
 {
-	InternalIndex = GetWorld()->GetObjectArr().size() - 1;
+	InternalIndex = static_cast<uint32>(GetWorld()->GetObjectArr().size() - 1);
 
 }
 

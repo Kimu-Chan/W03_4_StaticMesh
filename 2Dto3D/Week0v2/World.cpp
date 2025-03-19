@@ -43,11 +43,14 @@ void UWorld::CreateBaseObject()
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
 		
 	////테스트용 텍스트
-	//
-	//UObject* pObj = FObjectFactory::ConstructObject<USkySphereComponent>("SkySphere");
-	//USkySphereComponent* skySphere = static_cast<USkySphereComponent*>(pObj);
-	//skySphere->SetTexture(L"Assets/Texture/ocean_sky.jpg");
-	//GUObjectArray.push_back(skySphere);
+	
+	UObject* pObj = FObjectFactory::ConstructObject<USkySphereComponent>("SkySphere");
+	USkySphereComponent* skySphere = static_cast<USkySphereComponent*>(pObj);
+	skySphere->SetTexture(L"Assets/Texture/ocean_sky.jpg");
+	skySphere->SetScale(FVector( -300.0f, -300.0f, -300.0f));
+	skySphere->SetRotation(FVector(-167.0f, 25.0f, -135.0f));
+
+	GUObjectArray.push_back(skySphere);
 
 
 	//테스트용 텍스트
@@ -171,9 +174,9 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	}
 	case OBJ_PARTICLE:
 		{
-		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>();
+		UObject* particle = FObjectFactory::ConstructObject<UParticleSubUVComp>("FireParticle");
 		UParticleSubUVComp* castParticle = static_cast<UParticleSubUVComp*>(particle);
-		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.PNG");
+		castParticle->SetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
 		castParticle->SetRowColumnCount(6, 6);
 		castParticle->SetScale(FVector(10.0f, 10.0f, 1.0f));
 		GUObjectArray.push_back(castParticle);
