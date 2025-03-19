@@ -360,7 +360,7 @@ void FResourceMgr::LoadObjNormalTextureAsset(FRenderer* renderer, const FString&
 		return;
 	}
 
-	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, vertices.size(), vertexArray, indexBuffer, indices.size(), indexArray);
+	meshMap[meshName] = std::make_shared<FStaticMesh>(vertexBuffer, static_cast<UINT>(vertices.size()), vertexArray, indexBuffer, static_cast<UINT>(indices.size()), indexArray);
 
 
 	delete[] vertexArray;
