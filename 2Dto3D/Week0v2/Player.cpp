@@ -57,7 +57,7 @@ void UPlayer::Input()
 
 			FVector pickPosition;
 		
-			ScreenToNDC(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, pickPosition);
+			ScreenToViewSpace (mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, pickPosition);
 			bool res = PickGizmo(pickPosition);
 			if(!res) PickObj(pickPosition);
 		}
@@ -256,7 +256,7 @@ void UPlayer::DeletePickedObj()
 	GetWorld()->SetPickingObj(nullptr);
 }
 
-void UPlayer::ScreenToNDC(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& pickPosition)
+void UPlayer::ScreenToViewSpace(int screenX, int screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& pickPosition)
 {
 	D3D11_VIEWPORT viewport;
 	UINT numViewports = 1;
