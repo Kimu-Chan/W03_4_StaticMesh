@@ -62,9 +62,11 @@ void UPrimitiveBatch::RenderBatch(const FMatrix& View, const FMatrix& Projection
     UpdateBoundingBoxResources();
     UpdateConeResources();
     UpdateOBBResources();
-
-    FEngineLoop::renderer.UpdateLinePrimitveCountBuffer(BoundingBoxes.size(), Cones.size());
-    FEngineLoop::renderer.RenderBatch(GridParam, pVertexBuffer, BoundingBoxes.size(), Cones.size(), ConeSegmentCount, OrientedBoundingBoxes.size());
+    int boundingBoxSize = static_cast<int>(BoundingBoxes.size());
+    int coneSize = static_cast<int>(Cones.size());
+    int obbSize = static_cast<int>(OrientedBoundingBoxes.size());
+    FEngineLoop::renderer.UpdateLinePrimitveCountBuffer(boundingBoxSize, coneSize);
+    FEngineLoop::renderer.RenderBatch(GridParam, pVertexBuffer, boundingBoxSize, coneSize, ConeSegmentCount, obbSize);
     BoundingBoxes.clear();
     Cones.clear();
     OrientedBoundingBoxes.clear();
@@ -83,12 +85,14 @@ void UPrimitiveBatch::UpdateBoundingBoxResources()
 
         ReleaseBoundingBoxResources();
 
-        pBoundingBoxBuffer = FEngineLoop::renderer.CreateBoundingBoxBuffer(allocatedBoundingBoxCapacity);
-        pBoundingBoxSRV = FEngineLoop::renderer.CreateBoundingBoxSRV(pBoundingBoxBuffer, allocatedBoundingBoxCapacity);
+        pBoundingBoxBuffer = FEngineLoop::renderer.CreateBoundingBoxBuffer(static_cast<UINT>(allocatedBoundingBoxCapacity));
+        pBoundingBoxSRV = FEngineLoop::renderer.CreateBoundingBoxSRV(pBoundingBoxBuffer, static_cast<UINT>(allocatedBoundingBoxCapacity));
     }
 
-    if (pBoundingBoxBuffer && pBoundingBoxSRV)
-        FEngineLoop::renderer.UpdateBoundingBoxBuffer(pBoundingBoxBuffer, BoundingBoxes, BoundingBoxes.size());
+    if (pBoundingBoxBuffer && pBoundingBoxSRV){
+        int boundingBoxCount = static_cast<int>(BoundingBoxes.size());
+        FEngineLoop::renderer.UpdateBoundingBoxBuffer(pBoundingBoxBuffer, BoundingBoxes, boundingBoxCount);
+    }
 }
 
 void UPrimitiveBatch::ReleaseBoundingBoxResources()
@@ -104,12 +108,14 @@ void UPrimitiveBatch::UpdateConeResources()
 
         ReleaseConeResources();
 
-        pConesBuffer = FEngineLoop::renderer.CreateConeBuffer(allocatedConeCapacity);
-        pConesSRV = FEngineLoop::renderer.CreateConeSRV(pConesBuffer, allocatedConeCapacity);
+        pConesBuffer = FEngineLoop::renderer.CreateConeBuffer(static_cast<UINT>(allocatedConeCapacity));
+        pConesSRV = FEngineLoop::renderer.CreateConeSRV(pConesBuffer, static_cast<UINT>(allocatedConeCapacity));
     }
 
-    if (pConesBuffer && pConesSRV)
-        FEngineLoop::renderer.UpdateConesBuffer(pConesBuffer, Cones, Cones.size());
+    if (pConesBuffer && pConesSRV) {
+        int coneCount = static_cast<int>(Cones.size());
+        FEngineLoop::renderer.UpdateConesBuffer(pConesBuffer, Cones, coneCount);
+    }
 }
 
 void UPrimitiveBatch::ReleaseConeResources()
@@ -125,12 +131,14 @@ void UPrimitiveBatch::UpdateOBBResources()
 
         ReleaseOBBResources();
 
-        pOBBBuffer = FEngineLoop::renderer.CreateOBBBuffer(allocatedOBBCapacity);
-        pOBBSRV = FEngineLoop::renderer.CreateOBBSRV(pOBBBuffer, allocatedOBBCapacity);
+        pOBBBuffer = FEngineLoop::renderer.CreateOBBBuffer(static_cast<UINT>(allocatedOBBCapacity));
+        pOBBSRV = FEngineLoop::renderer.CreateOBBSRV(pOBBBuffer, static_cast<UINT>(allocatedOBBCapacity));
     }
 
-    if (pOBBBuffer && pOBBSRV)
-        FEngineLoop::renderer.UpdateOBBBuffer(pOBBBuffer, OrientedBoundingBoxes, OrientedBoundingBoxes.size());
+    if (pOBBBuffer && pOBBSRV) {
+        int obbCount = static_cast<int>(OrientedBoundingBoxes.size());
+        FEngineLoop::renderer.UpdateOBBBuffer(pOBBBuffer, OrientedBoundingBoxes, obbCount);
+    }
 }
 void UPrimitiveBatch::ReleaseOBBResources()
 {

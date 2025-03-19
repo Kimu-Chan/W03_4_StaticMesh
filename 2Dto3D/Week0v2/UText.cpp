@@ -145,14 +145,14 @@ void UText::SetText(FWString _text)
 		Console::GetInstance().AddLog(LogLevel::Warning, "Text is empty");
 	}
 
-	int textSize = _text.size();
+	int textSize = static_cast<int>(_text.size());
 
 
-	float BitmapWidth = Texture->width;
-	float BitmapHeight = Texture->height;
+	uint32 BitmapWidth = Texture->width;
+	uint32 BitmapHeight = Texture->height;
 
-	float CellWidth = BitmapWidth/ColumnCount;
-	float CellHeight = BitmapHeight/RowCount;
+	float CellWidth =  float(BitmapWidth)/ColumnCount;
+	float CellHeight = float(BitmapHeight)/RowCount;
 
 	float nTexelUOffset = CellWidth / BitmapWidth;
 	float nTexelVOffset = CellHeight/ BitmapHeight;
@@ -193,7 +193,7 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.push_back(rightDown);
 		vertexTextureArr.push_back(leftDown);
 	}
-	UINT byteWidth = vertexTextureArr.size() * sizeof(FVertexTexture);
+	UINT byteWidth = static_cast<UINT>(vertexTextureArr.size() * sizeof(FVertexTexture));
 
 	float lastX = -1.0f + quadSize* _text.size();
 	quad.push_back(FVector(-1.0f,1.0f,0.0f));
@@ -247,8 +247,8 @@ void UText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
 	int offsetV = (offset + StartU) / ColumnCount;
 	int offsetU = (offset + StartU) % ColumnCount;
 
-	outStartU = offsetU;
-	outStartV = StartV + offsetV;
+	outStartU = static_cast<float>(offsetU);
+	outStartV = static_cast<float>(StartV + offsetV);
 }
 
 
@@ -291,15 +291,15 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 	int offsetV = (offset + StartU) / ColumnCount;
 	int offsetU = (offset + StartU) % ColumnCount;
 
-	outStartU = offsetU;
-	outStartV = StartV + offsetV;
+	outStartU = static_cast<float>(offsetU);
+	outStartV = static_cast<float>(StartV + offsetV);
 
 }
 
 
 void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth)
 {
-	numTextVertices = _vertex.size();
+	numTextVertices = static_cast<UINT>(_vertex.size());
 	// 2. Create a vertex buffer
 	D3D11_BUFFER_DESC vertexbufferdesc = {};
 	vertexbufferdesc.ByteWidth = byteWidth;
