@@ -214,7 +214,7 @@ SceneData UWorld::SaveData()
 		if (iter->IsA(USceneComponent::StaticClass())) {
 			Primitive = static_cast<USceneComponent*>(iter);
 		}
-		if (Primitive) {
+		if (Primitive && !Primitive->IsA(UBillboardComponent::StaticClass())) {
 				Save.Primitives[Count] = iter;
 				Count++;
 		}

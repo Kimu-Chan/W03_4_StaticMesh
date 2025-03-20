@@ -8,6 +8,8 @@
 #include <fstream>
 #include "Components/UBillboardComponent.h"
 #include "Components/LightComponent.h"
+#include "Components/SkySphereComponent.h"
+
 using json = nlohmann::json;
 
 SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
@@ -49,6 +51,15 @@ SceneData FSceneMgr::ParseSceneData(const std::string& jsonStr)
                 {
                     obj = FObjectFactory::ConstructObject<ULightComponentBase>();
                 }
+                else if (value["Type"].get<FString>() == "SkySphere") {
+
+                    obj = FObjectFactory::ConstructObject<USkySphereComponent>();
+                    USkySphereComponent* skySphere = static_cast<USkySphereComponent*>(obj);
+                    skySphere->SetTexture(L"Assets/Texture/ocean_sky.jpg");
+                    skySphere->SetScale(FVector(-300.0f, -300.0f, -300.0f));
+                    skySphere->SetRotation(FVector(-167.0f, 25.0f, -135.0f));
+                }
+               
             }
             USceneComponent* sceneComp = static_cast<USceneComponent*>(obj);
             if (value.contains("Location")) sceneComp->SetLocation(FVector(value["Location"].get<TArray<float>>()[0],

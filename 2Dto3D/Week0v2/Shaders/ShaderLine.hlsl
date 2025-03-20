@@ -90,7 +90,6 @@ float3 ComputeGridPosition(uint instanceID, uint vertexID)
         float x = GridOrigin.x + (instanceID - centerOffset) * GridSpacing;
         if (abs(x - GridOrigin.x) < 0.001)
         {
-            // 두 점 모두 화면 밖 위치로 설정
             startPos = float3(0, 0, 0);
             endPos = float3(0, (GridOrigin.y - centerOffset * GridSpacing), 0);
         }
@@ -107,7 +106,6 @@ float3 ComputeGridPosition(uint instanceID, uint vertexID)
         float y = GridOrigin.y + (idx - centerOffset) * GridSpacing;
         if (abs(y - GridOrigin.y) < 0.001)
         {
-            // 두 점 모두 화면 밖 위치로 설정
             startPos = float3(0, 0, 0);
             endPos = float3(-(GridOrigin.x + centerOffset * GridSpacing), 0, 0);
         }
