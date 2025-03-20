@@ -35,19 +35,19 @@ void UGizmoArrowComponent::Render()
 		return;
 	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 
-	// ÃÖÁ¾ MVP Çà·Ä
+	// ìµœì¢… MVP í–‰ë ¬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
-	
-	
+
+
 	if (this == GetWorld()->GetPickingGizmo()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
 	}
 	else
 		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
 
-	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.RasterizerStateSOLID); // fill solid·Î ·»´õ¸µ.
+	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.RasterizerStateSOLID); // fill solidë¡œ ë Œë”ë§.
 	Super::Render();
-	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.GetCurrentRasterizer()); // ÀÌÀü ·¹½ºÅÍ¶óÀÌÀú Àç¼³Á¤.
+	FEngineLoop::graphicDevice.DeviceContext->RSSetState(FEngineLoop::graphicDevice.GetCurrentRasterizer()); // ì´ì „ ë ˆìŠ¤í„°ë¼ì´ì € ì¬ì„¤ì •.
 
 #pragma region GizmoDepth
 	ID3D11DepthStencilState* originalDepthState = FEngineLoop::graphicDevice.DepthStencilState;

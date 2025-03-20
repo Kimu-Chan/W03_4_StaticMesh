@@ -8,7 +8,7 @@
 #include "EngineBaseTypes.h"
 #include "Define.h"
 class FGraphicsDevice;
-class FRenderer 
+class FRenderer
 {
 
 private:
@@ -22,7 +22,7 @@ public:
     ID3D11Buffer* LightingBuffer = nullptr;
     ID3D11Buffer* LitUnlitBuffer = nullptr;
 
-    D3D11_VIEWPORT ViewportInfo; // ·»´õ¸µ ¿µ¿ªÀ» Á¤ÀÇÇÏ´Â ºäÆ÷Æ® Á¤º¸
+    D3D11_VIEWPORT ViewportInfo; // ë Œë”ë§ ì˜ì—­ì„ ì •ì˜í•˜ëŠ” ë·°í¬íŠ¸ ì •ë³´
 
     FLighting lightingData;
 
@@ -32,11 +32,11 @@ public:
 
     ID3D11Buffer* NormalConstantBuffer = nullptr;
     struct FConstants {
-        FMatrix MVP;      // ¸ğµ¨
+        FMatrix MVP;      // ëª¨ë¸
         float Flag;
     };
     struct FNormalConstants {
-        FMatrix ModelMatrixInverseTranspose; // normal º¯È¯À» À§ÇÑ Çà·Ä
+        FMatrix ModelMatrixInverseTranspose; // normal ë³€í™˜ì„ ìœ„í•œ í–‰ë ¬
     };
     struct FLitUnlitConstants {
         int isLit; // 1 = Lit, 0 = Unlit 
@@ -45,14 +45,14 @@ public:
 
 public:
     void Initialize(FGraphicsDevice* graphics);
-   
+
     void Prepare();
     void PrepareShader();
-    
+
     //Render
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void RenderPrimitive(ID3D11Buffer* pVectexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices);
-   
+
     void RenderTexturedModelPrimitive(ID3D11Buffer* pVertexBuffer, UINT numVertices, ID3D11Buffer* pIndexBuffer, UINT numIndices, ID3D11ShaderResourceView* _TextureSRV, ID3D11SamplerState* _SamplerState);
     //Release
     void Release();
@@ -66,9 +66,9 @@ public:
 
     void SetVertexShader(const FWString filename, FString funcname, FString version);
     void SetPixelShader(const FWString filename, FString funcname, FString version);
-    
+
     void ChangeViewMode(EViewModeIndex evi);
-    
+
     // CreateBuffer
     void CreateConstantBuffer();
     void CreateLightingBuffer();
@@ -84,7 +84,7 @@ public:
     void UpdateNormalConstantBuffer(FMatrix _Model);
     void UpdateLitUnlitConstantBuffer(int isLit);
 
-public://ÅØ½ºÃÄ¿ë ±â´É Ãß°¡
+public://í…ìŠ¤ì³ìš© ê¸°ëŠ¥ ì¶”ê°€
     ID3D11VertexShader* VertexTextureShader = nullptr;
     ID3D11PixelShader* PixelTextureShader = nullptr;
     ID3D11InputLayout* TextureInputLayout = nullptr;
@@ -136,7 +136,7 @@ public: // line shader
     void UpdateConesBuffer(ID3D11Buffer* pConeBuffer, const TArray<FCone>& Cones, int numCones);
 
 
- public:
+public:
     ID3D11VertexShader* VertexLineShader = nullptr;
     ID3D11PixelShader* PixelLineShader = nullptr;
     ID3D11Buffer* GridConstantBuffer = nullptr;

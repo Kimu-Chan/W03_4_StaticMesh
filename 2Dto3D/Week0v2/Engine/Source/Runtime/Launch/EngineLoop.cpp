@@ -27,7 +27,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SIZE:
 		if (wParam != SIZE_MINIMIZED) {
-			//UGraphicsDevice °´Ã¼ÀÇ OnResize ÇÔ¼ö È£Ãâ
+			//UGraphicsDevice ê°ì²´ì˜ OnResize í•¨ìˆ˜ í˜¸ì¶œ
 			if (FEngineLoop::graphicDevice.SwapChain) {
 				FEngineLoop::graphicDevice.OnResize(hWnd);
 			}
@@ -40,13 +40,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ShowFlags::GetInstance().OnResize(hWnd);
 		break;
 	case WM_MOUSEWHEEL:
-		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // ÈÙ È¸Àü °ª (+120 / -120)
+		zDelta = GET_WHEEL_DELTA_WPARAM(wParam); // íœ  íšŒì „ ê°’ (+120 / -120)
 		if (GEngineLoop.GetWorld()->GetCamera()->IsCameraMode()) {
 			GEngineLoop.GetViewportClient()->SetCameraSpeedScalar(static_cast<float>(GEngineLoop.GetViewportClient()->GetCameraSpeedScalar() + zDelta * 0.01));
 		}
 		else
 		{
-			GEngineLoop.GetWorld()->GetCamera()->MoveForward(zDelta*0.1f);
+			GEngineLoop.GetWorld()->GetCamera()->MoveForward(zDelta * 0.1f);
 		}
 		break;
 	default:
@@ -59,7 +59,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 FGraphicsDevice FEngineLoop::graphicDevice;
 FRenderer FEngineLoop::renderer;
 FResourceMgr FEngineLoop::resourceMgr;
-uint32 FEngineLoop::TotalAllocationBytes= 0;
+uint32 FEngineLoop::TotalAllocationBytes = 0;
 uint32 FEngineLoop::TotalAllocationCount = 0;
 FEngineLoop::FEngineLoop()
 {
@@ -80,13 +80,13 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 	graphicDevice.Initialize(hWnd);
 	renderer.Initialize(&graphicDevice);
 
-	
-	
+
+
 	UIMgr = new UImGuiManager;
-	UIMgr->Initialize(hWnd,graphicDevice.Device, graphicDevice.DeviceContext);
-	
+	UIMgr->Initialize(hWnd, graphicDevice.Device, graphicDevice.DeviceContext);
+
 	resourceMgr.Initialize(&renderer, &graphicDevice);
-	
+
 	viewportClient = std::make_shared<FEditorViewportClient>();
 
 	GWorld = new UWorld;
@@ -100,7 +100,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 void FEngineLoop::Tick()
 {
 	LARGE_INTEGER frequency;
-	const double targetFrameTime = 1000.0 / targetFPS; // ÇÑ ÇÁ·¹ÀÓÀÇ ¸ñÇ¥ ½Ã°£ (¹Ð¸®ÃÊ ´ÜÀ§)
+	const double targetFrameTime = 1000.0 / targetFPS; // í•œ í”„ë ˆìž„ì˜ ëª©í‘œ ì‹œê°„ (ë°€ë¦¬ì´ˆ ë‹¨ìœ„)
 
 	QueryPerformanceFrequency(&frequency);
 
@@ -114,8 +114,8 @@ void FEngineLoop::Tick()
 		MSG msg;
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&msg); // Å°º¸µå ÀÔ·Â ¸Þ½ÃÁö¸¦ ¹®ÀÚ¸Þ½ÃÁö·Î º¯°æ
-			DispatchMessage(&msg); // ¸Þ½ÃÁö¸¦ WndProc¿¡ Àü´Þ
+			TranslateMessage(&msg); // í‚¤ë³´ë“œ ìž…ë ¥ ë©”ì‹œì§€ë¥¼ ë¬¸ìžë©”ì‹œì§€ë¡œ ë³€ê²½
+			DispatchMessage(&msg); // ë©”ì‹œì§€ë¥¼ WndProcì— ì „ë‹¬
 
 			if (msg.message == WM_QUIT)
 			{
@@ -131,7 +131,7 @@ void FEngineLoop::Tick()
 			{ 0, 0, 1 });
 		Projection = JungleMath::CreateProjectionMatrix(
 			Camera->GetFov() * (3.141592f / 180.0f),
-			GetAspectRatio(graphicDevice.SwapChain), 
+			GetAspectRatio(graphicDevice.SwapChain),
 			0.1f,
 			1000.0f
 		);
@@ -145,7 +145,7 @@ void FEngineLoop::Tick()
 		UIMgr->BeginFrame();
 
 		Console::GetInstance().Draw();
-		ControlPanel::GetInstance().Draw(GetWorld(),elapsedTime);
+		ControlPanel::GetInstance().Draw(GetWorld(), elapsedTime);
 		PropertyPanel::GetInstance().Draw(GetWorld());
 		Outliner::GetInstance().Draw(GetWorld());
 		ShowFlags::GetInstance().Draw(GetWorld());

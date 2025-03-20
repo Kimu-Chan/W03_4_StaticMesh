@@ -23,8 +23,8 @@ void PropertyPanel::Draw(UWorld* world)
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
 	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) *1.f;
 
-	// Ã¢ Å©±â¿Í À§Ä¡ ¼³Á¤
-	ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
+    // ì°½ í¬ê¸°ì™€ ìœ„ì¹˜ ì„¤ì •
+    ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
 	ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
 
 	ImGui::Begin("Jungle Property Panel");
@@ -45,13 +45,13 @@ void PropertyPanel::Draw(UWorld* world)
 		coordiButtonLabel = "World";
 	else if (player->GetCoordiMode() == CoordiMode::CDM_LOCAL)
 		coordiButtonLabel = "Local";
-	// ¹öÆ° »çÀÌÁî µ¿ÀÏÇÏ°Ô
+    // ë²„íŠ¼ ì‚¬ì´ì¦ˆ ë™ì¼í•˜ê²Œ
 
 	ImVec2 buttonSize(120, 30);
 
-	ImGui::SetNextItemWidth(buttonSize.x); // ¹öÆ° ³Êºñ °íÁ¤
-	if (ImGui::Button(buttonLabel.c_str(), buttonSize)) {
-		player->AddControlMode(); // ±âÁ¸ ÄÚµå À¯Áö
+    ImGui::SetNextItemWidth(buttonSize.x); // ë²„íŠ¼ ë„ˆë¹„ ê³ ì •
+    if (ImGui::Button(buttonLabel.c_str(), buttonSize)) {
+        player->AddControlMode(); // ê¸°ì¡´ ì½”ë“œ ìœ ì§€
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(coordiButtonLabel.c_str(), buttonSize)) {
@@ -64,7 +64,7 @@ void PropertyPanel::Draw(UWorld* world)
         FString objectName = PickObj->GetName().ToString();
         ImGui::Text("%s", objectName.c_str());
 
-        // À§Ä¡/È¸Àü/½ºÄÉÀÏÀ» float[3]¿¡ ´ã¾ÆµÒ
+        // ìœ„ì¹˜/íšŒì „/ìŠ¤ì¼€ì¼ì„ float[3]ì— ë‹´ì•„ë‘ 
         float pickObjLoc[3] = {
             PickObj->GetWorldLocation().x,
             PickObj->GetWorldLocation().y,
@@ -81,7 +81,7 @@ void PropertyPanel::Draw(UWorld* world)
             PickObj->GetWorldScale().z
         };
 
-        // ---------- À§Ä¡ (X/Y/Z) ----------
+        // ---------- ìœ„ì¹˜ (X/Y/Z) ----------
         ImGui::Text("Position");
         ImGui::PushItemWidth(50.0f);
         ImGui::DragFloat("##posX", &pickObjLoc[0], 0.6f, -FLT_MAX, FLT_MAX);
@@ -89,7 +89,7 @@ void PropertyPanel::Draw(UWorld* world)
         ImGui::DragFloat("##posY", &pickObjLoc[1], 0.6f, -FLT_MAX, FLT_MAX);
         ImGui::SameLine();
         ImGui::DragFloat("##posZ", &pickObjLoc[2], 0.6f, -FLT_MAX, FLT_MAX);
-        // ---------- È¸Àü (X/Y/Z) ----------
+        // ---------- íšŒì „ (X/Y/Z) ----------
         ImGui::Text("Rotation");
         ImGui::DragFloat("##rotX", &pickObjRot[0], 0.6f, -FLT_MAX, FLT_MAX);
         ImGui::SameLine();
@@ -97,7 +97,7 @@ void PropertyPanel::Draw(UWorld* world)
         ImGui::SameLine();
         ImGui::DragFloat("##rotZ", &pickObjRot[2], 0.6f, -FLT_MAX, FLT_MAX);
 
-        // ---------- ½ºÄÉÀÏ (X/Y/Z) ----------
+        // ---------- ìŠ¤ì¼€ì¼ (X/Y/Z) ----------
         ImGui::Text("Scale");
         ImGui::DragFloat("##scaleX", &pickObjScale[0], 0.6f, -FLT_MAX, FLT_MAX);
         ImGui::SameLine();
@@ -105,13 +105,13 @@ void PropertyPanel::Draw(UWorld* world)
         ImGui::SameLine();
         ImGui::DragFloat("##scaleZ", &pickObjScale[2], 0.6f, -FLT_MAX, FLT_MAX);
         ImGui::PopItemWidth();
-        // º¯°æµÈ °ª Àû¿ë
+        // ë³€ê²½ëœ ê°’ ì ìš©
         PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
         PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
         PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
         bool reclaimFocus = false;
 
-        // -------- SpotLight Ã³¸®ºÎ ----------
+        // -------- SpotLight ì²˜ë¦¬ë¶€ ----------
         if (objectName.rfind("SpotLight_", 0) == 0)
         {
             ULightComponentBase* lightObj = dynamic_cast<ULightComponentBase*>(PickObj);
@@ -124,7 +124,7 @@ void PropertyPanel::Draw(UWorld* world)
             float h, s, v;
             float lightColor[4] = { r, g, b, a };
 
-            // ÄÃ·¯ ÇÈÄ¿ (ColorPicker4)
+            // ì»¬ëŸ¬ í”½ì»¤ (ColorPicker4)
             if (ImGui::ColorPicker4("SpotLight Color", lightColor,
                 ImGuiColorEditFlags_DisplayRGB |
                 ImGuiColorEditFlags_NoSidePreview |
@@ -140,11 +140,11 @@ void PropertyPanel::Draw(UWorld* world)
                 lightObj->SetColor(FVector4(r, g, b, a));
             }
             RGBToHSV(r, g, b, h, s, v);
-            // RGB/HSV ½½¶óÀÌ´õ µ¿±âÈ­
+            // RGB/HSV ìŠ¬ë¼ì´ë” ë™ê¸°í™”
             bool changedRGB = false;
             bool changedHSV = false;
 
-            // RGB ½½¶óÀÌ´õ
+            // RGB ìŠ¬ë¼ì´ë”
             ImGui::PushItemWidth(50.0f);
             if (ImGui::DragFloat("R##R", &r, 0.001f, 0.f, 1.f)) changedRGB = true;
             ImGui::SameLine();
@@ -152,7 +152,7 @@ void PropertyPanel::Draw(UWorld* world)
             ImGui::SameLine();
             if (ImGui::DragFloat("B##B", &b, 0.001f, 0.f, 1.f)) changedRGB = true;
 
-            // HSV ½½¶óÀÌ´õ
+            // HSV ìŠ¬ë¼ì´ë”
             if (ImGui::DragFloat("H##H", &h, 0.1f, 0.f, 360)) changedHSV = true;
             ImGui::SameLine();
             if (ImGui::DragFloat("S##S", &s, 0.001f, 0.f, 1)) changedHSV = true;
@@ -162,18 +162,18 @@ void PropertyPanel::Draw(UWorld* world)
 
             if (changedRGB && !changedHSV)
             {
-                // RGB¸¸ º¯°æ -> HSV µ¿±âÈ­
+                // RGBë§Œ ë³€ê²½ -> HSV ë™ê¸°í™”
                 RGBToHSV(r, g, b, h, s, v);
                 lightObj->SetColor(FVector4(r, g, b, a));
             }
             else if (changedHSV && !changedRGB)
             {
-                // HSV¸¸ º¯°æ -> RGB µ¿±âÈ­
+                // HSVë§Œ ë³€ê²½ -> RGB ë™ê¸°í™”
                 HSVToRGB(h, s, v, r, g, b);
                 lightObj->SetColor(FVector4(r, g, b, a));
             }
 
-            // ¶óÀÌÆ® ¹Ý°æ(Radius)
+            // ë¼ì´íŠ¸ ë°˜ê²½(Radius)
             float radiusVal = lightObj->GetRadius();
             if (ImGui::SliderFloat("Radius", &radiusVal, 1.0f, 100.0f))
             {
@@ -193,7 +193,7 @@ void PropertyPanel::Draw(UWorld* world)
                 static char buf[256];
                 strcpy_s(buf, u8Text.c_str());
                
-                if (ImGui::InputText(u8"¼öÁ¤", buf, 256, ImGuiInputTextFlags_EnterReturnsTrue))
+                if (ImGui::InputText(u8"ìˆ˜ì •", buf, 256, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
                     textOBj->ClearText();
                     int wlen = MultiByteToWideChar(CP_UTF8, 0, buf, -1, nullptr, 0);

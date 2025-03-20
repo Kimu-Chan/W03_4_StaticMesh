@@ -28,7 +28,7 @@ public:
 	
 	void AddCone(const FVector& center, float radius, float height, int segments,const FVector4& color, const FMatrix& modelMatri);
 	
-	// º¹»ç »ı¼ºÀÚ ¹× ´ëÀÔ ¿¬»êÀÚ »èÁ¦
+	// ë³µì‚¬ ìƒì„±ì ë° ëŒ€ì… ì—°ì‚°ì ì‚­ì œ
 	UPrimitiveBatch(const UPrimitiveBatch&) = delete;
 	UPrimitiveBatch& operator=(const UPrimitiveBatch&) = delete;
 private:

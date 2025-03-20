@@ -55,7 +55,7 @@ void UParticleSubUVComp::Update(double deltaTime)
 
 	finalIndexU = float(indexU) * normalWidthOffset;
 	finalIndexV = float(indexV) * normalHeightOffset;
-	
+
 
 	Super::Update(deltaTime);
 }
@@ -73,7 +73,7 @@ void UParticleSubUVComp::Render()
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
 
-	// ÃÖÁ¾ MVP Çà·Ä
+	// ìµœì¢… MVP í–‰ë ¬
 	FMatrix MVP = M * VP;
 	if (this == GetWorld()->GetPickingGizmo()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
@@ -84,7 +84,7 @@ void UParticleSubUVComp::Render()
 
 		FEngineLoop::renderer.RenderTexturePrimitive(vertexSubUVBuffer, numTextVertices,
 			indexTextureBuffer, numIndices, Texture->TextureSRV, Texture->SamplerState);
-	}	
+	}
 	//Super::Render();
 
 	FEngineLoop::renderer.UpdateSubUVConstant(0, 0);
@@ -116,8 +116,8 @@ void UParticleSubUVComp::UpdateVertexBuffer(const TArray<FVertexTexture>& vertic
 void UParticleSubUVComp::CreateSubUVVertexBuffer()
 {
 
-	uint32 CellWidth = Texture->width/CellsPerColumn;
-	uint32 CellHeight = Texture->height/ CellsPerColumn;
+	uint32 CellWidth = Texture->width / CellsPerColumn;
+	uint32 CellHeight = Texture->height / CellsPerColumn;
 	float normalWidthOffset = float(CellWidth) / float(Texture->width);
 	float normalHeightOffset = float(CellHeight) / float(Texture->height);
 

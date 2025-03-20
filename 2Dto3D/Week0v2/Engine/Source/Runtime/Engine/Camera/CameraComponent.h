@@ -3,7 +3,7 @@
 #include <windows.h>
 
 class UCameraComponent :
-    public USceneComponent
+	public USceneComponent
 {
 	DECLARE_CLASS(UCameraComponent, USceneComponent)
 
@@ -28,7 +28,7 @@ private:
 	POINT lastMousePos;
 	bool bRightMouseDown = false;
 
-	FVector zAxis;  // DirectX´Â LHÀÌ¹Ç·Î -z°¡ ¾Æ´Ï¶ó +z »ç¿ë
+	FVector zAxis;  // DirectXëŠ” LHì´ë¯€ë¡œ -zê°€ ì•„ë‹ˆë¼ +z ì‚¬ìš©
 	FVector xAxis;
 	FVector yAxis;
 	float fov;

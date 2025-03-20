@@ -49,7 +49,7 @@ void UText::ClearText()
 {
 	vertexTextureArr.clear();
 }
-void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn) 
+void UText::SetRowColumnCount(int _cellsPerRow, int _cellsPerColumn)
 {
 	RowCount = _cellsPerRow;
 	ColumnCount = _cellsPerColumn;
@@ -62,7 +62,7 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 	}
 	/*
 	int nIntersections = 0;
-	
+
 	TArray<FVertexSimple> verArr;
 	FMatrix CameraView = GetEngine().View;
 
@@ -114,7 +114,7 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 			idx1 = indices[i * 3 + 2];
 		}
 
-		// °¢ »ï°¢ÇüÀÇ ¹öÅØ½º À§Ä¡¸¦ FVector·Î ºÒ·¯¿É´Ï´Ù.
+		// ê° ì‚¼ê°í˜•ì˜ ë²„í…ìŠ¤ ìœ„ì¹˜ë¥¼ FVectorë¡œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤.
 		uint32 stride = sizeof(FVertexSimple);
 		FVector v0 = *reinterpret_cast<FVector*>(pbPositions + idx0 * stride);
 		FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);
@@ -131,14 +131,14 @@ int UText::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float
 	}
 	return nIntersections;
 	*/
-	
+
 	for (int i = 0; i < vertexTextureArr.size(); i++)
 	{
 		quad.push_back(FVector(vertexTextureArr[i].x,
 			vertexTextureArr[i].y, vertexTextureArr[i].z));
 	}
 
-	return CheckPickingOnNDC(quad,pfNearHitDistance);
+	return CheckPickingOnNDC(quad, pfNearHitDistance);
 }
 
 
@@ -152,7 +152,7 @@ void UText::SetText(FWString _text)
 		vertexTextureArr.clear();
 		quad.clear();
 
-		// ±âÁ¸ ¹öÅØ½º ¹öÆÛ°¡ ÀÖ´Ù¸é ÇØÁ¦
+		// ê¸°ì¡´ ë²„í…ìŠ¤ ë²„í¼ê°€ ìˆë‹¤ë©´ í•´ì œ
 		if (vertexTextBuffer)
 		{
 			vertexTextBuffer->Release();
@@ -166,11 +166,11 @@ void UText::SetText(FWString _text)
 	uint32 BitmapWidth = Texture->width;
 	uint32 BitmapHeight = Texture->height;
 
-	float CellWidth =  float(BitmapWidth)/ColumnCount;
-	float CellHeight = float(BitmapHeight)/RowCount;
+	float CellWidth = float(BitmapWidth) / ColumnCount;
+	float CellHeight = float(BitmapHeight) / RowCount;
 
 	float nTexelUOffset = CellWidth / BitmapWidth;
-	float nTexelVOffset = CellHeight/ BitmapHeight;
+	float nTexelVOffset = CellHeight / BitmapHeight;
 
 	for (int i = 0; i < _text.size(); i++)
 	{
@@ -210,23 +210,23 @@ void UText::SetText(FWString _text)
 	}
 	UINT byteWidth = static_cast<UINT>(vertexTextureArr.size() * sizeof(FVertexTexture));
 
-	float lastX = -1.0f + quadSize* _text.size();
-	quad.push_back(FVector(-1.0f,1.0f,0.0f));
-	quad.push_back(FVector(-1.0f,-1.0f,0.0f));
-	quad.push_back(FVector(lastX,1.0f,0.0f));
-	quad.push_back(FVector(lastX,-1.0f,0.0f));
+	float lastX = -1.0f + quadSize * _text.size();
+	quad.push_back(FVector(-1.0f, 1.0f, 0.0f));
+	quad.push_back(FVector(-1.0f, -1.0f, 0.0f));
+	quad.push_back(FVector(lastX, 1.0f, 0.0f));
+	quad.push_back(FVector(lastX, -1.0f, 0.0f));
 
-	CreateTextTextureVertexBuffer(vertexTextureArr,byteWidth);
+	CreateTextTextureVertexBuffer(vertexTextureArr, byteWidth);
 }
 void UText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
 {
-	//´ë¹®ÀÚ¸¸ ¹Ş´ÂÁß
+	//ëŒ€ë¬¸ìë§Œ ë°›ëŠ”ì¤‘
 	int StartU = 0;
 	int StartV = 0;
 	int offset = -1;
 
 	if (hangul == L' ') {
-		outStartU = 0;  // Space´Â Æ¯º°È÷ UV ÁÂÇ¥¸¦ (0,0)À¸·Î ¼³Á¤
+		outStartU = 0;  // SpaceëŠ” íŠ¹ë³„íˆ UV ì¢Œí‘œë¥¼ (0,0)ìœ¼ë¡œ ì„¤ì •
 		outStartV = 0;
 		offset = 0;
 		return;
@@ -235,23 +235,23 @@ void UText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
 
 		StartU = 11;
 		StartV = 0;
-		offset = hangul - L'A'; // ´ë¹®ÀÚ À§Ä¡
+		offset = hangul - L'A'; // ëŒ€ë¬¸ì ìœ„ì¹˜
 	}
 	else if (hangul >= L'a' && hangul <= L'z') {
 		StartU = 37;
 		StartV = 0;
-		offset = (hangul - L'a'); // ¼Ò¹®ÀÚ´Â ´ë¹®ÀÚ ´ÙÀ½ À§Ä¡
+		offset = (hangul - L'a'); // ì†Œë¬¸ìëŠ” ëŒ€ë¬¸ì ë‹¤ìŒ ìœ„ì¹˜
 	}
 	else if (hangul >= L'0' && hangul <= L'9') {
 		StartU = 1;
 		StartV = 0;
-		offset = (hangul - L'0'); // ¼ıÀÚ´Â ¼Ò¹®ÀÚ ´ÙÀ½ À§Ä¡
+		offset = (hangul - L'0'); // ìˆ«ìëŠ” ì†Œë¬¸ì ë‹¤ìŒ ìœ„ì¹˜
 	}
-	else if (hangul >= L'°¡' && hangul <= L'ÆR')
+	else if (hangul >= L'ê°€' && hangul <= L'í£')
 	{
 		StartU = 63;
 		StartV = 0;
-		offset = hangul - L'°¡'; // ´ë¹®ÀÚ À§Ä¡
+		offset = hangul - L'ê°€'; // ëŒ€ë¬¸ì ìœ„ì¹˜
 	}
 
 	if (offset == -1)
@@ -269,14 +269,14 @@ void UText::setStartUV(wchar_t hangul, float& outStartU, float& outStartV)
 
 void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 {
-	//´ë¹®ÀÚ¸¸ ¹Ş´ÂÁß
-	int StartU=0;
-	int StartV=0;
+	//ëŒ€ë¬¸ìë§Œ ë°›ëŠ”ì¤‘
+	int StartU = 0;
+	int StartV = 0;
 	int offset = -1;
 
 
 	if (alphabet == ' ') {
-		outStartU = 0;  // Space´Â Æ¯º°È÷ UV ÁÂÇ¥¸¦ (0,0)À¸·Î ¼³Á¤
+		outStartU = 0;  // SpaceëŠ” íŠ¹ë³„íˆ UV ì¢Œí‘œë¥¼ (0,0)ìœ¼ë¡œ ì„¤ì •
 		outStartV = 0;
 		offset = 0;
 		return;
@@ -285,17 +285,17 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 
 		StartU = 1;
 		StartV = 4;
-		offset = alphabet - 'A'; // ´ë¹®ÀÚ À§Ä¡
+		offset = alphabet - 'A'; // ëŒ€ë¬¸ì ìœ„ì¹˜
 	}
 	else if (alphabet >= 'a' && alphabet <= 'z') {
 		StartU = 1;
 		StartV = 6;
-		offset = (alphabet - 'a'); // ¼Ò¹®ÀÚ´Â ´ë¹®ÀÚ ´ÙÀ½ À§Ä¡
+		offset = (alphabet - 'a'); // ì†Œë¬¸ìëŠ” ëŒ€ë¬¸ì ë‹¤ìŒ ìœ„ì¹˜
 	}
 	else if (alphabet >= '0' && alphabet <= '9') {
 		StartU = 0;
 		StartV = 3;
-		offset = (alphabet - '0'); // ¼ıÀÚ´Â ¼Ò¹®ÀÚ ´ÙÀ½ À§Ä¡
+		offset = (alphabet - '0'); // ìˆ«ìëŠ” ì†Œë¬¸ì ë‹¤ìŒ ìœ„ì¹˜
 	}
 
 	if (offset == -1)
@@ -312,7 +312,7 @@ void UText::setStartUV(char alphabet, float& outStartU, float& outStartV)
 }
 
 
-void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,UINT byteWidth)
+void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex, UINT byteWidth)
 {
 	numTextVertices = static_cast<UINT>(_vertex.size());
 	// 2. Create a vertex buffer
@@ -321,10 +321,10 @@ void UText::CreateTextTextureVertexBuffer(const TArray<FVertexTexture>& _vertex,
 	vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
 	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { _vertex.data()};
+	D3D11_SUBRESOURCE_DATA vertexbufferSRD = { _vertex.data() };
 
 	ID3D11Buffer* vertexBuffer;
-	
+
 	HRESULT hr = FEngineLoop::graphicDevice.Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
 	if (FAILED(hr))
 	{
@@ -346,7 +346,7 @@ void UText::TextMVPRendering()
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
 
-	// ÃÖÁ¾ MVP Çà·Ä
+	// ìµœì¢… MVP í–‰ë ¬
 	FMatrix MVP = M * VP;
 	if (this == GetWorld()->GetPickingGizmo()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);

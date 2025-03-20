@@ -15,14 +15,14 @@ UPrimitiveComponent::~UPrimitiveComponent()
 
 void UPrimitiveComponent::Initialize()
 {
-	Super::Initialize();
+    Super::Initialize();
 
     staticMesh = FEngineLoop::resourceMgr.GetMesh(m_Type);
 }
 
 void UPrimitiveComponent::Update(double deltaTime)
 {
-	Super::Update(deltaTime);
+    Super::Update(deltaTime);
 }
 
 void UPrimitiveComponent::Release()
@@ -31,12 +31,12 @@ void UPrimitiveComponent::Release()
 
 void UPrimitiveComponent::Render()
 {
-	if (!staticMesh || !staticMesh->vertexBuffer) return;
+    if (!staticMesh || !staticMesh->vertexBuffer) return;
 
-	if(staticMesh->indexBuffer)
-		FEngineLoop::renderer.RenderPrimitive(staticMesh->vertexBuffer, staticMesh->numVertices, staticMesh->indexBuffer, staticMesh->numIndices);
-	else
-		FEngineLoop::renderer.RenderPrimitive(staticMesh->vertexBuffer, staticMesh->numVertices);
+    if (staticMesh->indexBuffer)
+        FEngineLoop::renderer.RenderPrimitive(staticMesh->vertexBuffer, staticMesh->numVertices, staticMesh->indexBuffer, staticMesh->numIndices);
+    else
+        FEngineLoop::renderer.RenderPrimitive(staticMesh->vertexBuffer, staticMesh->numVertices);
 }
 
 int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float& pfNearHitDistance)
@@ -51,7 +51,7 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
     if (!vertices) return 0;
     BYTE* pbPositions = reinterpret_cast<BYTE*>(staticMesh->vertices.get());
-    
+
     int nPrimitives = (!indices) ? (vCount / 3) : (iCount / 3);
     float fNearHitDistance = FLT_MAX;
     for (int i = 0; i < nPrimitives; i++) {
@@ -67,7 +67,7 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
             idx1 = indices[i * 3 + 2];
         }
 
-        // °¢ »ï°¢ÇüÀÇ ¹öÅØ½º À§Ä¡¸¦ FVector·Î ºÒ·¯¿É´Ï´Ù.
+        // ê° ì‚¼ê°í˜•ì˜ ë²„í…ìŠ¤ ìœ„ì¹˜ë¥¼ FVectorë¡œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤.
         uint32 stride = sizeof(FVertexSimple);
         FVector v0 = *reinterpret_cast<FVector*>(pbPositions + idx0 * stride);
         FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);
@@ -76,11 +76,11 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
         float fHitDistance;
         if (IntersectRayTriangle(rayOrigin, rayDirection, v0, v1, v2, fHitDistance)) {
             if (fHitDistance < fNearHitDistance) {
-                pfNearHitDistance =  fNearHitDistance = fHitDistance;
+                pfNearHitDistance = fNearHitDistance = fHitDistance;
             }
             nIntersections++;
         }
-       
+
     }
     return nIntersections;
 }
@@ -95,7 +95,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
     float a = edge1.Dot(h);
 
     if (fabs(a) < epsilon)
-        return false; // Ray¿Í »ï°¢ÇüÀÌ ÆòÇàÇÑ °æ¿ì
+        return false; // Rayì™€ ì‚¼ê°í˜•ì´ í‰í–‰í•œ ê²½ìš°
 
     float f = 1.0f / a;
     FVector s = rayOrigin - v0;

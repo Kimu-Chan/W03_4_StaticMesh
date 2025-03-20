@@ -36,29 +36,29 @@ void UWorld::CreateBaseObject()
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>("MainCamere");
 	camera = static_cast<UCameraComponent*>(Camera);
 	camera->SetLocation(FVector(8.0f, 8.0f, 8.f));
-	camera->SetRotation(FVector(0.0f,45.0f, -135.0f));
+	camera->SetRotation(FVector(0.0f, 45.0f, -135.0f));
 
 
 	UObject* tmp = FObjectFactory::ConstructObject<UTransformGizmo>("LocalGizmo");
 	LocalGizmo = static_cast<UTransformGizmo*>(tmp);
-		
-	////Å×½ºÆ®¿ë ÅØ½ºÆ®
-	
+
+	////í…ŒìŠ¤íŠ¸ìš© í…ìŠ¤íŠ¸
+
 	UObject* pObj = FObjectFactory::ConstructObject<USkySphereComponent>("SkySphere");
 	USkySphereComponent* skySphere = static_cast<USkySphereComponent*>(pObj);
 	skySphere->SetTexture(L"Assets/Texture/ocean_sky.jpg");
-	skySphere->SetScale(FVector( -300.0f, -300.0f, -300.0f));
+	skySphere->SetScale(FVector(-300.0f, -300.0f, -300.0f));
 	skySphere->SetRotation(FVector(-167.0f, 25.0f, -135.0f));
 
 	GUObjectArray.push_back(skySphere);
 
 
-	//Å×½ºÆ®¿ë ÅØ½ºÆ®
-	
-	
+	//í…ŒìŠ¤íŠ¸ìš© í…ìŠ¤íŠ¸
+
+
 /*
 
-	//Å×½ºÆ®¿ë ºôº¸µå. ÇÊ¿ä¾øÀ¸¸é »èÁ¦
+	//í…ŒìŠ¤íŠ¸ìš© ë¹Œë³´ë“œ. í•„ìš”ì—†ìœ¼ë©´ ì‚­ì œ
 	UObject* billboard = FObjectFactory::ConstructObject<UBillboardComponent>();
 	billboard = static_cast<UBillboardComponent*>(billboard);
 	UBillboardComponent* castBillboard = static_cast<UBillboardComponent*>(billboard);
@@ -67,14 +67,14 @@ void UWorld::CreateBaseObject()
 
 
 	/*
-	//Å×½ºÆ®¿ë ÅØ½ºÆ®
+	//í…ŒìŠ¤íŠ¸ìš© í…ìŠ¤íŠ¸
 	UObject* uuid = FObjectFactory::ConstructObject<UTextUUID>();
 	UTextUUID* castUUID = static_cast<UTextUUID*>(uuid);
 	castUUID->SetTexture(L"Assets/Texture/font.png");
 	castUUID->SetRowColumnCount(106, 106);
 	castUUID->SetUUID(sphere->UUID);
 	castUUID->SetScale(FVector(0.25f, 0.25f, 0.25f));
-	//SetTextÀü¿¡ RowColumn ¹İµå½Ã ¼³Á¤
+	//SetTextì „ì— RowColumn ë°˜ë“œì‹œ ì„¤ì •
 	GUObjectArray.push_back(uuid);
 
 	castUUID->SetUUIDParent(sphere);
@@ -110,7 +110,7 @@ void UWorld::Tick(double deltaTime)
 	{
 		iter->Update(deltaTime);
 	}
-	
+
 }
 
 void UWorld::Release()
@@ -131,7 +131,7 @@ void UWorld::Render()
 	for (auto iter : GUObjectArray)
 	{
 		iter->Render();
-		if ((ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_UUIDText))) 
+		if ((ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_UUIDText)))
 			iter->RenderUUID();
 	}
 
@@ -182,8 +182,8 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 		UText* castText = static_cast<UText*>(text);
 		castText->SetTexture(L"Assets/Texture/font.png");
 		castText->SetRowColumnCount(106, 106);
-		castText->SetText(L"¾È³çÇÏ¼¼¿ä Jungle 1");
-		//SetTextÀü¿¡ RowColumn ¹İµå½Ã ¼³Á¤
+		castText->SetText(L"ì•ˆë…•í•˜ì„¸ìš” Jungle 1");
+		//SetTextì „ì— RowColumn ë°˜ë“œì‹œ ì„¤ì •
 		GUObjectArray.push_back(text);
 	}
 	break;
@@ -215,13 +215,13 @@ SceneData UWorld::SaveData()
 			Primitive = static_cast<USceneComponent*>(iter);
 		}
 		if (Primitive && !Primitive->IsA(UBillboardComponent::StaticClass())) {
-				Save.Primitives[Count] = iter;
-				Count++;
+			Save.Primitives[Count] = iter;
+			Count++;
 		}
 	}
 	Save.Version = 1;
 	Save.NextUUID = Count;
-	
+
 	return Save;
 }
 
@@ -233,7 +233,7 @@ void UWorld::NewScene()
 
 void UWorld::SetPickingObj(UObject* _Obj)
 {
-	 pickingObj = static_cast<USceneComponent*>(_Obj); 
+	pickingObj = static_cast<USceneComponent*>(_Obj);
 }
 
 void UWorld::DeleteObj(UObject* _Obj)

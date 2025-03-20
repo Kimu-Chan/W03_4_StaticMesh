@@ -7,18 +7,20 @@ cbuffer SubUVConstant : register(b1)
     float indexV;
 }
 
-struct PSInput {
+struct PSInput
+{
     float4 position : SV_POSITION;
     float2 texCoord : TEXCOORD;
 };
 
-float4 main(PSInput input) : SV_TARGET {
+float4 main(PSInput input) : SV_TARGET
+{
     float2 uv = input.texCoord + float2(indexU, indexV);
     //float4 col = gTexture.Sample(gSampler, input.texCoord);
     float4 col = gTexture.Sample(gSampler, uv);
-    float threshold = 0.05; // ÇÊ¿äÇÑ °æ¿ì ÀÓ°è°ªÀ» Á¶Á¤
+    float threshold = 0.05; // í•„ìš”í•œ ê²½ìš° ì„ê³„ê°’ì„ ì¡°ì •
     if (col.r < threshold && col.g < threshold && col.b < threshold)
-        clip(-1); // ÇÈ¼¿ ¹ö¸®±â
+        clip(-1); // í”½ì…€ ë²„ë¦¬ê¸°
     
     return col;
 }

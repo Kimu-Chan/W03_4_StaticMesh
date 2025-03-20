@@ -6,7 +6,7 @@
 #include <list>
 #include <unordered_map>
 
-// ±âº» Å¸ÀÔ Á¤ÀÇ
+// ê¸°ë³¸ íƒ€ì… ì •ì˜
 using int32 = int;
 using uint32 = unsigned int;
 using uint64 = unsigned long long;

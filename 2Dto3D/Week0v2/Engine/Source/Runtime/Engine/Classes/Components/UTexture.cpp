@@ -23,7 +23,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     IWICBitmapFrameDecode* frame = nullptr;
     IWICFormatConverter* converter = nullptr;
 
-    // WIC ÆÑÅä¸® »ý¼º
+    // WIC íŒ©í† ë¦¬ ìƒì„±
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr)) return hr;
 
@@ -31,7 +31,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     if (FAILED(hr)) return hr;
 
 
-    // ÀÌ¹ÌÁö ÆÄÀÏ µðÄÚµù
+    // ì´ë¯¸ì§€ íŒŒì¼ ë””ì½”ë”©
     hr = wicFactory->CreateDecoderFromFilename(filename, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
     if (FAILED(hr)) return hr;
 
@@ -39,20 +39,20 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     hr = decoder->GetFrame(0, &frame);
     if (FAILED(hr)) return hr;
 
-    // WIC Æ÷¸Ë º¯È¯±â »ý¼º (ÇÈ¼¿ Æ÷¸Ë º¯È¯)
+    // WIC í¬ë§· ë³€í™˜ê¸° ìƒì„± (í”½ì…€ í¬ë§· ë³€í™˜)
     hr = wicFactory->CreateFormatConverter(&converter);
     if (FAILED(hr)) return hr;
 
     hr = converter->Initialize(frame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, nullptr, 0.0, WICBitmapPaletteTypeCustom);
     if (FAILED(hr)) return hr;
 
-    // ÀÌ¹ÌÁö Å©±â °¡Á®¿À±â
+    // ì´ë¯¸ì§€ í¬ê¸° ê°€ì ¸ì˜¤ê¸°
     UINT width, height;
     frame->GetSize(&width, &height);
     m_width = width;
     m_height = height;
 
-    // ÇÈ¼¿ µ¥ÀÌÅÍ ·Îµå
+    // í”½ì…€ ë°ì´í„° ë¡œë“œ
     BYTE* imageData = new BYTE[width * height * 4];
     hr = converter->CopyPixels(nullptr, width * 4, width * height * 4, imageData);
     if (FAILED(hr)) {
@@ -60,7 +60,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
         return hr;
     }
 
-    // DirectX 11 ÅØ½ºÃ³ »ý¼º
+    // DirectX 11 í…ìŠ¤ì²˜ ìƒì„±
     D3D11_TEXTURE2D_DESC textureDesc = {};
     textureDesc.Width = width;
     textureDesc.Height = height;
@@ -79,7 +79,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
     delete[] imageData;
     if (FAILED(hr)) return hr;
 
-    // Shader Resource View »ý¼º
+    // Shader Resource View ìƒì„±
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = textureDesc.Format;
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -88,7 +88,7 @@ HRESULT UTexture::LoadTextureFromFile(ID3D11Device* device, ID3D11DeviceContext*
 
     hr = device->CreateShaderResourceView(m_Texture, &srvDesc, &m_TextureSRV);
 
-    // ¸®¼Ò½º ÇØÁ¦
+    // ë¦¬ì†ŒìŠ¤ í•´ì œ
     wicFactory->Release();
     decoder->Release();
     frame->Release();

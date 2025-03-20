@@ -22,7 +22,7 @@ public:
    {
 	   // h: 0~360, s:0~1, v:0~1
 	   float c = v * s;
-	   float hp = h / 60.0f;             // 0~6 ±¸°£
+	   float hp = h / 60.0f;             // 0~6 êµ¬ê°„
 	   float x = c * (1.0f - fabsf(fmodf(hp, 2.0f) - 1.0f));
 	   float m = v - c;
 

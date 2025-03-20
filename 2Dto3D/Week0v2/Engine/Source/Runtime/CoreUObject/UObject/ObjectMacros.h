@@ -1,6 +1,6 @@
 #pragma once
 
-// ╟╢ц╪ е╛╥║╫╨ ╦ее╘╥н
+// Й╟²Л╡╢ М│╢К·≤Л┼╓ К╖╓М│╛К║°
 #define DECLARE_CLASS(ClassName, ParentClassName) \
 public: \
     static UClass* StaticClass() { \

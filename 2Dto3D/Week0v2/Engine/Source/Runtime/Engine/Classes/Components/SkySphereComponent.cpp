@@ -25,7 +25,7 @@ void USkySphereComponent::Render()
 {
 	FMatrix Model = JungleMath::CreateModelMatrix(GetWorldLocation(), GetWorldRotation(), GetWorldScale());
 
-	// ÃÖÁ¾ MVP Çà·Ä
+	// ìµœì¢… MVP í–‰ë ¬
 	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
 	FEngineLoop::renderer.UpdateNormalConstantBuffer(Model);
 	if (this == GetWorld()->GetPickingObj()) {

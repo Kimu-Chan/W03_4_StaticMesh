@@ -6,7 +6,7 @@
 #include "Define.h"
 #include <DirectXMath.h>
 
-UBillboardComponent::UBillboardComponent() : 
+UBillboardComponent::UBillboardComponent() :
 	UPrimitiveComponent("Quad")
 {
 }
@@ -32,7 +32,7 @@ UBillboardComponent::~UBillboardComponent()
 
 void UBillboardComponent::Initialize()
 {
-    Super::Initialize();
+	Super::Initialize();
 	CreateQuadTextureVertexBuffer();
 }
 
@@ -40,7 +40,7 @@ void UBillboardComponent::Initialize()
 
 void UBillboardComponent::Update(double deltaTime)
 {
-    Super::Update(deltaTime);
+	Super::Update(deltaTime);
 }
 
 void UBillboardComponent::Release()
@@ -56,7 +56,7 @@ void UBillboardComponent::Render()
 	FMatrix M = CreateBillboardMatrix();
 	FMatrix VP = GetEngine().View * GetEngine().Projection;
 
-	// √÷¡æ MVP «‡∑ƒ
+	// ÏµúÏ¢Ö MVP ÌñâÎ†¨
 	FMatrix MVP = M * VP;
 	if (this == GetWorld()->GetPickingGizmo()) {
 		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
@@ -66,8 +66,8 @@ void UBillboardComponent::Render()
 
 	if (ShowFlags::GetInstance().currentFlags & static_cast<uint64>(EEngineShowFlags::SF_BillboardText)) {
 
-	FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer,numVertices,
-		indexTextureBuffer,numIndices,Texture->TextureSRV,Texture->SamplerState);
+		FEngineLoop::renderer.RenderTexturePrimitive(vertexTextureBuffer, numVertices,
+			indexTextureBuffer, numIndices, Texture->TextureSRV, Texture->SamplerState);
 	}
 
 	FEngineLoop::renderer.PrepareShader();
@@ -105,18 +105,18 @@ int UBillboardComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 	pickPosition.z = 1.0f; // Near Plane
 
 	FVector _rayDirection = inverseMatrix.TransformPosition(pickPosition);
-	_rayDirection = (_rayDirection - pickRayOrigin).Normalize(); // local ¡¬«•√‡¿« ray
+	_rayDirection = (_rayDirection - pickRayOrigin).Normalize(); // local Ï¢åÌëúÏ∂ïÏùò ray
 
 	return Super::CheckRayIntersection(pickRayOrigin, _rayDirection, pfNearHitDistance);
 	*/
-	
+
 	TArray<FVector> quad;
 	for (int i = 0; i < 4; i++)
 	{
-		quad.push_back(FVector(quadTextureVertices[i].x, 
+		quad.push_back(FVector(quadTextureVertices[i].x,
 			quadTextureVertices[i].y, quadTextureVertices[i].z));
 	}
-	return CheckPickingOnNDC(quad,pfNearHitDistance);
+	return CheckPickingOnNDC(quad, pfNearHitDistance);
 
 }
 
@@ -151,7 +151,7 @@ FMatrix UBillboardComponent::CreateBillboardMatrix()
 	CameraView.M[1][2] = -CameraView.M[1][2];
 	CameraView.M[2][2] = -CameraView.M[2][2];
 	FMatrix LookAtCamera = FMatrix::Transpose(CameraView);
-	
+
 	FVector worldLocation = RelativeLocation;
 	if (m_parent) worldLocation = RelativeLocation + m_parent->GetWorldLocation();
 	FVector worldScale = RelativeScale3D;
@@ -213,8 +213,8 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, fl
 	{
 		FVector4 v = FVector4(checkQuad[i].x, checkQuad[i].y, checkQuad[i].z, 1.0f);
 		FVector4 clipPos = FMatrix::TransformVector(v, MVP);
-		
-		if (clipPos.a != 0)	clipPos = clipPos/clipPos.a;
+
+		if (clipPos.a != 0)	clipPos = clipPos / clipPos.a;
 
 		minX = min(minX, clipPos.x);
 		maxX = max(maxX, clipPos.x);
@@ -228,11 +228,11 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& checkQuad, fl
 	if (pickPosition.x >= minX && pickPosition.x <= maxX &&
 		pickPosition.y >= minY && pickPosition.y <= maxY)
 	{
-		float A = P.M[2][2];  // Projection Matrix¿« A∞™ (Z ∫Ø»Ø ∞Ëºˆ)
-		float B = P.M[3][2];  // Projection Matrix¿« B∞™ (Z ∫Ø»Ø ∞Ëºˆ)
+		float A = P.M[2][2];  // Projection MatrixÏùò AÍ∞í (Z Î≥ÄÌôò Í≥ÑÏàò)
+		float B = P.M[3][2];  // Projection MatrixÏùò BÍ∞í (Z Î≥ÄÌôò Í≥ÑÏàò)
 
-		float z_view_pick = (pickPosition.z - B) / A; // ∏∂øÏΩ∫ ≈¨∏Ø View ∞¯∞£ Z
-		float z_view_billboard = (avgZ - B) / A; // Billboard View ∞¯∞£ Z
+		float z_view_pick = (pickPosition.z - B) / A; // ÎßàÏö∞Ïä§ ÌÅ¥Î¶≠ View Í≥µÍ∞Ñ Z
+		float z_view_billboard = (avgZ - B) / A; // Billboard View Í≥µÍ∞Ñ Z
 
 		hitDistance = 1000.0f;
 		result = true;

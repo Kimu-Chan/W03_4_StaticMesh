@@ -12,7 +12,7 @@ UTextUUID::~UTextUUID()
 
 void UTextUUID::Render()
 {
-	//ÇÃ·¡±× Ã³¸®
+	//í”Œëž˜ê·¸ ì²˜ë¦¬
 #pragma region GizmoDepth
 	ID3D11DepthStencilState* DepthStateDisable = FEngineLoop::graphicDevice.DepthStateDisable;
 	FEngineLoop::graphicDevice.DeviceContext->OMSetDepthStencilState(DepthStateDisable, 0);

@@ -29,7 +29,7 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.f;
 	float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
 
-	// Ã¢ Å©±â¿Í À§Ä¡ ¼³Á¤
+	// ì°½ í¬ê¸°ì™€ ìœ„ì¹˜ ì„¤ì •
 	ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
 	ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
 
@@ -59,18 +59,18 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	ImVec4 ActiveColor = ImVec4(0, 0.5, 0, 0.6f);
 
 	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());
-	// ÇöÀç ¸ğµå ÀúÀå º¯¼ö ( ÀÌ º¯¼ö´Â Áö¿ª º¯¼ö·Î¸¸ »ç¿ëÇÑ´Ù)
+	// í˜„ì¬ ëª¨ë“œ ì €ì¥ ë³€ìˆ˜ ( ì´ ë³€ìˆ˜ëŠ” ì§€ì—­ ë³€ìˆ˜ë¡œë§Œ ì‚¬ìš©í•œë‹¤)
 	if (!player) return;
 	static ControlMode selectedMode = CM_TRANSLATION;
 
-	//PropertyPanel* propPanel = world->GetPropertyPanel(); // PropertyPanel °¡Á®¿À±â
+	//PropertyPanel* propPanel = world->GetPropertyPanel(); // PropertyPanel ê°€ì ¸ì˜¤ê¸°
 	//bool isTranslationActive = (PrimaryGizmo && PrimaryGizmo->GetCurrentGizmo() == EGizmoType::Translation);
 	//if (isTranslationActive)
-	//	ImGui::PushStyleColor(ImGuiCol_Button, ActiveColor); // È°¼º »óÅÂ »ö»ó
+	//	ImGui::PushStyleColor(ImGuiCol_Button, ActiveColor); // í™œì„± ìƒíƒœ ìƒ‰ìƒ
 	if (ImGui::Button(u8"\ue9bc", ControlButtonSize))
 	{
 		selectedMode = CM_TRANSLATION;
-		player->SetMode(CM_TRANSLATION); // ÇöÀç ¸ğµå¸¦ TRANSLATION À¸·Î º¯°æ
+		player->SetMode(CM_TRANSLATION); // í˜„ì¬ ëª¨ë“œë¥¼ TRANSLATION ìœ¼ë¡œ ë³€ê²½
 	}
 	
 	ImGui::SameLine();
