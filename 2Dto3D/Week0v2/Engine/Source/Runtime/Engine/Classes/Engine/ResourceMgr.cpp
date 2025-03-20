@@ -2,10 +2,8 @@
 #include "D3D11RHI/GraphicDevice.h"
 #include <fstream>
 #include <sstream>
-#include "Sphere.h"
 #include "Renderer/Renderer.h"
 #include "Define.h"
-#include "Arrow.h"
 #include "Components/Quad.h"
 #include <wincodec.h>
 #include "DirectXTK/Include/DDSTextureLoader.h"

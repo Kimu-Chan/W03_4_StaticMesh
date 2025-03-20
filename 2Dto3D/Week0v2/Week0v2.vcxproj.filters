@@ -312,12 +312,6 @@
     <ClInclude Include="Engine\Source\Runtime\Engine\UserInterface\Console.h">
       <Filter>Engine\Source\Runtime\Engine\UserInterface</Filter>
     </ClInclude>
-    <ClCompile Include="Engine\Source\Runtime\Engine\UserInterface\ImGuiManager.cpp">
-      <Filter>Engine\Source\Runtime\Engine\UserInterface</Filter>
-    </ClCompile>
-    <ClInclude Include="Engine\Source\Runtime\Engine\UserInterface\ImGuiManager.h">
-      <Filter>Engine\Source\Runtime\Engine\UserInterface</Filter>
-    </ClInclude>
     <ClCompile Include="Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos\GizmoArrowComponent.cpp">
       <Filter>Engine\Source\Runtime\InteractiveToolsFramework\BaseGizmos</Filter>
     </ClCompile>
@@ -355,12 +349,6 @@
       <Filter>Engine\Source\Runtime\Launch</Filter>
     </ClCompile>
     <ClInclude Include="Engine\Source\Runtime\Launch\EngineLoop.h">
-      <Filter>Engine\Source\Runtime\Launch</Filter>
-    </ClInclude>
-    <ClCompile Include="Engine\Source\Runtime\Launch\ImGuiManager.cpp">
-      <Filter>Engine\Source\Runtime\Launch</Filter>
-    </ClCompile>
-    <ClInclude Include="Engine\Source\Runtime\Launch\ImGuiManager.h">
       <Filter>Engine\Source\Runtime\Launch</Filter>
     </ClInclude>
     <ClCompile Include="Engine\Source\Runtime\Launch\Launch.cpp">
@@ -429,38 +417,16 @@
     <ClInclude Include="Engine\Source\ThirdParty\JSON\json.hpp">
       <Filter>Engine\Source\ThirdParty\JSON</Filter>
     </ClInclude>
-    <ClInclude Include="External\DirectXTK\Include\DDSTextureLoader.h">
-      <Filter>External\DirectXTK\Include</Filter>
-    </ClInclude>
     <ClInclude Include="Font\IconDefs.h">
       <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="Font\RawFonts.h">
       <Filter>Font</Filter>
     </ClInclude>
+    <ClCompile Include="Engine\Source\Runtime\Launch\ImGuiManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PixelTextureShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ShaderLine.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ShaderW0.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexTextureShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="UTexture.cpp">
-      <Filter>Engine\Source\Runtime\Engine\Classes\Components</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="UTexture.h">
-      <Filter>Engine\Source\Runtime\Engine\Classes\Components</Filter>
-    </ClInclude>
+    <ClInclude Include="Engine\Source\ThirdParty\DirectXTK\Include\DDSTextureLoader.h" />
+    <ClInclude Include="Engine\Source\Runtime\Launch\ImGuiManager.h" />
   </ItemGroup>
 </Project>
